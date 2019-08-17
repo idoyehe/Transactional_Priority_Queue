@@ -5,7 +5,7 @@ public class Queue {
     //	private static final long lockMask = 0x2000000000000000L;
     private static final long singletonMask = 0x4000000000000000L;
     //	private static final long versionMask = lockMask | singletonMask;
-    private static final long versionNegMask = singletonMask;
+    private static final long versionNegMask = singletonMask;//TODO: what is that?
     private LockQueue qLock = new LockQueue();
     private QNode head;
     private QNode tail;
@@ -14,7 +14,7 @@ public class Queue {
     // bit 62 is singleton
     // 0 is false, 1 is true
     // we are missing a bit because this is signed
-    private AtomicLong versionAndFlags = new AtomicLong();
+    private AtomicLong versionAndFlags = new AtomicLong(); //TODO: ask Gal if that the GVC
 
     protected long getVersion() {
         return (versionAndFlags.get() & (~versionNegMask));
