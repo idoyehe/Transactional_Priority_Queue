@@ -1,7 +1,10 @@
 public class HelloWorld implements Runnable {
+    private ThreadLocal myThreadLocal = new ThreadLocal<String>();
+
     public void run() {
+        myThreadLocal.set(Thread.currentThread().getName());
         System.out.println("Hello world from thread number " +
-                Thread.currentThread().getName());
+                myThreadLocal.get());
     }
 
     public static void main(String[] args) {
