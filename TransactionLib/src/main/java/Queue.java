@@ -3,7 +3,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 public class Queue {
     //	private static final long lockMask = 0x2000000000000000L;
-    private static final long singletonMask = 0x4000000000000000L;
+    private static final long singletonMask = 0x4000000000000000L;//TODO: what is that?
     //	private static final long versionMask = lockMask | singletonMask;
     private static final long versionNegMask = singletonMask;//TODO: what is that?
     private LockQueue qLock = new LockQueue();
@@ -33,7 +33,7 @@ public class Queue {
         return (l & singletonMask) != 0;
     }
 
-    protected void setSingleton(boolean value) {
+    protected void setSingleton(boolean value) {//TODO: what is the meaning of singletone here?
         long l = versionAndFlags.get();
 //		assert ((l & lockMask) != 0);
         if (value) {
@@ -261,7 +261,7 @@ public class Queue {
             TXLibExceptions excep = new TXLibExceptions();
             throw excep.new AbortException();
         }
-        if ((localStorage.readVersion == getVersion()) && (isSingleton())) {
+        if ((localStorage.readVersion == getVersion()) && (isSingleton())) {// TODO: why need isSingletone
             TX.incrementAndGetVersion();
             localStorage.TX = false;
             TXLibExceptions excep = new TXLibExceptions();
