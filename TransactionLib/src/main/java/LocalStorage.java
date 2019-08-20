@@ -6,7 +6,7 @@ public class LocalStorage {
 
     protected long readVersion = 0L;
     protected long writeVersion = 0L; // for debug
-    protected boolean TX = false;//TODO: Ask Gal this flag indicite for transaction or one at the time access??
+    protected boolean TX = false;// this flag indicite for transction
     protected boolean readOnly = true;
     protected HashMap<Queue, LocalQueue> queueMap = new HashMap<Queue, LocalQueue>();
     protected HashMap<LNode, WriteElement> writeSet = new HashMap<LNode, WriteElement>();

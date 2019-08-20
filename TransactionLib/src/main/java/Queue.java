@@ -14,7 +14,7 @@ public class Queue {
     // bit 62 is singleton
     // 0 is false, 1 is true
     // we are missing a bit because this is signed
-    private AtomicLong versionAndFlags = new AtomicLong(); //TODO: ask Gal if that the GVC
+    private AtomicLong versionAndFlags = new AtomicLong(); //This is the VC of the queue
 
     protected long getVersion() {
         return (versionAndFlags.get() & (~versionNegMask));
@@ -349,11 +349,11 @@ public class Queue {
             }
             // if this is the first dequeue then try to dequeue the tail
             lQueue.firstDeq = false;
-            lQueue.nodeToDeq = head;
+            lQueue.nodeToDeq = head;//refrence to head of the global queue
         } else if (lQueue.nodeToDeq != null) {
             lQueue.nodeToDeq = lQueue.nodeToDeq.next;
         }
-
+        //explain
         if (lQueue.nodeToDeq != null) { // dequeue from the queue
 
             Object ret = lQueue.nodeToDeq.val;

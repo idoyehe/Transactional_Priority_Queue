@@ -1,6 +1,6 @@
 import java.util.concurrent.locks.ReentrantLock;
 
-public class LockQueue {
+public class LockQueue { //This the global lock of the queue
 
     private ReentrantLock lock;
     // TODO which lock to use?
