@@ -1,8 +1,8 @@
 import java.util.concurrent.atomic.AtomicLong;
 
 public class LNode {
-    private static final long lockMask = 0x1000000000000000L;
-    private static final long deleteMask = 0x2000000000000000L;
+    private static final long lockMask = 0x1000000000000000L;//mask that indicate if LNode is locked
+    private static final long deleteMask = 0x2000000000000000L;//mask that indicate if LNode is deleted
     private static final long singletonMask = 0x4000000000000000L;
     private static final long versionNegMask = lockMask | deleteMask | singletonMask;
     protected LNode next = null;
@@ -13,22 +13,22 @@ public class LNode {
     // bit 62 is singleton
     // 0 is false, 1 is true
     // we are missing a bit because this is signed
-    private AtomicLong versionAndFlags = new AtomicLong();
+    private AtomicLong versionAndFlags = new AtomicLong();//each LNode holds it's version
 
     protected boolean tryLock() {
         long l = versionAndFlags.get();
-        if ((l & lockMask) != 0) {
+        if ((l & lockMask) != 0) {//indicte node is already locked
             return false;
         }
         long locked = l | lockMask;
-        return versionAndFlags.compareAndSet(l, locked);
+        return versionAndFlags.compareAndSet(l, locked);//always set ?
     }
 
     protected void unlock() {
         long l = versionAndFlags.get();
-        assert ((l & lockMask) != 0);
+        assert ((l & lockMask) != 0);//assertting node is already locked
         long unlocked = l & (~lockMask);
-        boolean ret = versionAndFlags.compareAndSet(l, unlocked);
+        boolean ret = versionAndFlags.compareAndSet(l, unlocked);//always set ?
         assert (ret);
     }
 
@@ -44,7 +44,7 @@ public class LNode {
 
     protected void setDeleted(boolean value) {
         long l = versionAndFlags.get();
-        assert ((l & lockMask) != 0);
+        assert ((l & lockMask) != 0);//assertting node is not deleted
         if (value) {
             l |= deleteMask;
             versionAndFlags.set(l);
@@ -93,7 +93,7 @@ public class LNode {
 
     protected void setVersion(long version) {
         long l = versionAndFlags.get();
-        assert ((l & lockMask) != 0);
+        assert ((l & lockMask) != 0);//assertting node is already locked
         l &= versionNegMask;
         l |= (version & (~versionNegMask));
         versionAndFlags.set(l);
