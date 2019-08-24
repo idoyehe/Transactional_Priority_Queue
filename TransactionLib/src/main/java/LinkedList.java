@@ -31,11 +31,11 @@ public class LinkedList {
         }
     }
 
-    protected LNode head = new LNode(); // protected (not private) for testing
+    protected LNode head = new LNode(); // protected (not private) for testing, head of the list
     protected Index index;
 
     public LinkedList() {
-        head.key = Integer.MIN_VALUE;
+        head.key = Integer.MIN_VALUE;// as -inf
         // TODO(GG) the comparator/index is a nested class, its code explicitly
         // ensures that head is the minimal element
         index = new Index(head);
@@ -69,7 +69,7 @@ public class LinkedList {
 
     private LNode getPredSingleton(LNode n) {
         LNode pred = index.getPred(n);
-        while (pred.isLockedOrDeleted()) {
+        while (pred.isLockedOrDeleted()) {//so may iterate more than acutally active nodes until finding the none deleted presuccessor
             if (pred == head) {
                 return head;
             }
@@ -79,7 +79,7 @@ public class LinkedList {
     }
 
     private Object getVal(LNode n, LocalStorage localStorage) {
-        WriteElement we = localStorage.writeSet.get(n);
+        WriteElement we = localStorage.writeSet.get(n);//if in transction we add that node return it from write set
         if (we != null) {
             return we.val;
         }
@@ -103,7 +103,7 @@ public class LinkedList {
                 TXLibExceptions excep = new TXLibExceptions();
                 throw excep.new AbortException();
             }
-            WriteElement we = localStorage.writeSet.get(pred);
+            WriteElement we = localStorage.writeSet.get(pred);//if pred is in write set, recently in while transcation
             if (we != null) {
                 if (we.deleted) {
                     // if you deleted it earlier
@@ -112,7 +112,7 @@ public class LinkedList {
                     continue;
                 }
             }
-            if (pred.isDeleted()) {
+            if (pred.isDeleted()) {//if pred deleted continue to iterate
                 assert (pred != head);
                 pred = index.getPred(pred);
             } else {
@@ -660,7 +660,7 @@ public class LinkedList {
                 break;
             } else if (next.key.compareTo(key) > 0) {
                 break;
-            } else {
+            } else {//why can we get here the case key > next
                 pred = next;
                 next = getNext(pred, localStorage);
             }
@@ -769,7 +769,7 @@ public class LinkedList {
         }
 
         // add to read set
-        localStorage.readSet.add(pred);
+        localStorage.readSet.add(pred);//TODO: ask Gal: only pred in read set? why not next?
 
         if (next == null || next.key.compareTo(key) > 0) {
             return false;

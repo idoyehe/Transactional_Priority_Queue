@@ -9,10 +9,10 @@ public class LocalStorage {
     protected boolean TX = false;// this flag indicite for transction
     protected boolean readOnly = true;
     protected HashMap<Queue, LocalQueue> queueMap = new HashMap<Queue, LocalQueue>();
-    protected HashMap<LNode, WriteElement> writeSet = new HashMap<LNode, WriteElement>();
-    protected HashSet<LNode> readSet = new HashSet<LNode>();
-    protected HashMap<LinkedList, ArrayList<LNode>> indexAdd = new HashMap<LinkedList, ArrayList<LNode>>();
-    protected HashMap<LinkedList, ArrayList<LNode>> indexRemove = new HashMap<LinkedList, ArrayList<LNode>>();
+    protected HashMap<LNode, WriteElement> writeSet = new HashMap<LNode, WriteElement>();//this is the writing set (from paper)
+    protected HashSet<LNode> readSet = new HashSet<LNode>();//this is the reading set (from paper)
+    protected HashMap<LinkedList, ArrayList<LNode>> indexAdd = new HashMap<LinkedList, ArrayList<LNode>>();//index handling
+    protected HashMap<LinkedList, ArrayList<LNode>> indexRemove = new HashMap<LinkedList, ArrayList<LNode>>();//index handling
     // with ArrayList all nodes will be added to the list
     // (no compression needed)
     // later, when we add the nodes to the index,
@@ -24,7 +24,7 @@ public class LocalStorage {
         we.next = next;
         we.deleted = deleted;
         we.val = val;
-        writeSet.put(node, we);
+        writeSet.put(node, we);//is node is it's prev node of the new node?
     }
 
     protected void addToIndexAdd(LinkedList list, LNode node) {
