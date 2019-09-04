@@ -9,7 +9,7 @@ class Turn(Enum):
 
 
 class PQNode(object):
-    def __init__(self, value: object, priority: int, index: int, left=None, right=None, father=None, nodeVersion=None,sim_index=None):
+    def __init__(self, value: object, priority: int, index: int, left=None, right=None, father=None, nodeVersion=None, sim_index=None):
         self.index: int = index  # TODO: figure out if that really needed?
         self.priority: int = priority
         self.value: object = value
@@ -20,6 +20,13 @@ class PQNode(object):
         self.sim_index = sim_index
 
     def search(self, index: int, binary_digits: list, current_turn_index: int) -> PQNode:
+        '''
+        searching a node in the heap by it's index
+        :param index: index of node to search
+        :param binary_digits: list contains the turn to be done
+        :param current_turn_index: the current turn
+        :return: the node if it has been found
+        '''
 
         if index == self.index:
             return self
@@ -65,4 +72,3 @@ class PQNode(object):
             self.swap(min_son)
             return min_son.sift_down()
         return
-

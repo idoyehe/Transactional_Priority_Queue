@@ -50,7 +50,7 @@ class LocalPriorityQueue(object):
 
         if self.root is None:
             self.root = new_node
-            self.size += 1
+            self.size = 1
             return
 
         new_node_father = self._search_node_(int((self.size + 1) / 2))
@@ -71,7 +71,7 @@ class LocalPriorityQueue(object):
         def _right(index) -> int:
             return 2 * index + 1
 
-        pq: LocalPriorityQueue = LocalPriorityQueue()  # Create a Local Priority Queue
+        pq: LocalPriorityQueue = LocalPriorityQueue()  # Create a Local Priority Queue as helper
 
         pq.push(value=self.root.value, priority=self.root.priority, sim_index=self.root.index)
 

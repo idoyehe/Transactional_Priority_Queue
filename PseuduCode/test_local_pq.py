@@ -1,4 +1,4 @@
-import pytest
+# import pytest
 from LocalPriorityQueue import *
 
 
@@ -35,9 +35,11 @@ def test_pop():
     assert lpq.size == 1
     lpq.pop()
     assert lpq.size == 0
-    with pytest.raises(Exception):
+    try:
         lpq.top()
-
+        assert False
+    except Exception as e:
+        assert e is not None
 
 def test_pop():
     lpq = LocalPriorityQueue()
@@ -56,8 +58,12 @@ def test_pop():
     assert lpq.size == 1
     lpq.pop()
     assert lpq.size == 0
-    with pytest.raises(Exception):
+
+    try:
         lpq.top()
+        assert False
+    except Exception as e:
+        assert e is not None
 
 
 def heap_invariant(node: PQNode):
@@ -95,3 +101,12 @@ def test_k_th_smallest():
 
     for num in reversed(range(1, 101)):
         assert lpq.k_th_smallest(num) == num
+
+
+if __name__ == '__main__':
+    test_local_priority_queue_constructor()
+    test_first_insertion()
+    test_first_top()
+    test_pop()
+    test_k_th_smallest()
+    test_overall()
