@@ -1,3 +1,5 @@
+package TransactionLib.src.main.java;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,6 +37,7 @@ public class LocalStorage {
         nodes.add(node);
         indexAdd.put(list, nodes);
     }
+
 
     protected void addToIndexRemove(LinkedList list, LNode node) {
         ArrayList<LNode> nodes = indexRemove.get(list);

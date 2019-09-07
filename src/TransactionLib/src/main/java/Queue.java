@@ -1,11 +1,13 @@
+package TransactionLib.src.main.java;
+
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Queue {
     //	private static final long lockMask = 0x2000000000000000L;
-    private static final long singletonMask = 0x4000000000000000L;//TODO: what is that?
+    private static final long singletonMask = 0x4000000000000000L;
     //	private static final long versionMask = lockMask | singletonMask;
-    private static final long versionNegMask = singletonMask;//TODO: what is that?
+    private static final long versionNegMask = singletonMask;
     private LockQueue qLock = new LockQueue();
     private QNode head;
     private QNode tail;
