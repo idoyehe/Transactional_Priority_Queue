@@ -83,12 +83,30 @@ public class TX {
                 if (!queue.tryLock()) { // if queue is locked by another thread
                     abort = true;
                     break;
-
                 }
 
                 LocalQueue lQueue = entry.getValue();
                 lQueue.isLockedByMe = true;
+            }
+        }
 
+        // locking priority queues
+        HashMap<PriorityQueue, LocalPriorityQueue> pqMap = localStorage.priorityQueueMap;
+
+        if (!abort) {
+
+            for (Entry<PriorityQueue, LocalPriorityQueue> entry : pqMap.entrySet()) {
+
+                PriorityQueue pQueue = entry.getKey();
+
+                if (!pQueue.tryLock()) { // if queue is locked by another thread
+                    abort = true;
+                    break;
+
+                }
+
+                LocalPriorityQueue lPQueue = entry.getValue();
+                lPQueue.isLockedByMe = true;
             }
         }
 
@@ -120,7 +138,25 @@ public class TX {
 
         }
 
-        // validate queue
+        // validate priority queue
+
+        if (!abort) {
+
+            for (Entry<PriorityQueue, LocalPriorityQueue> entry : pqMap.entrySet()) {
+
+                PriorityQueue pQueue = entry.getKey();
+                if (pQueue.getVersion() > localStorage.readVersion) {
+                    abort = true;
+                    break;
+                } else if (pQueue.getVersion() == localStorage.readVersion && pQueue.isSingleton()) {
+                    incrementAndGetVersion(); // increment GVC
+                    abort = true;
+                    break;
+                }
+            }
+        }
+
+        // validate queues
 
         if (!abort) {
 
@@ -189,6 +225,25 @@ public class TX {
 
         }
 
+        if (!abort) {
+            // Priority Queue
+
+            for (Entry<PriorityQueue, LocalPriorityQueue> entry : pqMap.entrySet()) {
+
+                PriorityQueue pQueue = entry.getKey();
+                LocalPriorityQueue lPQueue = entry.getValue();
+
+                pQueue.dequeueNodes(lPQueue.dequeueCounter);
+                pQueue.enqueueNodes(lPQueue);
+                if (TX.DEBUG_MODE_QUEUE) {
+                    System.out.println("commit queue before set version");
+                }
+                pQueue.setVersion(writeVersion);
+                pQueue.setSingleton(false);
+            }
+
+        }
+
         // release locks, even if abort
 
         lockedLNodes.forEach(LNode::unlock);
@@ -200,6 +255,16 @@ public class TX {
             if (lQueue.isLockedByMe) {
                 queue.unlock();
                 lQueue.isLockedByMe = false;
+            }
+        }
+
+        for (Entry<PriorityQueue, LocalPriorityQueue> entry : pqMap.entrySet()) {
+
+            PriorityQueue pQueue = entry.getKey();
+            LocalPriorityQueue lPQueue = entry.getValue();
+            if (lPQueue.isLockedByMe) {
+                pQueue.unlock();
+                lPQueue.isLockedByMe = false;
             }
         }
 
@@ -224,6 +289,7 @@ public class TX {
         // cleanup
 
         localStorage.queueMap.clear();
+        localStorage.priorityQueueMap.clear();
         localStorage.writeSet.clear();
         localStorage.readSet.clear();
         localStorage.indexAdd.clear();
@@ -244,7 +310,5 @@ public class TX {
         }
 
         return true;
-
     }
-
 }

@@ -15,9 +15,9 @@ public class LocalPriorityQueue {
     }
 
 
-    public Object top() throws TXLibExceptions.PQueueIsEmptyException {
+    public Pair<Comparable, Object> top() throws TXLibExceptions.PQueueIsEmptyException {
         if (this.root != null) {
-            return this.root.value;
+            return new Pair<Comparable, Object>(this.root.priority, this.root.value);
         }
         TXLibExceptions excep = new TXLibExceptions();
         throw excep.new PQueueIsEmptyException();
@@ -38,6 +38,11 @@ public class LocalPriorityQueue {
     }
 
     protected void enqueue(Comparable priority, Object val) throws TXLibExceptions.PQIndexNotFound {
+        this.enqueue(priority, val, -1);
+    }
+
+
+    private void enqueue(Comparable priority, Object val, int dequeueSimulateIndex) throws TXLibExceptions.PQIndexNotFound {
 
         PQNode newNode = new PQNode();
         newNode.right = null;
@@ -46,6 +51,7 @@ public class LocalPriorityQueue {
         newNode.value = val;
         newNode.father = null;
         newNode.index = this.size + 1;
+        newNode.dequeueSimulateIndex = dequeueSimulateIndex;
 
 
         if (this.root == null) {
@@ -96,5 +102,40 @@ public class LocalPriorityQueue {
         this.size -= 1;
         this.root.sift_down();
         return prioValuePair;
+    }
+
+    private int leftSon(int index) {
+        return 2 * index;
+    }
+
+    private int rightSon(int index) {
+        return 2 * index + 1;
+    }
+
+    public Pair<Comparable, Object> k_th_smallest(int k) throws TXLibExceptions.PQIndexNotFound, TXLibExceptions.PQueueIsEmptyException {
+
+
+        LocalPriorityQueue lpq = new LocalPriorityQueue(); // Create a Local Priority Queue as helper
+
+        lpq.enqueue(this.root.priority, this.root.value, this.root.index);
+
+        for (int i = 1; i < k; i++) {
+            int topIndex = lpq.root.dequeueSimulateIndex;
+            lpq.dequeue();
+            int leftSonIndex = this.leftSon(topIndex);
+            int rightSonIndex = this.rightSon(topIndex);
+
+            if (leftSonIndex <= this.size) {
+                PQNode leftSon = this._search_node_(leftSonIndex);
+                lpq.enqueue(leftSon.priority, leftSon.value, leftSon.index);
+            }
+
+            if (rightSonIndex <= this.size) {
+                PQNode rightSon = this._search_node_(rightSonIndex);
+                lpq.enqueue(rightSon.priority, rightSon.value, rightSon.index);
+            }
+
+        }
+        return lpq.top();
     }
 }

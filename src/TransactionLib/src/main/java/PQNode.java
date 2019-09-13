@@ -3,6 +3,7 @@ import java.util.ArrayList;
 
 public class PQNode {
     protected int index;// index of the node in heap
+    protected int dequeueSimulateIndex;// index of the node in heap
     protected Comparable priority;
     protected Object value;
     protected PQNode left;// left son heap
@@ -11,12 +12,15 @@ public class PQNode {
 
 
     public void swap(PQNode node) {
-        Object tempValue = this.value;
-        Comparable tempPriority = this.priority;
+        Object tempValue = node.value;
+        Comparable tempPriority = node.priority;
+        int tempDequeueSimulateIndex = node.dequeueSimulateIndex;
         node.value = this.value;
         node.priority = this.priority;
+        node.dequeueSimulateIndex = this.dequeueSimulateIndex;
         this.value = tempValue;
         this.priority = tempPriority;
+        this.dequeueSimulateIndex = tempDequeueSimulateIndex;
     }
 
     public void sift_up() {

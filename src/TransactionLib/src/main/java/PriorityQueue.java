@@ -2,6 +2,7 @@ package TransactionLib.src.main.java;
 
 import javafx.util.Pair;
 
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class PriorityQueue {
@@ -68,9 +69,7 @@ public class PriorityQueue {
                 if (TX.DEBUG_MODE_QUEUE) {
                     System.out.println("Priority Queue enqueueNodes - lPQueue is not empty");
                 }
-                PQNode node = new PQNode();
                 Pair<Comparable, Object> prioValuePair = lPQueue.dequeue();
-
 
                 if (TX.DEBUG_MODE_QUEUE) {
                     System.out.println("Priority Queue enqueueNodes - lPQueue node priority is " + prioValuePair.getKey());
@@ -119,6 +118,196 @@ public class PriorityQueue {
                 }
             }
         }
+    }
+
+    public void enqueue(Comparable priority, Object value) throws TXLibExceptions.AbortException, TXLibExceptions.PQIndexNotFound {
+
+        LocalStorage localStorage = TX.lStorage.get();
+
+        // SINGLETON
+        if (!localStorage.TX) {
+
+            if (TX.DEBUG_MODE_QUEUE) {
+                System.out.println("Priority Queue enqueue - singleton");
+            }
+
+            this.lock();
+            this.root.enqueue(priority, value);
+
+            this.setVersion(TX.getVersion());
+            this.setSingleton(true);
+
+            this.unlock();
+            return;
+        }
+
+        // TX
+
+        if (TX.DEBUG_MODE_QUEUE) {
+            System.out.println("Priority Queue enqueue - in TX");
+        }
+
+        if (localStorage.readVersion < getVersion()) {
+            localStorage.TX = false;
+            TXLibExceptions excep = new TXLibExceptions();
+            throw excep.new AbortException();
+        }
+        if ((localStorage.readVersion == getVersion()) && (isSingleton())) {
+            TX.incrementAndGetVersion();
+            localStorage.TX = false;
+            TXLibExceptions excep = new TXLibExceptions();
+            throw excep.new AbortException();
+        }
+
+        HashMap<PriorityQueue, LocalPriorityQueue> pqMap = localStorage.priorityQueueMap;
+        LocalPriorityQueue lPQueue = pqMap.get(this);
+
+        if (lPQueue == null) {//First time to enqueue the PriorityQueue
+            lPQueue = new LocalPriorityQueue();
+        }
+        lPQueue.enqueue(priority, value);
+        pqMap.put(this, lPQueue);
+    }
+
+
+    public boolean isEmpty() throws TXLibExceptions.AbortException {
+
+        LocalStorage localStorage = TX.lStorage.get();
+
+        // SINGLETON
+        if (!localStorage.TX) {
+            if (TX.DEBUG_MODE_QUEUE) {
+                System.out.println("Priority Queue isEmpty - singleton");
+            }
+            lock();
+            int ret = root.size;//TODO: should be after lock or before lock as Queue?
+            setVersion(TX.getVersion());
+            setSingleton(true);
+            unlock();
+            return (ret <= 0);
+        }
+
+        // TX
+        if (TX.DEBUG_MODE_QUEUE) {
+            System.out.println("Priority Queue isEmpty - in TX");
+        }
+
+        if (TX.DEBUG_MODE_QUEUE) {
+            System.out.println("Priority Queue isEmpty - now not locked by me");
+        }
+
+        if (localStorage.readVersion < getVersion()) {
+            localStorage.TX = false;
+            TXLibExceptions excep = new TXLibExceptions();
+            throw excep.new AbortException();
+        }
+        if ((localStorage.readVersion == getVersion()) && (isSingleton())) {
+            TX.incrementAndGetVersion();
+            localStorage.TX = false;
+            TXLibExceptions excep = new TXLibExceptions();
+            throw excep.new AbortException();
+        }
+
+        if (!tryLock()) { // if priority queue is locked by another thread
+            if (TX.DEBUG_MODE_QUEUE) {
+                System.out.println("Priority Queue isEmpty - couldn't lock");
+            }
+            localStorage.TX = false;
+            TXLibExceptions excep = new TXLibExceptions();
+            throw excep.new AbortException();
+        }
+
+        // now we have the lock
+        if (this.root.size > 0) {
+            return false;
+        }
+        assert this.root.size <= 0;
+        // check lPQueue
+        HashMap<PriorityQueue, LocalPriorityQueue> qMap = localStorage.priorityQueueMap;
+        LocalPriorityQueue lPQueue = qMap.get(this);
+        if (lPQueue == null) {//TODO: is it needed to crate local priority queue now?
+            lPQueue = new LocalPriorityQueue();
+        }
+        qMap.put(this, lPQueue);
+        return lPQueue.isEmpty();
+    }
+
+    public Pair<Comparable, Object> dequeue() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.PQIndexNotFound, TXLibExceptions.AbortException {
+
+        LocalStorage localStorage = TX.lStorage.get();
+
+        // SINGLETON
+        if (!localStorage.TX) {
+
+            if (TX.DEBUG_MODE_QUEUE) {
+                System.out.println("Priority Queue dequeue - singleton");
+            }
+
+            lock();
+            Pair<Comparable, Object> ret = this.root.dequeue();
+            setVersion(TX.getVersion());
+            setSingleton(true);
+            unlock();
+            return ret;
+        }
+
+        // TX
+
+        if (TX.DEBUG_MODE_QUEUE) {
+            System.out.println("Priority Queue dequeue - in TX");
+        }
+
+        if (localStorage.readVersion < getVersion()) {
+            localStorage.TX = false;
+            TXLibExceptions excep = new TXLibExceptions();
+            throw excep.new AbortException();
+        }
+        if ((localStorage.readVersion == getVersion()) && (isSingleton())) {
+            TX.incrementAndGetVersion();
+            localStorage.TX = false;
+            TXLibExceptions excep = new TXLibExceptions();
+            throw excep.new AbortException();
+        }
+
+        if (!tryLock()) { // if queue is locked by another thread
+            localStorage.TX = false;
+            TXLibExceptions excep = new TXLibExceptions();
+            throw excep.new AbortException();
+        }
+
+        // now we have the lock
+        HashMap<PriorityQueue, LocalPriorityQueue> qMap = localStorage.priorityQueueMap;
+        LocalPriorityQueue lPQueue = qMap.get(this);
+
+        if (lPQueue == null) {
+            lPQueue = new LocalPriorityQueue();
+        }
+
+        Pair<Comparable, Object> pQueueMin = null;
+        try {
+            pQueueMin = this.root.k_th_smallest(lPQueue.dequeueCounter + 1);
+        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+            if (TX.DEBUG_MODE_QUEUE) {
+                System.out.println("Priority Queue dequeue - priority queue is not has minimum");
+            }
+        }
+
+        Pair<Comparable, Object> lPQueueMin = null;
+
+        try {
+            lPQueueMin = lPQueue.top();
+        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+            if (TX.DEBUG_MODE_QUEUE) {
+                System.out.println("Priority Queue dequeue - local queue is empty");
+            }
+        }
+
+        if (pQueueMin != null && (lPQueueMin == null || pQueueMin.getKey().compareTo(lPQueueMin.getKey()) < 0)) {// the minimum node is in the priority queue
+            lPQueue.dequeueCounter++;//mark the dequeue from the priority queue
+            return pQueueMin;
+        }
+        // the minimum node is in the local priority queue
+        return lPQueue.dequeue();// can throw an exception
     }
 }
 

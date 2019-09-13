@@ -8,9 +8,10 @@ public class LocalStorage {
 
     protected long readVersion = 0L;
     protected long writeVersion = 0L; // for debug
-    protected boolean TX = false;// this flag indicite for transction
+    protected boolean TX = false;// this flag indicate for transaction
     protected boolean readOnly = true;
     protected HashMap<Queue, LocalQueue> queueMap = new HashMap<Queue, LocalQueue>();
+    protected HashMap<PriorityQueue, LocalPriorityQueue> priorityQueueMap = new HashMap<PriorityQueue, LocalPriorityQueue>();
     protected HashMap<LNode, WriteElement> writeSet = new HashMap<LNode, WriteElement>();//this is the writing set (from paper)
     protected HashSet<LNode> readSet = new HashSet<LNode>();//this is the reading set (from paper)
     protected HashMap<LinkedList, ArrayList<LNode>> indexAdd = new HashMap<LinkedList, ArrayList<LNode>>();//index handling
