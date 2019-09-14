@@ -6,11 +6,9 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class PriorityQueue {
-    //	private static final long lockMask = 0x2000000000000000L;
     private static final long singletonMask = 0x4000000000000000L;
-    //	private static final long versionMask = lockMask | singletonMask;
     private static final long versionNegMask = singletonMask;
-    private LockQueue qLock = new LockQueue();
+    private LockQueue pqLock = new LockQueue();
     private LocalPriorityQueue root;// the actual nodes are stored in primitive local queue
     // bit 61 is lock
     // bit 62 is singleton
@@ -48,21 +46,21 @@ public class PriorityQueue {
     }
 
     private void lock() {
-        qLock.lock();
+        pqLock.lock();
     }
 
     protected boolean tryLock() {
-        return qLock.tryLock();
+        return pqLock.tryLock();
     }
 
     protected void unlock() {
-        qLock.unlock();
+        pqLock.unlock();
     }
 
     protected void enqueueNodes(LocalPriorityQueue lPQueue) {
         assert (lPQueue != null);
         if (TX.DEBUG_MODE_QUEUE) {
-            System.out.println("Priority Queue enqueueNodes");
+            System.out.println("Priority Queue enqueue Nodes");
         }
         try {
             while (!lPQueue.isEmpty()) {
@@ -74,18 +72,12 @@ public class PriorityQueue {
                 if (TX.DEBUG_MODE_QUEUE) {
                     System.out.println("Priority Queue enqueueNodes - lPQueue node priority is " + prioValuePair.getKey());
                     System.out.println("Priority Queue enqueueNodes - lPQueue node value is " + prioValuePair.getValue());
-
                 }
                 this.root.enqueue(prioValuePair.getKey(), prioValuePair.getValue());
-
             }
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_QUEUE) {
                 System.out.println("Priority Queue enqueueNodes - local queue is empty");
-            }
-        } catch (TXLibExceptions.PQIndexNotFound e) {
-            if (TX.DEBUG_MODE_QUEUE) {
-                System.out.println("Priority Queue enqueueNodes - Index not found");
             }
         }
     }
@@ -110,17 +102,13 @@ public class PriorityQueue {
                 this.root.dequeue();
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 if (TX.DEBUG_MODE_QUEUE) {
-                    System.out.println("Priority Queue dequeueNodes - local queue is empty");
-                }
-            } catch (TXLibExceptions.PQIndexNotFound e) {
-                if (TX.DEBUG_MODE_QUEUE) {
-                    System.out.println("Priority Queue dequeueNodes - Index not found");
+                    System.out.println("Priority Queue dequeueNodes - priority queue is empty");
                 }
             }
         }
     }
 
-    public void enqueue(Comparable priority, Object value) throws TXLibExceptions.AbortException, TXLibExceptions.PQIndexNotFound {
+    public void enqueue(Comparable priority, Object value) throws TXLibExceptions.AbortException {
 
         LocalStorage localStorage = TX.lStorage.get();
 
@@ -232,7 +220,7 @@ public class PriorityQueue {
         return lPQueue.isEmpty();
     }
 
-    public Pair<Comparable, Object> dequeue() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.PQIndexNotFound, TXLibExceptions.AbortException {
+    public Pair<Comparable, Object> dequeue() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
 
         LocalStorage localStorage = TX.lStorage.get();
 
@@ -276,8 +264,8 @@ public class PriorityQueue {
         }
 
         // now we have the lock
-        HashMap<PriorityQueue, LocalPriorityQueue> qMap = localStorage.priorityQueueMap;
-        LocalPriorityQueue lPQueue = qMap.get(this);
+        HashMap<PriorityQueue, LocalPriorityQueue> pqMap = localStorage.priorityQueueMap;
+        LocalPriorityQueue lPQueue = pqMap.get(this);
 
         if (lPQueue == null) {
             lPQueue = new LocalPriorityQueue();
@@ -307,7 +295,9 @@ public class PriorityQueue {
             return pQueueMin;
         }
         // the minimum node is in the local priority queue
-        return lPQueue.dequeue();// can throw an exception
+        lPQueue.dequeue();// can throw an exception
+        pqMap.put(this, lPQueue);
+        return lPQueueMin;
     }
 }
 

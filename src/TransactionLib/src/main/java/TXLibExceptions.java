@@ -12,10 +12,6 @@ public class TXLibExceptions {
 
     }
 
-    @SuppressWarnings("serial")
-    public class PQIndexNotFound extends Exception {
-    }
-
 
     @SuppressWarnings("serial")
     public class AbortException extends RuntimeException {

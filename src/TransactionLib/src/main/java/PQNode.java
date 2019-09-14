@@ -1,14 +1,16 @@
 package TransactionLib.src.main.java;
+
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class PQNode {
     protected int index;// index of the node in heap
     protected int dequeueSimulateIndex;// index of the node in heap
     protected Comparable priority;
     protected Object value;
-    protected PQNode left;// left son heap
-    protected PQNode right;//right son heap
-    protected PQNode father;//father heap
+    protected PQNode left = null;// left son heap
+    protected PQNode right = null;//right son heap
+    protected PQNode father = null;//father heap
 
 
     public void swap(PQNode node) {
@@ -58,14 +60,11 @@ public class PQNode {
     }
 
 
-    public PQNode search(int index, ArrayList<Integer> binaryDigits) throws TXLibExceptions.PQIndexNotFound {
+    public PQNode search(int index, ArrayList<Integer> binaryDigits) {
         if (index == this.index) {
             return this;
         }
-        if (binaryDigits.size() == 0) {
-            TXLibExceptions excep = new TXLibExceptions();
-            throw excep.new PQIndexNotFound();
-        }
+        assert binaryDigits.size() > 0;
 
         Integer currentTurn = binaryDigits.get(0);
         binaryDigits.remove(0);
