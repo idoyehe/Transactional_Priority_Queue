@@ -7,8 +7,8 @@ public class LNode {
     private static final long deleteMask = 0x2000000000000000L;//mask that indicate if LNode is deleted
     private static final long singletonMask = 0x4000000000000000L;
     private static final long versionNegMask = lockMask | deleteMask | singletonMask;
-    protected LNode next = null;
-    protected Integer key = null; // TODO use templates
+    public LNode next = null;//TODO:change back to protected
+    public Integer key = null; // TODO use templates //TODO:change back to protected
     protected Object val = null; // TODO maybe use templates
     // bit 60 is lock
     // bit 61 is deleted

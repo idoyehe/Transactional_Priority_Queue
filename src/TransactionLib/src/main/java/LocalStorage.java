@@ -7,7 +7,7 @@ import java.util.HashSet;
 public class LocalStorage {
 
     protected long readVersion = 0L;
-    protected long writeVersion = 0L; // for debug
+    public long writeVersion = 0L; // for debug//TODO:change back to protected
     protected boolean TX = false;// this flag indicate for transaction
     protected boolean readOnly = true;
     protected HashMap<Queue, LocalQueue> queueMap = new HashMap<Queue, LocalQueue>();

@@ -33,8 +33,8 @@ public class LinkedList {
         }
     }
 
-    protected LNode head = new LNode(); // protected (not private) for testing, head of the list
-    protected Index index;
+    public LNode head = new LNode(); // protected (not private) for testing, head of the list TODO:change back to protected
+    public Index index;
 
     public LinkedList() {
         head.key = Integer.MIN_VALUE;// as -inf
