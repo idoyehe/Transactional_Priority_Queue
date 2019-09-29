@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class PQNode {
-    protected int index;// index of the node in heap
-    protected int dequeueSimulateIndex;// index of the node in heap
-    protected Comparable priority;
-    protected Object value;
-    protected PQNode left = null;// left son heap
-    protected PQNode right = null;//right son heap
-    protected PQNode father = null;//father heap
+    public int index;// index of the node in heap
+    public int dequeueSimulateIndex;// index of the node in heap
+    public Comparable priority;
+    public Object value;
+    public PQNode left = null;// left son heap
+    public PQNode right = null;//right son heap
+    public PQNode father = null;//father heap
 
 
     public void swap(PQNode node) {
@@ -68,7 +68,7 @@ public class PQNode {
 
         Integer currentTurn = binaryDigits.get(0);
         binaryDigits.remove(0);
-        if (binaryDigits.get(0).equals(PQNodeTurn.LEFT.getValue())) {
+        if (currentTurn.equals(PQNodeTurn.LEFT.getValue())) {
             return this.left.search(index, binaryDigits);
         }
         return this.right.search(index, binaryDigits);

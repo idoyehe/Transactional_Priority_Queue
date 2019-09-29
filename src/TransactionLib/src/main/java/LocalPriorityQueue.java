@@ -5,7 +5,7 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 
 public class LocalPriorityQueue {
-    protected PQNode root = null;
+    public PQNode root = null;
     public int size = 0;
     protected int dequeueCounter = 0; // how many dequeue has done by the transaction
     protected boolean isLockedByMe = false; // is queue (not local queue) locked by me
@@ -24,7 +24,7 @@ public class LocalPriorityQueue {
     }
 
     private PQNode _search_node_(int index) {
-        assert 0 < index && index < this.size;
+        assert 0 < index && index <= this.size;
 
         ArrayList<Integer> binaryDigits = new ArrayList<>();
         String binaryIndex = Integer.toBinaryString(index);
@@ -34,7 +34,7 @@ public class LocalPriorityQueue {
         return this.root.search(index, binaryDigits);
     }
 
-    protected void enqueue(Comparable priority, Object val) {
+    public void enqueue(Comparable priority, Object val) {
         this.enqueue(priority, val, -1);
     }
 
@@ -67,7 +67,7 @@ public class LocalPriorityQueue {
         newNode.sift_up();
     }
 
-    protected Pair<Comparable, Object> dequeue() throws TXLibExceptions.PQueueIsEmptyException {
+    public Pair<Comparable, Object> dequeue() throws TXLibExceptions.PQueueIsEmptyException {
 
         if (this.root == null) {
             assert this.size == 0;
@@ -88,7 +88,7 @@ public class LocalPriorityQueue {
         if (this.size % 2 == PQNodeTurn.LEFT.getValue()) {
             swapper.father.left = null;
         } else {
-            assert this.size % 2 == PQNodeTurn.LEFT.getValue();
+            assert this.size % 2 == PQNodeTurn.RIGHT.getValue();
             swapper.father.right = null;
         }
 
