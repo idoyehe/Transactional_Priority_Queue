@@ -11,6 +11,15 @@ import java.util.stream.IntStream;
 
 
 public class LocalPriorityQueueTest {
+    private void testHeapInvariantRecursive(PQNode node) {
+        if (node == null) {
+            return;
+        }
+        assert node.father == null || node.priority.compareTo(node.father.priority) > 0;
+        testHeapInvariantRecursive(node.left);
+        testHeapInvariantRecursive(node.right);
+    }
+
     @Test
     public void testLocalPriorityQueueConstructor() {
         LocalPriorityQueue lpq = new LocalPriorityQueue();
@@ -65,14 +74,6 @@ public class LocalPriorityQueueTest {
 
     }
 
-    private void testHeapInvariantRecursive(PQNode node) {
-        if (node == null) {
-            return;
-        }
-        assert node.father == null || node.priority.compareTo(node.father.priority) > 0;
-        testHeapInvariantRecursive(node.left);
-        testHeapInvariantRecursive(node.right);
-    }
 
     @Test
     public void testOverall() {
