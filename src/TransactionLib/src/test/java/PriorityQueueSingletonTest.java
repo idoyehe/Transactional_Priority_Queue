@@ -53,8 +53,8 @@ public class PriorityQueueSingletonTest {
         IntStream.range(0, 100).forEachOrdered(n -> {
             pQueue.enqueue(n, n);
         });
-        testHeapInvariantRecursive(pQueue.root.root);
-        Assert.assertEquals(pQueue.root.size, 100);
+        testHeapInvariantRecursive(pQueue.internalPriorityQueue.root);
+        Assert.assertEquals(pQueue.internalPriorityQueue.size, 100);
         IntStream.range(0, 100).forEachOrdered(n -> {
             try {
                 Assert.assertEquals(pQueue.top(), new Pair<>(n, n));
@@ -65,7 +65,7 @@ public class PriorityQueueSingletonTest {
                 assert false;
             }
         });
-        Assert.assertEquals(pQueue.root.size, 0);
+        Assert.assertEquals(pQueue.internalPriorityQueue.size, 0);
     }
 
     @Test
@@ -171,7 +171,7 @@ class Run implements Runnable {
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
 
-        Assert.assertEquals(100, pQueue.root.size);
+        Assert.assertEquals(100, pQueue.internalPriorityQueue.size);
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
         try {
@@ -183,7 +183,7 @@ class Run implements Runnable {
         }
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
-        Assert.assertEquals(0, pQueue.root.size);
+        Assert.assertEquals(0, pQueue.internalPriorityQueue.size);
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
 
@@ -195,7 +195,7 @@ class Run implements Runnable {
         pQueue.enqueue(p_c, c);
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
-        Assert.assertEquals(300, pQueue.root.size);
+        Assert.assertEquals(300, pQueue.internalPriorityQueue.size);
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
         //System.out.println(threadName + ": enqueue(" + p_d + "," + d + ")");
@@ -203,12 +203,12 @@ class Run implements Runnable {
 
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
-        Assert.assertEquals(400, pQueue.root.size);
+        Assert.assertEquals(400, pQueue.internalPriorityQueue.size);
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
 
         if (threadName == "T0") {
-            PriorityQueueSingletonTest.testHeapInvariantRecursive(pQueue.root.root);
+            PriorityQueueSingletonTest.testHeapInvariantRecursive(pQueue.internalPriorityQueue.root);
         }
         try {
             Assert.assertEquals(10, pQueue.top().getKey());

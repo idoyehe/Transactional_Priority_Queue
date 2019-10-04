@@ -9,7 +9,7 @@ public class PriorityQueue {
     private static final long singletonMask = 0x4000000000000000L;
     private static final long versionNegMask = singletonMask;
     private LockQueue pqLock = new LockQueue();
-    public LocalPriorityQueue root = new LocalPriorityQueue();// the actual nodes are stored in primitive local queue TODO: change to protected for tests
+    public LocalPriorityQueue internalPriorityQueue = new LocalPriorityQueue();// the actual nodes are stored in primitive local queue TODO: change to protected for tests
     // bit 61 is lock
     // bit 62 is singleton
     // 0 is false, 1 is true
@@ -73,7 +73,7 @@ public class PriorityQueue {
                     System.out.println("Priority Queue enqueueNodes - lPQueue node priority is " + prioValuePair.getKey());
                     System.out.println("Priority Queue enqueueNodes - lPQueue node value is " + prioValuePair.getValue());
                 }
-                this.root.enqueue(prioValuePair.getKey(), prioValuePair.getValue());
+                this.internalPriorityQueue.enqueue(prioValuePair.getKey(), prioValuePair.getValue());
             }
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_QUEUE) {
@@ -99,7 +99,7 @@ public class PriorityQueue {
                 System.out.println("Priority Queue dequeueNodes - dequeueing");
             }
             try {
-                this.root.dequeue();
+                this.internalPriorityQueue.dequeue();
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 if (TX.DEBUG_MODE_QUEUE) {
                     System.out.println("Priority Queue dequeueNodes - priority queue is empty");
@@ -120,7 +120,7 @@ public class PriorityQueue {
             }
 
             this.lock();
-            this.root.enqueue(priority, value);
+            this.internalPriorityQueue.enqueue(priority, value);
 
             this.setVersion(TX.getVersion());
             this.setSingleton(true);
@@ -168,7 +168,7 @@ public class PriorityQueue {
                 System.out.println("Priority Queue isEmpty - singleton");
             }
             lock();
-            int ret = root.size;//TODO: should be after lock or before lock as Queue?
+            int ret = internalPriorityQueue.size;//TODO: should be after lock or before lock as Queue?
             setVersion(TX.getVersion());
             setSingleton(true);
             unlock();
@@ -206,10 +206,10 @@ public class PriorityQueue {
         }
 
         // now we have the lock
-        if (this.root.size > 0) {
+        if (this.internalPriorityQueue.size > 0) {
             return false;
         }
-        assert this.root.size <= 0;
+        assert this.internalPriorityQueue.size <= 0;
         // check lPQueue
         HashMap<PriorityQueue, LocalPriorityQueue> qMap = localStorage.priorityQueueMap;
         LocalPriorityQueue lPQueue = qMap.get(this);
@@ -232,7 +232,7 @@ public class PriorityQueue {
             }
 
             lock();
-            Pair<Comparable, Object> ret = this.root.dequeue();
+            Pair<Comparable, Object> ret = this.internalPriorityQueue.dequeue();
             setVersion(TX.getVersion());
             setSingleton(true);
             unlock();
@@ -273,7 +273,7 @@ public class PriorityQueue {
 
         Pair<Comparable, Object> pQueueMin = null;
         try {
-            pQueueMin = this.root.k_th_smallest(lPQueue.dequeueCounter + 1);
+            pQueueMin = this.internalPriorityQueue.k_th_smallest(lPQueue.dequeueCounter + 1);
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_QUEUE) {
                 System.out.println("Priority Queue dequeue - priority queue is not has minimum");
@@ -312,7 +312,7 @@ public class PriorityQueue {
             }
 
             lock();
-            Pair<Comparable, Object> ret = this.root.top();
+            Pair<Comparable, Object> ret = this.internalPriorityQueue.top();
             setVersion(TX.getVersion());
             setSingleton(true);
             unlock();
@@ -353,7 +353,7 @@ public class PriorityQueue {
 
         Pair<Comparable, Object> pQueueMin = null;
         try {
-            pQueueMin = this.root.top();
+            pQueueMin = this.internalPriorityQueue.top();
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_QUEUE) {
                 System.out.println("Priority Queue dequeue - priority queue is not has minimum");
