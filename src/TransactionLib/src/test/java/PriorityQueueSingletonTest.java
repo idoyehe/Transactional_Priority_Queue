@@ -5,13 +5,13 @@ import javafx.util.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.stream.IntStream;
 
-import static junit.framework.TestCase.assertEquals;
-
 public class PriorityQueueSingletonTest {
-    private void testHeapInvariantRecursive(PQNode node) {
+    public static void testHeapInvariantRecursive(PQNode node) {
         if (node == null) {
             return;
         }
@@ -29,7 +29,7 @@ public class PriorityQueueSingletonTest {
             pQueue.top();
             assert false;
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
-            e.printStackTrace();
+//            e.printStackTrace();
             assert true;
         }
         Assert.assertEquals(true, pQueue.isEmpty());
@@ -70,139 +70,155 @@ public class PriorityQueueSingletonTest {
 
     @Test
     public void testTXPriorityQueueSingletonMultiThread() throws InterruptedException {
-
-
-        class Run implements Runnable {
-
-            PriorityQueue pq;
-            String threadName;
-            CountDownLatch latch;
-
-            Run(String name, CountDownLatch l, PriorityQueue pq) {
-                this.threadName = name;
-                this.latch = l;
-                this.pq = pq;
-            }
-
-            @Override
-            public void run() {
-                try {
-                    latch.await();
-                } catch (InterruptedException exp) {
-                    System.out.println(threadName + ": InterruptedException");
-                }
-                String a = threadName + "-a";
-                String b = threadName + "-b";
-                String b_2 = threadName + "-b_2";
-                String c = threadName + "-c";
-                Integer k_a = 10 + threadName.charAt(1);
-//                System.out.println(threadName + ": " + k_a);
-                Integer k_b = 20 + threadName.charAt(1);
-//                System.out.println(threadName + ": " + k_b);
-                Integer k_c = 30 + threadName.charAt(1);
-//                System.out.println(threadName + ": " + k_c);
-
-////			 System.out.println(threadName + ": enqueue(k_a, a)");
-                pq.enqueue(k_a, a);
-////			 System.out.println(threadName + ": containsKey(k_c)");
-                try {
-                    assertEquals(new Pair<>(k_a, a), pq.top());
-                } catch (TXLibExceptions.PQueueIsEmptyException e) {
-                    e.printStackTrace();
-                    assert false;
-                }
-////			 System.out.println(threadName + ": enqueue(k_c, c)");
-//                assertEquals(null, pq.enqueue(k_c, c));
-////			 System.out.println(threadName + ": containsKey(k_a)");
-//                assertEquals(true, pq.containsKey(k_a));
-////			 System.out.println(threadName + ": containsKey(k_c)");
-//                assertEquals(true, pq.containsKey(k_c));
-////			 System.out.println(threadName + ": containsKey(k_b)");
-//                assertEquals(false, pq.containsKey(k_b));
-////			 System.out.println(threadName + ": enqueue(k_b, b)");
-//                assertEquals(null, pq.enqueue(k_b, b));
-////			 System.out.println(threadName + ": containsKey(k_b)");
-//                assertEquals(true, pq.containsKey(k_b));
-////			 System.out.println(threadName + ": containsKey(k_c)");
-//                assertEquals(true, pq.containsKey(k_c));
-////			 System.out.println(threadName + ": enqueue(k_c, c)");
-//                assertEquals(c, pq.enqueue(k_c, c));
-////			 System.out.println(threadName + ": remove(k_b)");
-//                assertEquals(b, pq.remove(k_b));
-////			 System.out.println(threadName + ": remove(k_b)");
-//                assertEquals(null, pq.remove(k_b));
-////			 System.out.println(threadName + ": remove(k_a)");
-//                assertEquals(a, pq.remove(k_a));
-////			 System.out.println(threadName + ": remove(k_c)");
-//                assertEquals(c, pq.remove(k_c));
-////			 System.out.println(threadName + ": remove(k_a)");
-//                assertEquals(null, pq.remove(k_a));
-////			 System.out.println(threadName + ": remove(k_c)");
-//                assertEquals(null, pq.remove(k_c));
-////			 System.out.println(threadName + ": containsKey(k_b)");
-//                assertEquals(false, pq.containsKey(k_b));
-////			 System.out.println(threadName + ": containsKey(k_c)");
-//                assertEquals(false, pq.containsKey(k_c));
-////			 System.out.println(threadName + ": enqueue(k_a, a)");
-//                assertEquals(null, pq.enqueue(k_a, a));
-////			 System.out.println(threadName + ": enqueue(k_b, b)");
-//                assertEquals(null, pq.enqueue(k_b, b));
-////			 System.out.println(threadName + ": containsKey(k_a)");
-//                assertEquals(true, pq.containsKey(k_a));
-////			 System.out.println(threadName + ": enqueue(k_b, b_2)");
-//                assertEquals(b, pq.enqueue(k_b, b_2));
-////			 System.out.println(threadName + ": get(k_a)");
-//                assertEquals(a, pq.get(k_a));
-////			 System.out.println(threadName + ": containsKey(k_b)");
-//                assertEquals(true, pq.containsKey(k_b));
-////			 System.out.println(threadName + ": get(k_b)");
-//                assertEquals(b_2, pq.get(k_b));
-////			 System.out.println(threadName + ": remove(-1)");
-//                assertEquals(null, pq.remove(-1));
-////			 System.out.println(threadName + ": remove(k_b)");
-//                assertEquals(b_2, pq.remove(k_b));
-////			 System.out.println(threadName + ": remove(k_b)");
-//                assertEquals(null, pq.remove(k_b));
-////			 System.out.println(threadName + ": enqueue(k_c, c)");
-//                assertEquals(null, pq.enqueue(k_c, c));
-////			 System.out.println(threadName + ": remove(k_c)");
-//                assertEquals(c, pq.remove(k_c));
-////			 System.out.println(threadName + ": remove(k_c)");
-//                assertEquals(null, pq.remove(k_c));
-////			 System.out.println(threadName + ": remove(k_a)");
-//                assertEquals(a, pq.remove(k_a));
-////			 System.out.println(threadName + ": remove(k_a)");
-//                assertEquals(null, pq.remove(k_a));
-////			 System.out.println(threadName + ": containsKey(k_a)");
-//                assertEquals(false, pq.containsKey(k_a));
-////			 System.out.println(threadName + ": enqueue(k_a, a)");
-//                assertEquals(null, pq.enqueue(k_a, a));
-////			 System.out.println(threadName + ": remove(k_a)");
-//                assertEquals(a, pq.remove(k_a));
-//
-//                assertEquals(null, pq.enqueueIfAbsent(k_a, a));
-//                assertEquals(a, pq.enqueueIfAbsent(k_a, ""));
-//                assertEquals(null, pq.enqueueIfAbsent(k_c, c));
-//                assertEquals(c, pq.enqueueIfAbsent(k_c, ""));
-//                assertEquals(null, pq.enqueueIfAbsent(k_b, b));
-//                assertEquals(b, pq.enqueueIfAbsent(k_b, ""));
-//                assertEquals(c, pq.remove(k_c));
-//                assertEquals(a, pq.remove(k_a));
-//                assertEquals(b, pq.remove(k_b));
-////			 System.out.println(threadName + ": end");
-            }
-        }
         CountDownLatch latch = new CountDownLatch(1);
         PriorityQueue pQueue = new PriorityQueue();
-        Thread T1 = new Thread(new Run("T1", latch, pQueue));
-        Thread T2 = new Thread(new Run("T2", latch, pQueue));
-        Thread T3 = new Thread(new Run("T3", latch, pQueue));
-        T1.start();
-        T2.start();
-        T3.start();
+        Thread[] threadsARR = new Thread[100];
+        for (int i = 0; i < 100; i++) {
+            threadsARR[i] = new Thread(new Run("T" + i, latch, pQueue, i * 1000));
+            threadsARR[i].start();
+        }
         latch.countDown();
-        T1.join();
-        T2.join();
-        T3.join();
+        for (int i = 0; i < 100; i++) {
+            threadsARR[i].join();
+
+        }
+    }
+}
+
+class Run implements Runnable {
+
+    private PriorityQueue pQueue;
+    private int priorityRef;
+    private String threadName;
+    private CountDownLatch latch;
+    private static final CyclicBarrier barrier = new CyclicBarrier(100);
+
+
+    Run(String name, CountDownLatch l, PriorityQueue pq, int priorityRef) {
+        this.threadName = name;
+        this.latch = l;
+        this.pQueue = pq;
+        this.priorityRef = priorityRef;
+    }
+
+    private static void barrierAwaitWrapper() {
+        try {
+            Run.barrier.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (BrokenBarrierException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void barrierResetWrapper() {
+        if (threadName == "T0") {
+            Run.barrier.reset();
+        }
+    }
+
+    @Override
+    public void run() {
+        try {
+            latch.await();
+        } catch (InterruptedException exp) {
+            //System.out.println(threadName + ": InterruptedException");
+        }
+
+        Assert.assertEquals(true, pQueue.isEmpty());
+        Run.barrierAwaitWrapper();
+        this.barrierResetWrapper();
+
+        String a = threadName + "-a";
+        String b = threadName + "-b";
+        String c = threadName + "-c";
+        String d = threadName + "-d";
+        String e = threadName + "-e";
+        String f = threadName + "-f";
+        String g = threadName + "-g";
+        String h = threadName + "-h";
+        String i = threadName + "-i";
+        String j = threadName + "-j";
+        String k = threadName + "-k";
+        String l = threadName + "-l";
+        Integer p_a = 10 + this.priorityRef;
+        //System.out.println(threadName + ": " + p_a);
+        Integer p_b = 20 + this.priorityRef;
+        //System.out.println(threadName + ": " + p_b);
+        Integer p_c = 30 + this.priorityRef;
+        //System.out.println(threadName + ": " + p_c);
+        Integer p_d = 40 + this.priorityRef;
+        //System.out.println(threadName + ": " + p_d);
+        Integer p_e = 50 + this.priorityRef;
+        //System.out.println(threadName + ": " + p_e);
+        Integer p_f = 60 + this.priorityRef;
+        //System.out.println(threadName + ": " + p_f);
+        Integer p_g = 70 + this.priorityRef;
+        //System.out.println(threadName + ": " + p_g);
+        Integer p_h = 80 + this.priorityRef;
+        //System.out.println(threadName + ": " + p_h);
+        Integer p_i = 90 + this.priorityRef;
+        //System.out.println(threadName + ": " + p_i);
+        Integer p_j = 100 + this.priorityRef;
+        //System.out.println(threadName + ": " + p_j);
+        Integer p_k = 110 + this.priorityRef;
+        //System.out.println(threadName + ": " + p_k);
+        Integer p_l = 120 + this.priorityRef;
+        //System.out.println(threadName + ": " + p_l);
+
+        //System.out.println(threadName + ": enqueue(" + p_a + "," + a + ")");
+        pQueue.enqueue(p_a, a);
+        Run.barrierAwaitWrapper();
+        this.barrierResetWrapper();
+
+        Assert.assertEquals(100, pQueue.root.size);
+        Run.barrierAwaitWrapper();
+        this.barrierResetWrapper();
+        try {
+            //System.out.println(threadName + ": dequeue()");
+            pQueue.dequeue();
+        } catch (TXLibExceptions.PQueueIsEmptyException ex) {
+            ex.printStackTrace();
+            assert false;
+        }
+        Run.barrierAwaitWrapper();
+        this.barrierResetWrapper();
+        Assert.assertEquals(0, pQueue.root.size);
+        Run.barrierAwaitWrapper();
+        this.barrierResetWrapper();
+
+        //System.out.println(threadName + ": enqueue(" + p_a + "," + a + ")");
+        pQueue.enqueue(p_a, a);
+        //System.out.println(threadName + ": enqueue(" + p_b + "," + b + ")");
+        pQueue.enqueue(p_b, b);
+        //System.out.println(threadName + ": enqueue(" + p_c + "," + c + ")");
+        pQueue.enqueue(p_c, c);
+        Run.barrierAwaitWrapper();
+        this.barrierResetWrapper();
+        Assert.assertEquals(300, pQueue.root.size);
+        Run.barrierAwaitWrapper();
+        this.barrierResetWrapper();
+        //System.out.println(threadName + ": enqueue(" + p_d + "," + d + ")");
+        pQueue.enqueue(p_d, d);
+
+        Run.barrierAwaitWrapper();
+        this.barrierResetWrapper();
+        Assert.assertEquals(400, pQueue.root.size);
+        Run.barrierAwaitWrapper();
+        this.barrierResetWrapper();
+
+        if (threadName == "T0") {
+            PriorityQueueSingletonTest.testHeapInvariantRecursive(pQueue.root.root);
+        }
+        try {
+            Assert.assertEquals(10, pQueue.top().getKey());
+        } catch (TXLibExceptions.PQueueIsEmptyException ex) {
+            ex.printStackTrace();
+        }
+        Run.barrierAwaitWrapper();
+        this.barrierResetWrapper();
+        Assert.assertEquals(false, pQueue.isEmpty());
+        Run.barrierAwaitWrapper();
+        this.barrierResetWrapper();
     }
 }

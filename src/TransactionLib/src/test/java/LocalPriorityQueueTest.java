@@ -50,21 +50,21 @@ public class LocalPriorityQueueTest {
         lpq.enqueue(1, 1);
         lpq.enqueue(2, 2);
         lpq.enqueue(3, 3);
-        Assert.assertEquals(lpq.top(), new Pair<>(1, 1));
-        Assert.assertEquals(lpq.size, 3);
-        Assert.assertEquals(lpq.root.left.value, 2);
-        Assert.assertEquals(lpq.root.right.value, 3);
+        Assert.assertEquals(new Pair<>(1, 1), lpq.top());
+        Assert.assertEquals(3, lpq.size);
+        Assert.assertEquals(2, lpq.root.left.value);
+        Assert.assertEquals(3, lpq.root.right.value);
 
         lpq.dequeue();
         Assert.assertEquals(lpq.top(), new Pair<>(2, 2));
-        Assert.assertEquals(lpq.size, 2);
+        Assert.assertEquals(2, lpq.size);
 
         lpq.dequeue();
         Assert.assertEquals(lpq.top(), new Pair<>(3, 3));
-        Assert.assertEquals(lpq.size, 1);
+        Assert.assertEquals(1, lpq.size);
 
         lpq.dequeue();
-        Assert.assertEquals(lpq.size, 0);
+        Assert.assertEquals(0, lpq.size);
         try {
             lpq.dequeue();
             assert false;
@@ -82,10 +82,10 @@ public class LocalPriorityQueueTest {
             lpq.enqueue(n, n);
         });
         testHeapInvariantRecursive(lpq.root);
-        Assert.assertEquals(lpq.size, 100);
+        Assert.assertEquals(100, lpq.size);
         IntStream.range(0, lpq.size).forEachOrdered(n -> {
             try {
-                Assert.assertEquals(lpq.top(), new Pair<>(n, n));
+                Assert.assertEquals(new Pair<>(n, n), lpq.top());
                 lpq.dequeue();
 
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
@@ -93,7 +93,7 @@ public class LocalPriorityQueueTest {
                 assert false;
             }
         });
-        Assert.assertEquals(lpq.size, 0);
+        Assert.assertEquals(0, lpq.size);
     }
 
     @Test
@@ -103,7 +103,7 @@ public class LocalPriorityQueueTest {
             lpq.enqueue(n, n);
         });
         testHeapInvariantRecursive(lpq.root);
-        Assert.assertEquals(lpq.size, 100);
+        Assert.assertEquals(100, lpq.size);
         IntStream.range(1, 101).forEachOrdered(n -> {
             try {
                 Assert.assertEquals(lpq.k_th_smallest(n), new Pair<>(n, n));
@@ -112,6 +112,6 @@ public class LocalPriorityQueueTest {
                 assert false;
             }
         });
-        Assert.assertEquals(lpq.size, 100);
+        Assert.assertEquals(100, lpq.size);
     }
 }
