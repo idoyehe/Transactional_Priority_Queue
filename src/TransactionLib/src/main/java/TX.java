@@ -10,6 +10,7 @@ public class TX {
 
     public static final boolean DEBUG_MODE_LL = false;
     public static final boolean DEBUG_MODE_QUEUE = false;
+    public static final boolean DEBUG_MODE_PRIORITY_QUEUE = false;
     private static final boolean DEBUG_MODE_TX = false;
     private static final boolean DEBUG_MODE_VERSION = false;
 

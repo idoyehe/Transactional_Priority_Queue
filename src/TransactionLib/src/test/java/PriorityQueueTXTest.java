@@ -3,12 +3,13 @@ package TransactionLib.src.test.java;
 import TransactionLib.src.main.java.*;
 import javafx.util.Pair;
 import org.junit.Test;
+
 import java.util.stream.IntStream;
 
 import static junit.framework.TestCase.*;
 
 public class PriorityQueueTXTest {
-    private void testHeapInvariantRecursive(PQNode node) {
+    private static void testHeapInvariantRecursive(PQNode node) {
         if (node == null) {
             return;
         }
@@ -31,14 +32,47 @@ public class PriorityQueueTXTest {
         TX.TXend();
         assertFalse(pQueue.isEmpty());
         assertEquals(new Pair<>(0, 0), pQueue.top());
-        testHeapInvariantRecursive(pQueue.internalPriorityQueue.root);
+        PriorityQueueTXTest.testHeapInvariantRecursive(pQueue.internalPriorityQueue.root);
     }
 
     @Test
     public void testPriorityQueueSingleThreadDequeueLocalTXStorage() throws TXLibExceptions.PQueueIsEmptyException {
         PriorityQueue pQueue = new PriorityQueue();
+        for (int iter = 0; iter < 2; iter++) {
+            pQueue.setSingleton(false);
+            TX.TXbegin();
+            assertEquals(true, pQueue.isEmpty());
+            try {
+                pQueue.dequeue();
+                assert false;
+            } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                assert e != null;
+            }
+            IntStream.range(0, 100).map(i -> 100 - 1 - i).forEach(n -> {
+                pQueue.enqueue(n, n);
+            });
+            assertEquals(false, pQueue.isEmpty());
+            assertEquals(null, pQueue.internalPriorityQueue.root);
+            assertEquals(new Pair<>(0, 0), pQueue.top());
+            IntStream.range(0, 100).map(i -> 100 - 1 - i).forEach(n -> {
+                try {
+                    pQueue.dequeue();
+                } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                    assert false;
+                }
+            });
+            assertEquals(true, pQueue.isEmpty());
+            TX.TXend();
+            assertEquals(true, pQueue.isEmpty());
+            assertEquals(null, pQueue.internalPriorityQueue.root);
+        }
+    }
 
-        TX.TXbegin();
+    @Test
+    public void testPriorityQueueSingleThreadEnqueueDequeueLocalTXStorage() throws TXLibExceptions.PQueueIsEmptyException {
+        PriorityQueue pQueue = new PriorityQueue();
+        final int pqueueMaxSize = 100;
+        TX.TXbegin(); // 1st transcation
         assertEquals(true, pQueue.isEmpty());
         try {
             pQueue.dequeue();
@@ -49,22 +83,30 @@ public class PriorityQueueTXTest {
         IntStream.range(0, 100).map(i -> 100 - 1 - i).forEach(n -> {
             pQueue.enqueue(n, n);
         });
-        assertEquals(false, pQueue.isEmpty());
-        assertEquals(null, pQueue.internalPriorityQueue.root);
+        assertFalse(pQueue.isEmpty());
+        assertNull(pQueue.internalPriorityQueue.root);
+        TX.TXend();
+        assertFalse(pQueue.isEmpty());
         assertEquals(new Pair<>(0, 0), pQueue.top());
-        IntStream.range(0, 100).map(i -> 100 - 1 - i).forEach(n -> {
+        assertEquals(pqueueMaxSize, pQueue.internalPriorityQueue.size);
+        PriorityQueueTXTest.testHeapInvariantRecursive(pQueue.internalPriorityQueue.root);
+        pQueue.setSingleton(false);
+
+        TX.TXbegin(); // 2nd transcation
+        assertFalse(pQueue.isEmpty());
+        for (int i = 0; i < pqueueMaxSize; i++) {
             try {
+                assertEquals(new Pair<>(i, i), pQueue.top());
                 pQueue.dequeue();
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 assert false;
             }
-        });
-        assertEquals(true, pQueue.isEmpty());
+        }
+        assertTrue(pQueue.isEmpty());
         TX.TXend();
-        assertEquals(true, pQueue.isEmpty());
-        assertEquals(null, pQueue.internalPriorityQueue.root);
+        assertTrue(pQueue.isEmpty());
     }
-
+}
 //    @Test
 //    public void testLinkedListMultiThread() throws InterruptedException {
 //        CountDownLatch latch = new CountDownLatch(1);
@@ -80,7 +122,7 @@ public class PriorityQueueTXTest {
 //        T2.join();
 //        T3.join();
 //    }
-}
+
 //
 //    class Run implements Runnable {
 //
