@@ -167,11 +167,11 @@ public class PriorityQueue {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                 System.out.println("Priority Queue isEmpty - singleton");
             }
-            lock();
+            this.lock();
             int ret = internalPriorityQueue.size;//TODO: should be after lock or before lock as Queue?
             setVersion(TX.getVersion());
             setSingleton(true);
-            unlock();
+            this.unlock();
             return (ret <= 0);
         }
 
@@ -196,7 +196,7 @@ public class PriorityQueue {
             throw excep.new AbortException();
         }
 
-        if (!tryLock()) { // if priority queue is locked by another thread
+        if (!this.tryLock()) { // if priority queue is locked by another thread
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                 System.out.println("Priority Queue isEmpty - couldn't lock");
             }
@@ -234,11 +234,11 @@ public class PriorityQueue {
                 System.out.println("Priority Queue dequeue - singleton");
             }
 
-            lock();
+            this.lock();
             Pair<Comparable, Object> ret = this.internalPriorityQueue.dequeue();
             setVersion(TX.getVersion());
             setSingleton(true);
-            unlock();
+            this.unlock();
             return ret;
         }
 
@@ -264,7 +264,7 @@ public class PriorityQueue {
             throw excep.new AbortException();
         }
 
-        if (!tryLock()) { // if queue is locked by another thread
+        if (!this.tryLock()) { // if queue is locked by another thread
             localStorage.TX = false;
             TXLibExceptions excep = new TXLibExceptions();
             throw excep.new AbortException();
@@ -309,6 +309,7 @@ public class PriorityQueue {
             pqMap.put(this, lPQueue);
             return pQueueMin;
         }
+        //this.unlock();//TODO: understand why this increase running time
         // the minimum node is in the local priority queue
         lPQueue.dequeue();// can throw an exception
         pqMap.put(this, lPQueue);
@@ -326,11 +327,11 @@ public class PriorityQueue {
                 System.out.println("Priority Queue top - singleton");
             }
 
-            lock();
+            this.lock();
             Pair<Comparable, Object> ret = this.internalPriorityQueue.top();
             setVersion(TX.getVersion());
             setSingleton(true);
-            unlock();
+            this.unlock();
             return ret;
         }
 
@@ -352,7 +353,7 @@ public class PriorityQueue {
             throw excep.new AbortException();
         }
 
-        if (!tryLock()) { // if queue is locked by another thread
+        if (!this.tryLock()) { // if queue is locked by another thread
             localStorage.TX = false;
             TXLibExceptions excep = new TXLibExceptions();
             throw excep.new AbortException();

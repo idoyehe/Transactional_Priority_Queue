@@ -70,15 +70,16 @@ public class PriorityQueueSingletonTest {
 
     @Test
     public void testTXPriorityQueueSingletonMultiThread() throws InterruptedException {
+        final int threadsNumber = 100;
         CountDownLatch latch = new CountDownLatch(1);
         PriorityQueue pQueue = new PriorityQueue();
-        Thread[] threadsARR = new Thread[100];
-        for (int i = 0; i < 100; i++) {
+        Thread[] threadsARR = new Thread[threadsNumber];
+        for (int i = 0; i < threadsNumber; i++) {
             threadsARR[i] = new Thread(new Run("T" + i, latch, pQueue, i * 1000));
             threadsARR[i].start();
         }
         latch.countDown();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < threadsNumber; i++) {
             threadsARR[i].join();
 
         }
@@ -133,14 +134,6 @@ class Run implements Runnable {
         String b = threadName + "-b";
         String c = threadName + "-c";
         String d = threadName + "-d";
-        String e = threadName + "-e";
-        String f = threadName + "-f";
-        String g = threadName + "-g";
-        String h = threadName + "-h";
-        String i = threadName + "-i";
-        String j = threadName + "-j";
-        String k = threadName + "-k";
-        String l = threadName + "-l";
         Integer p_a = 10 + this.priorityRef;
         //System.out.println(threadName + ": " + p_a);
         Integer p_b = 20 + this.priorityRef;
@@ -149,22 +142,6 @@ class Run implements Runnable {
         //System.out.println(threadName + ": " + p_c);
         Integer p_d = 40 + this.priorityRef;
         //System.out.println(threadName + ": " + p_d);
-        Integer p_e = 50 + this.priorityRef;
-        //System.out.println(threadName + ": " + p_e);
-        Integer p_f = 60 + this.priorityRef;
-        //System.out.println(threadName + ": " + p_f);
-        Integer p_g = 70 + this.priorityRef;
-        //System.out.println(threadName + ": " + p_g);
-        Integer p_h = 80 + this.priorityRef;
-        //System.out.println(threadName + ": " + p_h);
-        Integer p_i = 90 + this.priorityRef;
-        //System.out.println(threadName + ": " + p_i);
-        Integer p_j = 100 + this.priorityRef;
-        //System.out.println(threadName + ": " + p_j);
-        Integer p_k = 110 + this.priorityRef;
-        //System.out.println(threadName + ": " + p_k);
-        Integer p_l = 120 + this.priorityRef;
-        //System.out.println(threadName + ": " + p_l);
 
         //System.out.println(threadName + ": enqueue(" + p_a + "," + a + ")");
         pQueue.enqueue(p_a, a);
@@ -222,3 +199,4 @@ class Run implements Runnable {
         this.barrierResetWrapper();
     }
 }
+
