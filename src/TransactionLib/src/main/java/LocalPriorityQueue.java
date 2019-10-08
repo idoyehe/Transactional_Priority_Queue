@@ -105,7 +105,7 @@ public class LocalPriorityQueue {
         return 2 * index + 1;
     }
 
-    public Pair<Comparable, Object> k_th_smallest(int k) throws TXLibExceptions.PQueueIsEmptyException {
+    public Pair<Comparable, Object> kThSmallest(int k) throws TXLibExceptions.PQueueIsEmptyException {
 
         if (k > this.size) {
             TXLibExceptions excep = new TXLibExceptions();

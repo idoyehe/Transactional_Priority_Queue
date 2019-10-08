@@ -6,7 +6,6 @@ import javafx.util.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
 
@@ -106,7 +105,7 @@ public class LocalPriorityQueueTest {
         Assert.assertEquals(100, lpq.size);
         IntStream.range(1, 101).forEachOrdered(n -> {
             try {
-                Assert.assertEquals(lpq.k_th_smallest(n), new Pair<>(n, n));
+                Assert.assertEquals(lpq.kThSmallest(n), new Pair<>(n, n));
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 e.printStackTrace();
                 assert false;

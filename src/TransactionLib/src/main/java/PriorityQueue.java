@@ -284,7 +284,7 @@ public class PriorityQueue {
 
         Pair<Comparable, Object> pQueueMin = null;
         try {
-            pQueueMin = this.internalPriorityQueue.k_th_smallest(lPQueue.dequeueCounter + 1);
+            pQueueMin = this.internalPriorityQueue.kThSmallest(lPQueue.dequeueCounter + 1);
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                 System.out.println("Priority Queue dequeue - transactional priority queue is empty");
@@ -369,7 +369,7 @@ public class PriorityQueue {
 
         Pair<Comparable, Object> pQueueMin = null;
         try {
-            pQueueMin = this.internalPriorityQueue.k_th_smallest(lPQueue.dequeueCounter + 1);
+            pQueueMin = this.internalPriorityQueue.kThSmallest(lPQueue.dequeueCounter + 1);
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                 System.out.println("Priority Queue dequeue - priority queue is not has minimum");
