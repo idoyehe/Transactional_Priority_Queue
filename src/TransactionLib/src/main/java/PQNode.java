@@ -1,11 +1,11 @@
 package TransactionLib.src.main.java;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class PQNode {
     public int index;// index of the node in heap
-    public int dequeueSimulateIndex;// index of the node in heap
     public Comparable priority;
     public Object value;
     public PQNode left = null;// left son heap
@@ -13,19 +13,16 @@ public class PQNode {
     public PQNode father = null;//father heap
 
 
-    public void swap(PQNode node) {
+    void swap(PQNode node) {
         Object tempValue = node.value;
         Comparable tempPriority = node.priority;
-        int tempDequeueSimulateIndex = node.dequeueSimulateIndex;
         node.value = this.value;
         node.priority = this.priority;
-        node.dequeueSimulateIndex = this.dequeueSimulateIndex;
         this.value = tempValue;
         this.priority = tempPriority;
-        this.dequeueSimulateIndex = tempDequeueSimulateIndex;
     }
 
-    public void sift_up() {
+    void sift_up() {
         if (this.father == null || this.father.priority.compareTo(this.priority) < 0) {// case no need to sift up
             return;
         }
@@ -34,7 +31,7 @@ public class PQNode {
         this.father.sift_up();
     }
 
-    public void sift_down() {
+    void sift_down() {
         if (this.left == null && this.right == null) {// node is leaf
             return;
         }
@@ -72,5 +69,11 @@ public class PQNode {
             return this.left.search(index, binaryDigits);
         }
         return this.right.search(index, binaryDigits);
+    }
+}
+
+class PQNodeComparator implements Comparator<PQNode> {
+    public int compare(PQNode pqn1, PQNode pqn2) {
+        return pqn1.priority.compareTo(pqn2.priority);
     }
 }

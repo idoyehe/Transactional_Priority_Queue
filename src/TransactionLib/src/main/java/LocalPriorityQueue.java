@@ -2,22 +2,25 @@ package TransactionLib.src.main.java;
 
 import javafx.util.Pair;
 
+import java.util.NoSuchElementException;
+import java.util.PriorityQueue;
 import java.util.ArrayList;
+
 
 public class LocalPriorityQueue {
     public PQNode root = null;
     public int size = 0;
-    protected int dequeueCounter = 0; // how many dequeue has done by the transaction
-    protected boolean isLockedByMe = false; // is queue (not local queue) locked by me
+    int dequeueCounter = 0; // how many dequeue has done by the transaction
+    boolean isLockedByMe = false; // is queue (not local queue) locked by me
 
-    protected boolean isEmpty() {
+    boolean isEmpty() {
         return (size <= 0);
     }
 
 
     public Pair<Comparable, Object> top() throws TXLibExceptions.PQueueIsEmptyException {
         if (this.root != null) {
-            return new Pair<Comparable, Object>(this.root.priority, this.root.value);
+            return new Pair<>(this.root.priority, this.root.value);
         }
         TXLibExceptions excep = new TXLibExceptions();
         throw excep.new PQueueIsEmptyException();
@@ -34,17 +37,12 @@ public class LocalPriorityQueue {
         return this.root.search(index, binaryDigits);
     }
 
+
     public void enqueue(Comparable priority, Object val) {
-        this.enqueue(priority, val, -1);
-    }
-
-
-    private void enqueue(Comparable priority, Object val, int dequeueSimulateIndex) {
         PQNode newNode = new PQNode();
         newNode.priority = priority;
         newNode.value = val;
         newNode.index = this.size + 1;
-        newNode.dequeueSimulateIndex = dequeueSimulateIndex;
 
 
         if (this.root == null) {
@@ -74,7 +72,7 @@ public class LocalPriorityQueue {
             TXLibExceptions excep = new TXLibExceptions();
             throw excep.new PQueueIsEmptyException();
         }
-        Pair<Comparable, Object> prioValuePair = new Pair<Comparable, Object>(this.root.priority, this.root.value);
+        Pair<Comparable, Object> prioValuePair = new Pair<>(this.root.priority, this.root.value);
 
         if (this.size == 1) {
             this.root = null;
@@ -111,15 +109,16 @@ public class LocalPriorityQueue {
             TXLibExceptions excep = new TXLibExceptions();
             throw excep.new PQueueIsEmptyException();
         }
-
-        LocalPriorityQueue lpq = new LocalPriorityQueue(); // Create a Local Priority Queue as helper
-        lpq.enqueue(this.root.priority, this.root.value, this.root.index);
+        PriorityQueue<PQNode> lpq = new PriorityQueue<>(this.size, new PQNodeComparator());
+        lpq.add(this.root);
 
         for (int i = 1; i < k; i++) {
-            int topIndex = lpq.root.dequeueSimulateIndex;
+            assert lpq.peek() != null;
+            int topIndex = lpq.peek().index;
+
             try {
-                lpq.dequeue();
-            } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                lpq.remove();
+            } catch (NoSuchElementException e) {
                 assert false; //shouldn't be here
             }
             int leftSonIndex = this.leftSon(topIndex);
@@ -127,15 +126,16 @@ public class LocalPriorityQueue {
 
             if (leftSonIndex <= this.size) {
                 PQNode leftSon = this._search_node_(leftSonIndex);
-                lpq.enqueue(leftSon.priority, leftSon.value, leftSon.index);
+                lpq.add(leftSon);
             }
 
             if (rightSonIndex <= this.size) {
                 PQNode rightSon = this._search_node_(rightSonIndex);
-                lpq.enqueue(rightSon.priority, rightSon.value, rightSon.index);
+                lpq.add(rightSon);
             }
 
         }
-        return lpq.top();
+        assert lpq.peek() != null;
+        return new Pair<>(lpq.peek().priority, lpq.peek().value);
     }
 }

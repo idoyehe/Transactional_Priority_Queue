@@ -16,11 +16,11 @@ public class PriorityQueue {
     // we are missing a bit because this is signed
     private AtomicLong versionAndFlags = new AtomicLong(); //This is the VC of the queue
 
-    protected long getVersion() {
+    long getVersion() {
         return (versionAndFlags.get() & (~versionNegMask));
     }
 
-    protected void setVersion(long version) {
+    void setVersion(long version) {
         long l = versionAndFlags.get();
 //		assert ((l & lockMask) != 0);
         l &= versionNegMask;
@@ -28,7 +28,7 @@ public class PriorityQueue {
         versionAndFlags.set(l);
     }
 
-    protected boolean isSingleton() {
+    boolean isSingleton() {
         long l = versionAndFlags.get();
         return (l & singletonMask) != 0;
     }
@@ -49,15 +49,15 @@ public class PriorityQueue {
         pqLock.lock();
     }
 
-    protected boolean tryLock() {
+    boolean tryLock() {
         return pqLock.tryLock();
     }
 
-    protected void unlock() {
+    void unlock() {
         pqLock.unlock();
     }
 
-    protected void enqueueNodes(LocalPriorityQueue lPQueue) {
+    void enqueueNodes(LocalPriorityQueue lPQueue) {
         assert (lPQueue != null);
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
             System.out.println("Priority Queue enqueue Nodes");
@@ -82,7 +82,7 @@ public class PriorityQueue {
         }
     }
 
-    protected void dequeueNodes(int dequeueCounter) {
+    void dequeueNodes(int dequeueCounter) {
 
         if (dequeueCounter == 0) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
