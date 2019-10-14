@@ -9,7 +9,7 @@ public class PriorityQueue {
     private static final long singletonMask = 0x4000000000000000L;
     private static final long versionNegMask = singletonMask;
     private LockQueue pqLock = new LockQueue();
-    public LocalPriorityQueue internalPriorityQueue = new LocalPriorityQueue();// the actual nodes are stored in primitive local queue TODO: change to protected for tests
+    public PrimitivePriorityQueue internalPriorityQueue = new PrimitivePriorityQueue();// the actual nodes are stored in primitive local queue TODO: change to protected for tests
     // bit 61 is lock
     // bit 62 is singleton
     // 0 is false, 1 is true
@@ -218,9 +218,9 @@ public class PriorityQueue {
             lPQueue = new LocalPriorityQueue();
         }
         qMap.put(this, lPQueue);
-        assert this.internalPriorityQueue.size - lPQueue.dequeueCounter >= 0;
+        assert this.internalPriorityQueue.size - lPQueue.dequeueCounter() >= 0;
         assert lPQueue.size >= 0;
-        return !((this.internalPriorityQueue.size - lPQueue.dequeueCounter + lPQueue.size) > 0);
+        return !((this.internalPriorityQueue.size - lPQueue.dequeueCounter() + lPQueue.size) > 0);
     }
 
     public Pair<Comparable, Object> dequeue() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
@@ -284,7 +284,7 @@ public class PriorityQueue {
 
         Pair<Comparable, Object> pQueueMin = null;
         try {
-            pQueueMin = this.internalPriorityQueue.kThSmallest(lPQueue.dequeueCounter + 1);
+            pQueueMin = lPQueue.currentSmallest(this.internalPriorityQueue);
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                 System.out.println("Priority Queue dequeue - transactional priority queue is empty");
@@ -305,7 +305,7 @@ public class PriorityQueue {
         }
 
         if (pQueueMin != null && (lPQueueMin == null || pQueueMin.getKey().compareTo(lPQueueMin.getKey()) < 0)) {// the minimum node is in the priority queue
-            lPQueue.dequeueCounter++;//mark the dequeue from the priority queue
+            lPQueue.nextSmallest(this.internalPriorityQueue);
             pqMap.put(this, lPQueue);
             return pQueueMin;
         }
@@ -369,7 +369,7 @@ public class PriorityQueue {
 
         Pair<Comparable, Object> pQueueMin = null;
         try {
-            pQueueMin = this.internalPriorityQueue.kThSmallest(lPQueue.dequeueCounter + 1);
+            pQueueMin = lPQueue.currentSmallest(this.internalPriorityQueue);
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                 System.out.println("Priority Queue dequeue - priority queue is not has minimum");

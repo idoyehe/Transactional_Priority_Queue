@@ -63,8 +63,20 @@ public class PriorityQueueTXTest {
                 }
             });
             assertEquals(true, pQueue.isEmpty());
+            try {
+                pQueue.dequeue();
+                assert false;
+            } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                assert e != null;
+            }
             TX.TXend();
             assertEquals(true, pQueue.isEmpty());
+            try {
+                pQueue.dequeue();
+                assert false;
+            } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                assert e != null;
+            }
             assertEquals(null, pQueue.internalPriorityQueue.root);
         }
     }
@@ -93,7 +105,7 @@ public class PriorityQueueTXTest {
         PriorityQueueTXTest.testHeapInvariantRecursive(pQueue.internalPriorityQueue.root);
         pQueue.setSingleton(false);
 
-        TX.TXbegin(); // 2nd transcation
+        TX.TXbegin(); // 2nd transaction
         assertFalse(pQueue.isEmpty());
         for (int i = 0; i < pqueueMaxSize; i++) {
             try {
@@ -104,8 +116,20 @@ public class PriorityQueueTXTest {
             }
         }
         assertTrue(pQueue.isEmpty());
+        try {
+            pQueue.dequeue();
+            assert false;
+        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+            assert e != null;
+        }
         TX.TXend();
         assertTrue(pQueue.isEmpty());
+        try {
+            pQueue.dequeue();
+            assert false;
+        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+            assert e != null;
+        }
     }
 
     @Test
@@ -200,6 +224,12 @@ public class PriorityQueueTXTest {
                             assert false;
                         } catch (TXLibExceptions.PQueueIsEmptyException exp) {
                             assert true;
+                        }
+                        try {
+                            pQueue.dequeue();
+                            assert false;
+                        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                            assert e != null;
                         }
 
                     } catch (TXLibExceptions.PQueueIsEmptyException exp) {

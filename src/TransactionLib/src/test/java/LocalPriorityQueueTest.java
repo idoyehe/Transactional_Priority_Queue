@@ -96,7 +96,7 @@ public class LocalPriorityQueueTest {
     }
 
     @Test
-    public void testKthSmallest() {
+    public void testNextSmallest() {
         LocalPriorityQueue lpq = new LocalPriorityQueue();
         IntStream.range(1, 101).map(i -> 1 + (101 - 1 - i)).forEach(n -> {
             lpq.enqueue(n, n);
@@ -105,12 +105,25 @@ public class LocalPriorityQueueTest {
         Assert.assertEquals(100, lpq.size);
         IntStream.range(1, 101).forEachOrdered(n -> {
             try {
-                Assert.assertEquals(lpq.kThSmallest(n), new Pair<>(n, n));
+                Assert.assertEquals(new Pair<>(n, n), lpq.currentSmallest(lpq));
+                lpq.nextSmallest(lpq);
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 e.printStackTrace();
                 assert false;
             }
         });
         Assert.assertEquals(100, lpq.size);
+        try {
+                Assert.assertEquals(new Pair<>(1, 1), lpq.currentSmallest(lpq));
+        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+            e.printStackTrace();
+            assert false;
+        }
+        try {
+            lpq.nextSmallest(lpq);
+            assert false;
+        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+            assert true;
+        }
     }
 }

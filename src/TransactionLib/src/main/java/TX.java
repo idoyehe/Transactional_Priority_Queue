@@ -234,7 +234,7 @@ public class TX {
                 PriorityQueue pQueue = entry.getKey();
                 LocalPriorityQueue lPQueue = entry.getValue();
 
-                pQueue.dequeueNodes(lPQueue.dequeueCounter);
+                pQueue.dequeueNodes(lPQueue.dequeueCounter());
                 pQueue.enqueueNodes(lPQueue);
                 if (TX.DEBUG_MODE_QUEUE) {
                     System.out.println("commit queue before set version");
