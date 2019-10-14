@@ -55,5 +55,6 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
             lpq.add(rightSon);
         }
         this._dequeueCounter++;
+        assert (this.dequeueCounter() == internalPQueue.size && this.lpq.isEmpty()) || (this.dequeueCounter() < internalPQueue.size && !this.lpq.isEmpty());
     }
 }
