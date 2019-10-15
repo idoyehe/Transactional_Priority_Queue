@@ -35,25 +35,21 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
         }
 
         assert lpq.peek() != null;
-        int topIndex = lpq.peek().index;
+        PQNode top = lpq.peek();
 
         try {
             lpq.remove();
         } catch (NoSuchElementException e) {
             assert false; //shouldn't be here
         }
-        int leftSonIndex = internalPQueue.leftSon(topIndex);
-        int rightSonIndex = internalPQueue.rightSon(topIndex);
 
-        if (leftSonIndex <= internalPQueue.size) {
-            PQNode leftSon = internalPQueue.searchNode(leftSonIndex);
-            lpq.add(leftSon);
+        if (top.left != null) {
+            lpq.add(top.left);
+        }
+        if (top.right != null) {
+            lpq.add(top.right);
         }
 
-        if (rightSonIndex <= internalPQueue.size) {
-            PQNode rightSon = internalPQueue.searchNode(rightSonIndex);
-            lpq.add(rightSon);
-        }
         this._dequeueCounter++;
         assert (this.dequeueCounter() == internalPQueue.size && this.lpq.isEmpty()) || (this.dequeueCounter() < internalPQueue.size && !this.lpq.isEmpty());
     }

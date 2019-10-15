@@ -20,15 +20,8 @@ public class PrimitivePriorityQueue {
         throw excep.new PQueueIsEmptyException();
     }
 
-    protected int leftSon(int index) {
-        return 2 * index;
-    }
 
-    protected int rightSon(int index) {
-        return 2 * index + 1;
-    }
-
-    protected PQNode searchNode(int index) {
+    private PQNode searchNode(int index) {
         assert 0 < index && index <= this.size;
 
         ArrayList<Integer> binaryDigits = new ArrayList<>();
