@@ -11,7 +11,7 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.stream.IntStream;
 
 public class PriorityQueueSingletonTest {
-    public static void testHeapInvariantRecursive(PQNode node) {
+    static void testHeapInvariantRecursive(PQNode node) {
         if (node == null) {
             return;
         }

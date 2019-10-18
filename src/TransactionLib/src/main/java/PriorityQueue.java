@@ -33,9 +33,8 @@ public class PriorityQueue {
         return (l & singletonMask) != 0;
     }
 
-    public void setSingleton(boolean value) {//TODO: what is the meaning of singleton here?
+    public void setSingleton(boolean value) {
         long l = versionAndFlags.get();
-//		assert ((l & lockMask) != 0);
         if (value) {
             l |= singletonMask;
             versionAndFlags.set(l);
@@ -214,7 +213,7 @@ public class PriorityQueue {
         // check lPQueue
         HashMap<PriorityQueue, LocalPriorityQueue> qMap = localStorage.priorityQueueMap;
         LocalPriorityQueue lPQueue = qMap.get(this);
-        if (lPQueue == null) {//TODO: is it needed to crate local priority queue now?
+        if (lPQueue == null) {
             lPQueue = new LocalPriorityQueue();
         }
         qMap.put(this, lPQueue);
@@ -309,7 +308,6 @@ public class PriorityQueue {
             pqMap.put(this, lPQueue);
             return pQueueMin;
         }
-        //this.unlock();//TODO: understand why this increase running time
         // the minimum node is in the local priority queue
         lPQueue.dequeue();// can throw an exception
         pqMap.put(this, lPQueue);
