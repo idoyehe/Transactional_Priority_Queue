@@ -10,6 +10,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.stream.IntStream;
 
+import static junit.framework.TestCase.fail;
+
 public class PriorityQueueSingletonTest {
     static void testHeapInvariantRecursive(PQNode node) {
         if (node == null) {
@@ -27,7 +29,7 @@ public class PriorityQueueSingletonTest {
         Assert.assertEquals(true, pQueue.isEmpty());
         try {
             pQueue.top();
-            assert false;
+            fail("Local priority queue should be empty");
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
 //            e.printStackTrace();
             assert true;
@@ -54,7 +56,7 @@ public class PriorityQueueSingletonTest {
             pQueue.enqueue(n, n);
         });
         testHeapInvariantRecursive(pQueue.internalPriorityQueue.root);
-        Assert.assertEquals(pQueue.internalPriorityQueue.size, 100);
+        Assert.assertEquals(pQueue.internalPriorityQueue.size(), 100);
         IntStream.range(0, 100).forEachOrdered(n -> {
             try {
                 Assert.assertEquals(pQueue.top(), new Pair<>(n, n));
@@ -62,10 +64,10 @@ public class PriorityQueueSingletonTest {
 
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 e.printStackTrace();
-                assert false;
+                fail("Local priority queue should not be empty");
             }
         });
-        Assert.assertEquals(pQueue.internalPriorityQueue.size, 0);
+        Assert.assertEquals(pQueue.internalPriorityQueue.size(), 0);
     }
 
     @Test
@@ -148,7 +150,7 @@ class Run implements Runnable {
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
 
-        Assert.assertEquals(100, pQueue.internalPriorityQueue.size);
+        Assert.assertEquals(100, pQueue.internalPriorityQueue.size());
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
         try {
@@ -156,11 +158,11 @@ class Run implements Runnable {
             pQueue.dequeue();
         } catch (TXLibExceptions.PQueueIsEmptyException ex) {
             ex.printStackTrace();
-            assert false;
+            fail("Local priority queue should not be empty");
         }
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
-        Assert.assertEquals(0, pQueue.internalPriorityQueue.size);
+        Assert.assertEquals(0, pQueue.internalPriorityQueue.size());
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
 
@@ -172,7 +174,7 @@ class Run implements Runnable {
         pQueue.enqueue(p_c, c);
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
-        Assert.assertEquals(300, pQueue.internalPriorityQueue.size);
+        Assert.assertEquals(300, pQueue.internalPriorityQueue.size());
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
         //System.out.println(threadName + ": enqueue(" + p_d + "," + d + ")");
@@ -180,7 +182,7 @@ class Run implements Runnable {
 
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
-        Assert.assertEquals(400, pQueue.internalPriorityQueue.size);
+        Assert.assertEquals(400, pQueue.internalPriorityQueue.size());
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
 

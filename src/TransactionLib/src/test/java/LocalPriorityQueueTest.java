@@ -8,6 +8,8 @@ import org.junit.Test;
 
 import java.util.stream.IntStream;
 
+import static junit.framework.TestCase.fail;
+
 
 public class LocalPriorityQueueTest {
     private void testHeapInvariantRecursive(PQNode node) {
@@ -50,23 +52,24 @@ public class LocalPriorityQueueTest {
         lpq.enqueue(2, 2);
         lpq.enqueue(3, 3);
         Assert.assertEquals(new Pair<>(1, 1), lpq.top());
-        Assert.assertEquals(3, lpq.size);
+        Assert.assertEquals(3, lpq.size());
         Assert.assertEquals(2, lpq.root.left.value);
         Assert.assertEquals(3, lpq.root.right.value);
 
         lpq.dequeue();
         Assert.assertEquals(lpq.top(), new Pair<>(2, 2));
-        Assert.assertEquals(2, lpq.size);
+        Assert.assertEquals(2, lpq.size());
 
         lpq.dequeue();
         Assert.assertEquals(lpq.top(), new Pair<>(3, 3));
-        Assert.assertEquals(1, lpq.size);
+        Assert.assertEquals(1, lpq.size());
 
         lpq.dequeue();
-        Assert.assertEquals(0, lpq.size);
+        Assert.assertEquals(0, lpq.size());
         try {
             lpq.dequeue();
-            assert false;
+            fail("Local priority queue should be empty");
+
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             assert true;
         }
@@ -81,18 +84,19 @@ public class LocalPriorityQueueTest {
             lpq.enqueue(n, n);
         });
         testHeapInvariantRecursive(lpq.root);
-        Assert.assertEquals(100, lpq.size);
-        IntStream.range(0, lpq.size).forEachOrdered(n -> {
+        Assert.assertEquals(100, lpq.size());
+        IntStream.range(0, lpq.size()).forEachOrdered(n -> {
             try {
                 Assert.assertEquals(new Pair<>(n, n), lpq.top());
                 lpq.dequeue();
 
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 e.printStackTrace();
-                assert false;
+                                fail("Local priority queue should not be empty");
+
             }
         });
-        Assert.assertEquals(0, lpq.size);
+        Assert.assertEquals(0, lpq.size());
     }
 
     @Test
@@ -102,26 +106,28 @@ public class LocalPriorityQueueTest {
             lpq.enqueue(n, n);
         });
         testHeapInvariantRecursive(lpq.root);
-        Assert.assertEquals(100, lpq.size);
+        Assert.assertEquals(100, lpq.size());
         IntStream.range(1, 101).forEachOrdered(n -> {
             try {
                 Assert.assertEquals(new Pair<>(n, n), lpq.currentSmallest(lpq));
                 lpq.nextSmallest(lpq);
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 e.printStackTrace();
-                assert false;
+                fail("Local priority queue should not be empty");
+
             }
         });
-        Assert.assertEquals(100, lpq.size);
+        Assert.assertEquals(100, lpq.size());
         try {
-                Assert.assertEquals(new Pair<>(1, 1), lpq.currentSmallest(lpq));
+            Assert.assertEquals(new Pair<>(1, 1), lpq.currentSmallest(lpq));
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             e.printStackTrace();
-            assert false;
+            fail("Current smallest should be Pair<>(1, 1)");
+
         }
         try {
             lpq.nextSmallest(lpq);
-            assert false;
+            fail("Local priority queue should be empty");
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             assert true;
         }

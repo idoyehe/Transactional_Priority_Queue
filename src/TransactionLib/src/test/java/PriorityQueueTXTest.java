@@ -45,7 +45,8 @@ public class PriorityQueueTXTest {
             assertEquals(true, pQueue.isEmpty());
             try {
                 pQueue.dequeue();
-                assert false;
+                fail("Local priority queue should be empty");
+
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 assert e != null;
             }
@@ -59,13 +60,13 @@ public class PriorityQueueTXTest {
                 try {
                     pQueue.dequeue();
                 } catch (TXLibExceptions.PQueueIsEmptyException e) {
-                    assert false;
+                    fail("Local priority queue should not be empty");
                 }
             });
             assertEquals(true, pQueue.isEmpty());
             try {
                 pQueue.dequeue();
-                assert false;
+                fail("Local priority queue should be empty");
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 assert e != null;
             }
@@ -73,7 +74,7 @@ public class PriorityQueueTXTest {
             assertEquals(true, pQueue.isEmpty());
             try {
                 pQueue.dequeue();
-                assert false;
+                fail("Local priority queue should be empty");
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 assert e != null;
             }
@@ -89,7 +90,7 @@ public class PriorityQueueTXTest {
         assertEquals(true, pQueue.isEmpty());
         try {
             pQueue.dequeue();
-            assert false;
+            fail("Local priority queue should be empty");
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             assert e != null;
         }
@@ -101,7 +102,7 @@ public class PriorityQueueTXTest {
         TX.TXend();
         assertFalse(pQueue.isEmpty());
         assertEquals(new Pair<>(0, 0), pQueue.top());
-        assertEquals(pqueueMaxSize, pQueue.internalPriorityQueue.size);
+        assertEquals(pqueueMaxSize, pQueue.internalPriorityQueue.size());
         PriorityQueueTXTest.testHeapInvariantRecursive(pQueue.internalPriorityQueue.root);
         pQueue.setSingleton(false);
 
@@ -112,13 +113,13 @@ public class PriorityQueueTXTest {
                 assertEquals(new Pair<>(i, i), pQueue.top());
                 pQueue.dequeue();
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
-                assert false;
+                fail("Local priority queue should not be empty");
             }
         }
         assertTrue(pQueue.isEmpty());
         try {
             pQueue.dequeue();
-            assert false;
+            fail("Local priority queue should be empty");
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             assert e != null;
         }
@@ -126,7 +127,7 @@ public class PriorityQueueTXTest {
         assertTrue(pQueue.isEmpty());
         try {
             pQueue.dequeue();
-            assert false;
+            fail("Local priority queue should be empty");
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             assert e != null;
         }
@@ -221,19 +222,19 @@ public class PriorityQueueTXTest {
 
                         try {
                             pQueue.top();
-                            assert false;
+                            fail("Local priority queue should be empty");
                         } catch (TXLibExceptions.PQueueIsEmptyException exp) {
                             assert true;
                         }
                         try {
                             pQueue.dequeue();
-                            assert false;
+                            fail("Local priority queue should be empty");
                         } catch (TXLibExceptions.PQueueIsEmptyException e) {
                             assert e != null;
                         }
 
                     } catch (TXLibExceptions.PQueueIsEmptyException exp) {
-                        assert false;
+                        fail("Local priority queue should not be empty");
                     } finally {
                         TX.TXend();
                     }

@@ -256,6 +256,7 @@ public class TX {
             if (lQueue.isLockedByMe) {
                 queue.unlock();
                 lQueue.isLockedByMe = false;
+
             }
         }
 
@@ -266,6 +267,7 @@ public class TX {
             if (lPQueue.isLockedByMe) {
                 pQueue.unlock();
                 lPQueue.isLockedByMe = false;
+                lPQueue.clearInternalState();//TODO: check if necessary
             }
         }
 

@@ -6,7 +6,11 @@ import java.util.ArrayList;
 
 public class PrimitivePriorityQueue {
     public PQNode root = null;
-    public int size = 0;
+    private int size = 0;
+
+    public int size() {
+        return this.size;
+    }
 
     public boolean isEmpty() {
         return (size <= 0);

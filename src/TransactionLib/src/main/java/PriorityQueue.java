@@ -167,7 +167,7 @@ public class PriorityQueue {
                 System.out.println("Priority Queue isEmpty - singleton");
             }
             this.lock();
-            int ret = internalPriorityQueue.size;//TODO: should be after lock or before lock as Queue?
+            int ret = internalPriorityQueue.size();//TODO: should be after lock or before lock as Queue?
             setVersion(TX.getVersion());
             setSingleton(true);
             this.unlock();
@@ -217,9 +217,9 @@ public class PriorityQueue {
             lPQueue = new LocalPriorityQueue();
         }
         qMap.put(this, lPQueue);
-        assert this.internalPriorityQueue.size - lPQueue.dequeueCounter() >= 0;
-        assert lPQueue.size >= 0;
-        return !((this.internalPriorityQueue.size - lPQueue.dequeueCounter() + lPQueue.size) > 0);
+        assert this.internalPriorityQueue.size() - lPQueue.dequeueCounter() >= 0;
+        assert lPQueue.size() >= 0;
+        return !((this.internalPriorityQueue.size() - lPQueue.dequeueCounter() + lPQueue.size()) > 0);
     }
 
     public Pair<Comparable, Object> dequeue() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
