@@ -1,12 +1,68 @@
 package TransactionLib.src.main.java;
 
 import javafx.util.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 public class PrimitivePriorityQueue {
     public PQNode root = null;
     private int size = 0;
+
+    private static void nodesSwap(@NotNull PQNode node1, @NotNull PQNode node2) {
+        Object tempValue = node1.value;
+        Comparable tempPriority = node1.priority;
+        node1.value = node2.value;
+        node1.priority = node2.priority;
+        node2.value = tempValue;
+        node2.priority = tempPriority;
+    }
+
+    private static void nodeSiftUp(@NotNull PQNode node) {
+        if (node.father == null || node.father.priority.compareTo(node.priority) < 0) {// case no need to sift up
+            return;
+        }
+
+        PrimitivePriorityQueue.nodesSwap(node, node.father);
+        PrimitivePriorityQueue.nodeSiftUp(node.father);
+    }
+
+    private static void nodeSiftDown(@NotNull PQNode node) {
+        if (node.left == null && node.right == null) {// node is leaf
+            return;
+        }
+        PQNode minSon = null;
+        if (node.left != null && node.priority.compareTo(node.left.priority) > 0) {
+            minSon = node.left;
+        }
+
+        if (node.right != null && node.priority.compareTo(node.right.priority) > 0) {
+            if (minSon == null || minSon.priority.compareTo(node.right.priority) > 0) {
+                minSon = node.right;
+            }
+        }
+        if (minSon != null) {
+            assert node.priority.compareTo(minSon.priority) > 0;
+            PrimitivePriorityQueue.nodesSwap(node, minSon);
+            PrimitivePriorityQueue.nodeSiftDown(minSon);
+
+        }
+    }
+
+
+    private static PQNode nodeSearch(PQNode node, int index, ArrayList<Integer> binaryDigits) {
+        if (index == node.index) {
+            return node;
+        }
+        assert binaryDigits.size() > 0;
+
+        Integer currentTurn = binaryDigits.get(0);
+        binaryDigits.remove(0);
+        if (currentTurn.equals(PQNodeTurn.LEFT.getValue())) {
+            return PrimitivePriorityQueue.nodeSearch(node.left, index, binaryDigits);
+        }
+        return PrimitivePriorityQueue.nodeSearch(node.right, index, binaryDigits);
+    }
 
     public int size() {
         return this.size;
@@ -33,7 +89,7 @@ public class PrimitivePriorityQueue {
         for (int i = 1; i < binaryIndex.length(); i++) {
             binaryDigits.add(Character.getNumericValue(binaryIndex.charAt(i)));
         }
-        return this.root.search(index, binaryDigits);
+        return PrimitivePriorityQueue.nodeSearch(this.root, index, binaryDigits);
     }
 
 
@@ -61,7 +117,7 @@ public class PrimitivePriorityQueue {
 
         newNode.father = newNodeFather;
         this.size += 1;
-        newNode.sift_up();
+        PrimitivePriorityQueue.nodeSiftUp(newNode);
     }
 
     public Pair<Comparable, Object> dequeue() throws TXLibExceptions.PQueueIsEmptyException {
@@ -80,7 +136,7 @@ public class PrimitivePriorityQueue {
         }
 
         PQNode swapper = this.searchNode(this.size);
-        swapper.swap(this.root);
+        PrimitivePriorityQueue.nodesSwap(swapper, this.root);
 
         if (this.size % 2 == PQNodeTurn.LEFT.getValue()) {
             swapper.father.left = null;
@@ -90,7 +146,7 @@ public class PrimitivePriorityQueue {
         }
 
         this.size -= 1;
-        this.root.sift_down();
+        PrimitivePriorityQueue.nodeSiftDown(this.root);
         return prioValuePair;
     }
 }
