@@ -9,6 +9,7 @@ public class PrimitivePriorityQueue {
     private int size = 0;
 
     private static void nodesSwap(PQNode node1, PQNode node2) {
+        assert node1 != null && node2 != null;
         Object tempValue = node1.value;
         Comparable tempPriority = node1.priority;
         node1.value = node2.value;
@@ -18,6 +19,7 @@ public class PrimitivePriorityQueue {
     }
 
     private static void nodeSiftUp(PQNode node) {
+        assert node != null;
         if (node.father == null || node.father.priority.compareTo(node.priority) < 0) {// case no need to sift up
             return;
         }
@@ -27,6 +29,7 @@ public class PrimitivePriorityQueue {
     }
 
     private static void nodeSiftDown(PQNode node) {
+        assert node != null;
         if (node.left == null && node.right == null) {// node is leaf
             return;
         }
@@ -50,6 +53,8 @@ public class PrimitivePriorityQueue {
 
 
     private static PQNode nodeSearch(PQNode node, int index, ArrayList<Integer> binaryDigits) {
+        assert node != null;
+
         if (index == node.index) {
             return node;
         }
