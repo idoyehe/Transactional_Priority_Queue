@@ -1,7 +1,6 @@
 package TransactionLib.src.main.java;
 
 import javafx.util.Pair;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -9,7 +8,7 @@ public class PrimitivePriorityQueue {
     public PQNode root = null;
     private int size = 0;
 
-    private static void nodesSwap(@NotNull PQNode node1, @NotNull PQNode node2) {
+    private static void nodesSwap(PQNode node1, PQNode node2) {
         Object tempValue = node1.value;
         Comparable tempPriority = node1.priority;
         node1.value = node2.value;
@@ -18,7 +17,7 @@ public class PrimitivePriorityQueue {
         node2.priority = tempPriority;
     }
 
-    private static void nodeSiftUp(@NotNull PQNode node) {
+    private static void nodeSiftUp(PQNode node) {
         if (node.father == null || node.father.priority.compareTo(node.priority) < 0) {// case no need to sift up
             return;
         }
@@ -27,7 +26,7 @@ public class PrimitivePriorityQueue {
         PrimitivePriorityQueue.nodeSiftUp(node.father);
     }
 
-    private static void nodeSiftDown(@NotNull PQNode node) {
+    private static void nodeSiftDown(PQNode node) {
         if (node.left == null && node.right == null) {// node is leaf
             return;
         }
