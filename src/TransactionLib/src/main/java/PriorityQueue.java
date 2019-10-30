@@ -149,6 +149,8 @@ public class PriorityQueue {
         HashMap<PriorityQueue, LocalPriorityQueue> pqMap = localStorage.priorityQueueMap;
         LocalPriorityQueue lPQueue = pqMap.get(this);
 
+        localStorage.readOnly = false;
+
         if (lPQueue == null) {//First time to enqueue the PriorityQueue
             lPQueue = new LocalPriorityQueue();
         }
@@ -276,6 +278,8 @@ public class PriorityQueue {
         // now we have the lock
         HashMap<PriorityQueue, LocalPriorityQueue> pqMap = localStorage.priorityQueueMap;
         LocalPriorityQueue lPQueue = pqMap.get(this);
+
+        localStorage.readOnly = false;
 
         if (lPQueue == null) {
             lPQueue = new LocalPriorityQueue();

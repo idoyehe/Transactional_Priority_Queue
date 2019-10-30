@@ -9,13 +9,13 @@ import java.util.PriorityQueue;
 public class LocalPriorityQueue extends PrimitivePriorityQueue {
     private int _dequeueCounter = 0; // how many dequeue has done by the transaction
     boolean isLockedByMe = false; // is queue (not local queue) locked by me
-    private PriorityQueue<PQNode> pqTXState = new PriorityQueue<>(new PQNodeComparator());
+    private PriorityQueue<PQNode> pqTXState = new PriorityQueue<>();
 
     public int dequeueCounter() {
         return this._dequeueCounter;
     }
 
-    public void clearInternalState(){
+    public void clearInternalState() {
         this.pqTXState.clear();
     }
 
