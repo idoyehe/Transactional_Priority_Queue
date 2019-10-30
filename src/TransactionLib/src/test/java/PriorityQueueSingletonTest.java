@@ -1,7 +1,6 @@
 package TransactionLib.src.test.java;
 
 import TransactionLib.src.main.java.*;
-import javafx.util.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -38,8 +37,8 @@ public class PriorityQueueSingletonTest {
 
         String zeroS = "zero";
         pQueue.enqueue(zero, zeroS);
-        Assert.assertEquals(new Pair<>(zero, zeroS), pQueue.top());
-        Assert.assertEquals(new Pair<>(zero, zeroS), pQueue.dequeue());
+        Assert.assertEquals(zeroS, pQueue.top());
+        Assert.assertEquals(zeroS, pQueue.dequeue());
 
         Integer one = 1;
         String oneS = "one";
@@ -47,8 +46,8 @@ public class PriorityQueueSingletonTest {
         String twoS = "two";
         pQueue.enqueue(two, twoS);
         pQueue.enqueue(one, oneS);
-        Assert.assertEquals(new Pair<>(one, oneS), pQueue.dequeue());
-        Assert.assertEquals(new Pair<>(two, twoS), pQueue.dequeue());
+        Assert.assertEquals(oneS, pQueue.dequeue());
+        Assert.assertEquals(twoS, pQueue.dequeue());
         Assert.assertEquals(true, pQueue.isEmpty());
 
 
@@ -59,7 +58,7 @@ public class PriorityQueueSingletonTest {
         Assert.assertEquals(pQueue.internalPriorityQueue.size(), 100);
         IntStream.range(0, 100).forEachOrdered(n -> {
             try {
-                Assert.assertEquals(pQueue.top(), new Pair<>(n, n));
+                Assert.assertEquals(n, pQueue.top());
                 pQueue.dequeue();
 
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
@@ -72,7 +71,7 @@ public class PriorityQueueSingletonTest {
 
     @Test
     public void testTXPriorityQueueSingletonMultiThread() throws InterruptedException {
-        final int threadsNumber = 100;
+        final int threadsNumber = Run.THREADS;
         CountDownLatch latch = new CountDownLatch(1);
         PriorityQueue pQueue = new PriorityQueue();
         Thread[] threadsARR = new Thread[threadsNumber];
@@ -94,7 +93,8 @@ class Run implements Runnable {
     private int priorityRef;
     private String threadName;
     private CountDownLatch latch;
-    private static final CyclicBarrier barrier = new CyclicBarrier(100);
+    public static final int THREADS = 100;
+    private static final CyclicBarrier barrier = new CyclicBarrier(Run.THREADS);
 
 
     Run(String name, CountDownLatch l, PriorityQueue pq, int priorityRef) {
@@ -150,7 +150,7 @@ class Run implements Runnable {
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
 
-        Assert.assertEquals(100, pQueue.internalPriorityQueue.size());
+        Assert.assertEquals(Run.THREADS, pQueue.internalPriorityQueue.size());
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
         try {
@@ -174,7 +174,7 @@ class Run implements Runnable {
         pQueue.enqueue(p_c, c);
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
-        Assert.assertEquals(300, pQueue.internalPriorityQueue.size());
+        Assert.assertEquals(3 * Run.THREADS, pQueue.internalPriorityQueue.size());
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
         //System.out.println(threadName + ": enqueue(" + p_d + "," + d + ")");
@@ -182,7 +182,7 @@ class Run implements Runnable {
 
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
-        Assert.assertEquals(400, pQueue.internalPriorityQueue.size());
+        Assert.assertEquals(4 * Run.THREADS, pQueue.internalPriorityQueue.size());
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
 
@@ -190,7 +190,8 @@ class Run implements Runnable {
             PriorityQueueSingletonTest.testHeapInvariantRecursive(pQueue.internalPriorityQueue.root);
         }
         try {
-            Assert.assertEquals(10, pQueue.top().getKey());
+            String minStr = "T0-a";
+            Assert.assertEquals(minStr, pQueue.top());
         } catch (TXLibExceptions.PQueueIsEmptyException ex) {
             ex.printStackTrace();
         }

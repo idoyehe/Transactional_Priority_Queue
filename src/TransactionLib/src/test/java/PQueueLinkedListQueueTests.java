@@ -1,7 +1,6 @@
 package TransactionLib.src.test.java;
 
 import TransactionLib.src.main.java.*;
-import javafx.util.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -47,15 +46,15 @@ public class PQueueLinkedListQueueTests {
         Assert.assertEquals(null, LL.put(10, PQ.dequeue()));
         Assert.assertEquals(true, LL.containsKey(10));
         Assert.assertEquals(1, LL.get(1));
-        Assert.assertEquals(new Pair<>(10, 10), LL.get(10));
+        Assert.assertEquals(10, LL.get(10));
         Assert.assertEquals(null, LL.put(2, Q.dequeue()));
         Assert.assertEquals(null, LL.put(3, Q.dequeue()));
         Assert.assertEquals(null, LL.put(20, PQ.dequeue()));
         Assert.assertEquals(null, LL.put(30, PQ.dequeue()));
         Assert.assertEquals(3, LL.get(3));
         Assert.assertEquals(2, LL.get(2));
-        Assert.assertEquals(new Pair<>(30, 30), LL.get(30));
-        Assert.assertEquals(new Pair<>(20, 20), LL.get(20));
+        Assert.assertEquals(30, LL.get(30));
+        Assert.assertEquals(20, LL.get(20));
 
         Q.enqueue(40);
         PQ.enqueue(100, 100);
@@ -84,10 +83,10 @@ public class PQueueLinkedListQueueTests {
         Assert.assertEquals(13, LL.get(13));
         Assert.assertEquals(12, LL.get(12));
 
-        Assert.assertEquals(new Pair<>(100, 100), LL.get(100));
-        Assert.assertEquals(new Pair<>(110, 110), LL.get(110));
-        Assert.assertEquals(new Pair<>(120, 120), LL.get(120));
-        Assert.assertEquals(new Pair<>(130, 130), LL.get(130));
+        Assert.assertEquals(100, LL.get(100));
+        Assert.assertEquals(110, LL.get(110));
+        Assert.assertEquals(120, LL.get(120));
+        Assert.assertEquals(130, LL.get(130));
 
 
         while (true) {
@@ -104,32 +103,34 @@ public class PQueueLinkedListQueueTests {
                     Q.enqueue(LL.remove(2));
                     Q.enqueue(LL.remove(3));
 
-                    Pair<Comparable, Object> element = (Pair<Comparable, Object>) LL.remove(130);
-                    PQ.enqueue(element.getKey(), element.getValue());
+                    int element = (int) LL.remove(130);
+                    PQ.enqueue(element, element);
 
-                    element = (Pair<Comparable, Object>) LL.remove(120);
-                    PQ.enqueue(element.getKey(), element.getValue());
+                    element = (int) LL.remove(120);
+                    PQ.enqueue(element, element);
 
-                    element = (Pair<Comparable, Object>) LL.remove(110);
-                    PQ.enqueue(element.getKey(), element.getValue());
+                    element = (int) LL.remove(110);
+                    PQ.enqueue(element, element);
 
-                    element = (Pair<Comparable, Object>) LL.remove(100);
-                    PQ.enqueue(element.getKey(), element.getValue());
+                    element = (int) LL.remove(100);
+                    PQ.enqueue(element, element);
 
-                    element = (Pair<Comparable, Object>) LL.remove(10);
-                    PQ.enqueue(element.getKey(), element.getValue());
-                    element = (Pair<Comparable, Object>) LL.remove(20);
-                    PQ.enqueue(element.getKey(), element.getValue());
+                    element = (int) LL.remove(10);
+                    PQ.enqueue(element, element);
 
-                    element = (Pair<Comparable, Object>) LL.remove(30);
-                    PQ.enqueue(element.getKey(), element.getValue());
+                    element = (int) LL.remove(20);
+                    PQ.enqueue(element, element);
+
+                    element = (int) LL.remove(30);
+                    PQ.enqueue(element, element);
+
                     Assert.assertEquals(false, LL.containsKey(13));
                     Assert.assertEquals(false, LL.containsKey(40));
                     Assert.assertEquals(false, LL.containsKey(130));
                     Assert.assertEquals(false, LL.containsKey(100));
                     Assert.assertEquals(false, Q.isEmpty());
                     Assert.assertEquals(false, PQ.isEmpty());
-                    Assert.assertEquals(new Pair<>(10, 10), PQ.top());
+                    Assert.assertEquals(10, PQ.top());
                 } finally {
                     TX.TXend();
                 }
@@ -148,13 +149,13 @@ public class PQueueLinkedListQueueTests {
         Q.dequeue();
         Q.dequeue();
 
-        Assert.assertEquals(new Pair<>(10, 10), PQ.dequeue());
-        Assert.assertEquals(new Pair<>(20, 20), PQ.dequeue());
-        Assert.assertEquals(new Pair<>(30, 30), PQ.dequeue());
-        Assert.assertEquals(new Pair<>(100, 100), PQ.dequeue());
-        Assert.assertEquals(new Pair<>(110, 110), PQ.dequeue());
-        Assert.assertEquals(new Pair<>(120, 120), PQ.dequeue());
-        Assert.assertEquals(new Pair<>(130, 130), PQ.dequeue());
+        Assert.assertEquals(10, PQ.dequeue());
+        Assert.assertEquals(20, PQ.dequeue());
+        Assert.assertEquals(30, PQ.dequeue());
+        Assert.assertEquals(100, PQ.dequeue());
+        Assert.assertEquals(110, PQ.dequeue());
+        Assert.assertEquals(120, PQ.dequeue());
+        Assert.assertEquals(130, PQ.dequeue());
 
         try {
             Q.dequeue();
@@ -268,10 +269,10 @@ public class PQueueLinkedListQueueTests {
                             assertEquals(null, LL.put(n + 9, Q.dequeue()));
                             assertEquals(false, Q.isEmpty());
 
-                            assertEquals(new Pair<>(n + 6, n + 6), PQ.top());
-                            assertEquals(null, LL.put(n + 6, PQ.dequeue().getValue()));
-                            assertEquals(new Pair<>(n + 10, n + 10), PQ.top());
-                            assertEquals(null, LL.put(n + 10, PQ.dequeue().getValue()));
+                            assertEquals(n + 6, PQ.top());
+                            assertEquals(null, LL.put(n + 6, PQ.dequeue()));
+                            assertEquals(n + 10, PQ.top());
+                            assertEquals(null, LL.put(n + 10, PQ.dequeue()));
                             assertEquals(false, PQ.isEmpty());
 
                             Q.enqueue(LL.remove(n + 15));
@@ -282,10 +283,10 @@ public class PQueueLinkedListQueueTests {
                             assertEquals(true, Q.isEmpty());
 
 
-                            assertEquals(new Pair<>(n + 14, n + 14), PQ.top());
-                            assertEquals(null, LL.put(n + 14, PQ.dequeue().getValue()));
-                            assertEquals(new Pair<>(n + 16, n + 16), PQ.top());
-                            assertEquals(null, LL.put(n + 16, PQ.dequeue().getValue()));
+                            assertEquals(n + 14, PQ.top());
+                            assertEquals(null, LL.put(n + 14, PQ.dequeue()));
+                            assertEquals(n + 16, PQ.top());
+                            assertEquals(null, LL.put(n + 16, PQ.dequeue()));
                             assertEquals(true, PQ.isEmpty());
 
 

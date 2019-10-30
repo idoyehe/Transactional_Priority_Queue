@@ -224,7 +224,7 @@ public class PriorityQueue {
         return !((this.internalPriorityQueue.size() - lPQueue.dequeueCounter() + lPQueue.size()) > 0);
     }
 
-    public Pair<Comparable, Object> dequeue() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
+    public Object dequeue() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
 
         LocalStorage localStorage = TX.lStorage.get();
 
@@ -240,7 +240,7 @@ public class PriorityQueue {
             setVersion(TX.getVersion());
             setSingleton(true);
             this.unlock();
-            return ret;
+            return ret.getValue();
         }
 
         // TX
@@ -286,6 +286,7 @@ public class PriorityQueue {
         }
 
         Pair<Comparable, Object> pQueueMin = null;
+
         try {
             pQueueMin = lPQueue.currentSmallest(this.internalPriorityQueue);
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
@@ -310,15 +311,15 @@ public class PriorityQueue {
         if (pQueueMin != null && (lPQueueMin == null || pQueueMin.getKey().compareTo(lPQueueMin.getKey()) < 0)) {// the minimum node is in the priority queue
             lPQueue.nextSmallest(this.internalPriorityQueue);
             pqMap.put(this, lPQueue);
-            return pQueueMin;
+            return pQueueMin.getValue();
         }
         // the minimum node is in the local priority queue
         lPQueue.dequeue();// can throw an exception
         pqMap.put(this, lPQueue);
-        return lPQueueMin;
+        return lPQueueMin.getValue();
     }
 
-    public Pair<Comparable, Object> top() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
+    public Object top() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
 
         LocalStorage localStorage = TX.lStorage.get();
 
@@ -334,7 +335,7 @@ public class PriorityQueue {
             setVersion(TX.getVersion());
             setSingleton(true);
             this.unlock();
-            return ret;
+            return ret.getValue();
         }
 
         // TX
@@ -389,10 +390,10 @@ public class PriorityQueue {
         }
 
         if (pQueueMin != null && (lPQueueMin == null || pQueueMin.getKey().compareTo(lPQueueMin.getKey()) < 0)) {// the minimum node is in the priority queue
-            return pQueueMin;
+            return pQueueMin.getValue();
         }
         // the minimum node is in the local priority queue
-        return lPQueue.top();// can throw an exception
+        return lPQueue.top().getValue();// can throw an exception
     }
 }
 

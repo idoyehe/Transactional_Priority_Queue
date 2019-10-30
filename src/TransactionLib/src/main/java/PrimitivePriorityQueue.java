@@ -85,7 +85,7 @@ public class PrimitivePriorityQueue {
     }
 
 
-    private PQNode searchNode(int index) {
+    private PQNode findPQNode(int index) {
         assert 0 < index && index <= this.size;
 
         ArrayList<Integer> binaryDigits = new ArrayList<>();
@@ -111,7 +111,7 @@ public class PrimitivePriorityQueue {
             return;
         }
 
-        PQNode newNodeFather = this.searchNode(newNode.index / 2);
+        PQNode newNodeFather = this.findPQNode(newNode.index / 2);
         if (newNode.index % 2 == PQNodeTurn.LEFT.getValue()) {
             newNodeFather.left = newNode;
         } else {
@@ -139,7 +139,7 @@ public class PrimitivePriorityQueue {
             return prioValuePair;
         }
 
-        PQNode swapper = this.searchNode(this.size);
+        PQNode swapper = this.findPQNode(this.size);
         PrimitivePriorityQueue.nodesSwap(swapper, this.root);
 
         if (this.size % 2 == PQNodeTurn.LEFT.getValue()) {

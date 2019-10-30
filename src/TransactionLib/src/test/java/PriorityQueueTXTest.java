@@ -1,7 +1,6 @@
 package TransactionLib.src.test.java;
 
 import TransactionLib.src.main.java.*;
-import javafx.util.Pair;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
@@ -32,7 +31,7 @@ public class PriorityQueueTXTest {
         assertNull(pQueue.internalPriorityQueue.root);
         TX.TXend();
         assertFalse(pQueue.isEmpty());
-        assertEquals(new Pair<>(0, 0), pQueue.top());
+        assertEquals(0, pQueue.top());
         PriorityQueueTXTest.testHeapInvariantRecursive(pQueue.internalPriorityQueue.root);
     }
 
@@ -55,7 +54,7 @@ public class PriorityQueueTXTest {
             });
             assertEquals(false, pQueue.isEmpty());
             assertEquals(null, pQueue.internalPriorityQueue.root);
-            assertEquals(new Pair<>(0, 0), pQueue.top());
+            assertEquals(0, pQueue.top());
             IntStream.range(0, 100).map(i -> 100 - 1 - i).forEach(n -> {
                 try {
                     pQueue.dequeue();
@@ -101,7 +100,7 @@ public class PriorityQueueTXTest {
         assertNull(pQueue.internalPriorityQueue.root);
         TX.TXend();
         assertFalse(pQueue.isEmpty());
-        assertEquals(new Pair<>(0, 0), pQueue.top());
+        assertEquals(0, pQueue.top());
         assertEquals(pqueueMaxSize, pQueue.internalPriorityQueue.size());
         PriorityQueueTXTest.testHeapInvariantRecursive(pQueue.internalPriorityQueue.root);
         pQueue.setSingleton(false);
@@ -110,7 +109,7 @@ public class PriorityQueueTXTest {
         assertFalse(pQueue.isEmpty());
         for (int i = 0; i < pqueueMaxSize; i++) {
             try {
-                assertEquals(new Pair<>(i, i), pQueue.top());
+                assertEquals(i, pQueue.top());
                 pQueue.dequeue();
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 fail("Local priority queue should not be empty");
@@ -191,31 +190,31 @@ public class PriorityQueueTXTest {
                     try {
                         TX.TXbegin();
                         pQueue.enqueue(p_d, d);
-                        assertEquals(new Pair<>(p_d, d), pQueue.top());
+                        assertEquals(d, pQueue.top());
                         assertFalse(pQueue.isEmpty());
 
                         pQueue.enqueue(p_c, c);
-                        assertEquals(new Pair<>(p_c, c), pQueue.top());
+                        assertEquals(c, pQueue.top());
                         assertFalse(pQueue.isEmpty());
 
                         pQueue.enqueue(p_b, b);
-                        assertEquals(new Pair<>(p_b, b), pQueue.top());
+                        assertEquals(b, pQueue.top());
                         assertFalse(pQueue.isEmpty());
 
                         pQueue.enqueue(p_a, a);
-                        assertEquals(new Pair<>(p_a, a), pQueue.top());
+                        assertEquals(a, pQueue.top());
                         assertFalse(pQueue.isEmpty());
 
-                        assertEquals(new Pair<>(p_a, a), pQueue.top());
+                        assertEquals(a, pQueue.top());
                         pQueue.dequeue();
 
-                        assertEquals(new Pair<>(p_b, b), pQueue.top());
+                        assertEquals(b, pQueue.top());
                         pQueue.dequeue();
 
-                        assertEquals(new Pair<>(p_c, c), pQueue.top());
+                        assertEquals(c, pQueue.top());
                         pQueue.dequeue();
 
-                        assertEquals(new Pair<>(p_d, d), pQueue.top());
+                        assertEquals(d, pQueue.top());
                         pQueue.dequeue();
 
                         assertTrue(pQueue.isEmpty());
