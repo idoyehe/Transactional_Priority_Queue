@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public class PrimitivePriorityQueue {
     public PQNode root = null;
     private int size = 0;
+    private static PQNodeComparator comparator = new PQNodeComparator();
 
     private static void nodesSwap(PQNode node1, PQNode node2) {
         assert node1 != null && node2 != null;
@@ -20,7 +21,7 @@ public class PrimitivePriorityQueue {
 
     private static void nodeSiftUp(PQNode node) {
         assert node != null;
-        if (node.father == null || node.father.priority.compareTo(node.priority) < 0) {// case no need to sift up
+        if (node.father == null || PrimitivePriorityQueue.comparator.compare(node.father, node) < 0) {// case no need to sift up
             return;
         }
 
@@ -34,17 +35,17 @@ public class PrimitivePriorityQueue {
             return;
         }
         PQNode minSon = null;
-        if (node.left != null && node.priority.compareTo(node.left.priority) > 0) {
+        if (node.left != null && PrimitivePriorityQueue.comparator.compare(node, node.left) > 0) {
             minSon = node.left;
         }
 
-        if (node.right != null && node.priority.compareTo(node.right.priority) > 0) {
-            if (minSon == null || minSon.priority.compareTo(node.right.priority) > 0) {
+        if (node.right != null && PrimitivePriorityQueue.comparator.compare(node, node.right) > 0) {
+            if (minSon == null || PrimitivePriorityQueue.comparator.compare(minSon, node.right) > 0) {
                 minSon = node.right;
             }
         }
         if (minSon != null) {
-            assert node.priority.compareTo(minSon.priority) > 0;
+            assert PrimitivePriorityQueue.comparator.compare(node, minSon) > 0;
             PrimitivePriorityQueue.nodesSwap(node, minSon);
             PrimitivePriorityQueue.nodeSiftDown(minSon);
 
