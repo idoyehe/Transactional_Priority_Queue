@@ -167,99 +167,160 @@ public class PQueueLinkedListQueueTests {
         } catch (TXLibExceptions.PQueueIsEmptyException ignored) {
         }
     }
-//
-//    @Test
-//    public void testMultiThreadSimpleTransaction() throws InterruptedException {
-//        CountDownLatch latch = new CountDownLatch(1);
-//        LinkedList LL = new LinkedList();
-//        Queue Q = new Queue();
-//        ArrayList<Thread> threads = new ArrayList<>(THREADS);
-//        for (int i = 0; i < THREADS; i++) {
-//            threads.add(new Thread(new RunSimpleTransaction(latch, LL, Q)));
-//        }
-//        for (int i = 0; i < THREADS; i++) {
-//            threads.get(i).start();
-//        }
-//        latch.countDown();
-//        for (int i = 0; i < THREADS; i++) {
-//            threads.get(i).join();
-//        }
-//    }
-//
-//    class RunSimpleTransaction implements Runnable {
-//
-//        LinkedList LL;
-//        Queue Q;
-//        CountDownLatch latch;
-//
-//        RunSimpleTransaction(CountDownLatch l, LinkedList ll, Queue q) {
-//            latch = l;
-//            LL = ll;
-//            Q = q;
-//        }
-//
-//        @Override
-//        public void run() {
-//            try {
-//                latch.await();
-//            } catch (InterruptedException exp) {
-//                System.out.println("InterruptedException");
-//            }
-//            for (int i = 0; i < ITERATIONS; i++) {
-//
-//                Random rand = new Random();
-//                int n = rand.nextInt((RANGE) + 1);
-//                // rand.nextInt((max - min) + 1) + min
-//
-//                while (true) {
-//                    try {
-//                        try {
-//                            TX.TXbegin();
-//                            LL.put(n, n);
-//                            LL.put(n + 3, n + 3);
-//                            LL.put(n + 6, n + 6);
-//                            LL.put(n + 9, n + 9);
-//                            LL.put(n + 12, n + 12);
-//                            LL.put(n + 15, n + 15);
-//                            LL.put(n + 7, n + 7);
-//                            LL.put(n + 11, n + 11);
-//                            assertEquals(true, LL.containsKey(n + 12));
-//                            assertEquals(n + 12, LL.get(n + 12));
-//                            assertEquals(true, LL.containsKey(n + 15));
-//                            assertEquals(n + 15, LL.get(n + 15));
-//                            assertEquals(n, LL.get(n));
-//                            assertEquals(n + 11, LL.get(n + 11));
-//                            assertEquals(n + 7, LL.get(n + 7));
-//                            Q.enqueue(LL.remove(n + 7));
-//                            Q.enqueue(LL.remove(n + 9));
-//                            Q.enqueue(LL.remove(n + 11));
-//                            assertEquals(false, Q.isEmpty());
-//                            assertEquals(null, LL.put(n + 7, Q.dequeue()));
-//                            assertEquals(null, LL.put(n + 9, Q.dequeue()));
-//                            assertEquals(false, Q.isEmpty());
-//                            Q.enqueue(LL.remove(n + 15));
-//                            assertEquals(null, LL.put(n + 11, Q.dequeue()));
-//                            assertEquals(null, LL.put(n + 15, Q.dequeue()));
-//                            assertEquals(true, Q.isEmpty());
-//                            assertEquals(true, LL.containsKey(n + 12));
-//                            assertEquals(n + 12, LL.get(n + 12));
-//                            assertEquals(true, LL.containsKey(n + 15));
-//                            assertEquals(n + 15, LL.get(n + 15));
-//                            assertEquals(n, LL.get(n));
-//                            assertEquals(n + 11, LL.get(n + 11));
-//                            assertEquals(n + 7, LL.get(n + 7));
-//                        } catch (TXLibExceptions.QueueIsEmptyException exp) {
-//                            fail("Queue should not be empty");
-//                        } finally {
-//                            TX.TXend();
-//                        }
-//                    } catch (TXLibExceptions.AbortException exp) {
-//                        continue;
-//                    }
-//                    break;
-//                }
-//            }
-//        }
-//    }
 
+    @Test
+    public void testMultiThreadSimpleTransaction() throws InterruptedException {
+        CountDownLatch latch = new CountDownLatch(1);
+        LinkedList LL = new LinkedList();
+        Queue Q = new Queue();
+        PriorityQueue PQ = new PriorityQueue();
+
+        ArrayList<Thread> threads = new ArrayList<>(THREADS);
+        for (int i = 0; i < THREADS; i++) {
+            threads.add(new Thread(new RunSimpleTransaction(latch, LL, Q, PQ)));
+        }
+        for (int i = 0; i < THREADS; i++) {
+            threads.get(i).start();
+        }
+        latch.countDown();
+        for (int i = 0; i < THREADS; i++) {
+            threads.get(i).join();
+        }
+    }
+
+    class RunSimpleTransaction implements Runnable {
+
+        LinkedList LL;
+        Queue Q;
+        PriorityQueue PQ;
+        CountDownLatch latch;
+
+        RunSimpleTransaction(CountDownLatch l, LinkedList ll, Queue q, PriorityQueue pq) {
+            latch = l;
+            LL = ll;
+            Q = q;
+            PQ = pq;
+        }
+
+        @Override
+        public void run() {
+            try {
+                latch.await();
+            } catch (InterruptedException exp) {
+                System.out.println("InterruptedException");
+            }
+            for (int i = 0; i < ITERATIONS; i++) {
+
+                Random rand = new Random();
+                int n = rand.nextInt((RANGE) + 1);
+
+                while (true) {
+                    try {
+                        try {
+                            TX.TXbegin();
+                            LL.put(n, n);
+
+                            LL.put(n + 3, n + 3);
+                            LL.put(n + 6, n + 6);
+                            LL.put(n + 9, n + 9);
+                            LL.put(n + 12, n + 12);
+                            LL.put(n + 15, n + 15);
+                            LL.put(n + 7, n + 7);
+                            LL.put(n + 11, n + 11);
+                            assertEquals(true, LL.containsKey(n + 12));
+                            assertEquals(n + 12, LL.get(n + 12));
+                            assertEquals(true, LL.containsKey(n + 15));
+                            assertEquals(n + 15, LL.get(n + 15));
+                            assertEquals(n, LL.get(n));
+                            assertEquals(n + 11, LL.get(n + 11));
+                            assertEquals(n + 7, LL.get(n + 7));
+                            LL.put(n, n);
+
+                            LL.put(n + 2, n + 2);
+                            LL.put(n + 4, n + 4);
+                            LL.put(n + 6, n + 6);
+                            LL.put(n + 10, n + 10);
+                            LL.put(n + 14, n + 14);
+                            LL.put(n + 8, n + 8);
+                            LL.put(n + 16, n + 16);
+                            assertEquals(true, LL.containsKey(n + 10));
+                            assertEquals(n + 10, LL.get(n + 10));
+                            assertEquals(true, LL.containsKey(n + 14));
+                            assertEquals(n + 14, LL.get(n + 14));
+                            assertEquals(n, LL.get(n));
+                            assertEquals(n + 16, LL.get(n + 16));
+                            assertEquals(n + 4, LL.get(n + 4));
+                            assertEquals(n + 2, LL.get(n + 2));
+
+                            Q.enqueue(LL.remove(n + 7));
+                            Q.enqueue(LL.remove(n + 9));
+                            Q.enqueue(LL.remove(n + 11));
+
+                            PQ.enqueue(n + 6, LL.remove(n + 6));
+                            PQ.enqueue(n + 10, LL.remove(n + 10));
+                            PQ.enqueue(n + 14, LL.remove(n + 14));
+
+                            assertEquals(false, Q.isEmpty());
+                            assertEquals(false, PQ.isEmpty());
+
+
+                            assertEquals(null, LL.put(n + 7, Q.dequeue()));
+                            assertEquals(null, LL.put(n + 9, Q.dequeue()));
+                            assertEquals(false, Q.isEmpty());
+
+                            assertEquals(new Pair<>(n + 6, n + 6), PQ.top());
+                            assertEquals(null, LL.put(n + 6, PQ.dequeue().getValue()));
+                            assertEquals(new Pair<>(n + 10, n + 10), PQ.top());
+                            assertEquals(null, LL.put(n + 10, PQ.dequeue().getValue()));
+                            assertEquals(false, PQ.isEmpty());
+
+                            Q.enqueue(LL.remove(n + 15));
+                            PQ.enqueue(n + 16, LL.remove(n + 16));
+
+                            assertEquals(null, LL.put(n + 11, Q.dequeue()));
+                            assertEquals(null, LL.put(n + 15, Q.dequeue()));
+                            assertEquals(true, Q.isEmpty());
+
+
+                            assertEquals(new Pair<>(n + 14, n + 14), PQ.top());
+                            assertEquals(null, LL.put(n + 14, PQ.dequeue().getValue()));
+                            assertEquals(new Pair<>(n + 16, n + 16), PQ.top());
+                            assertEquals(null, LL.put(n + 16, PQ.dequeue().getValue()));
+                            assertEquals(true, PQ.isEmpty());
+
+
+                            assertEquals(true, LL.containsKey(n + 12));
+                            assertEquals(n + 12, LL.get(n + 12));
+                            assertEquals(true, LL.containsKey(n + 15));
+                            assertEquals(n + 15, LL.get(n + 15));
+
+                            assertEquals(true, LL.containsKey(n + 8));
+                            assertEquals(n + 8, LL.get(n + 8));
+                            assertEquals(true, LL.containsKey(n + 16));
+                            assertEquals(n + 16, LL.get(n + 16));
+
+                            assertEquals(n, LL.get(n));
+                            assertEquals(n + 11, LL.get(n + 11));
+                            assertEquals(n + 7, LL.get(n + 7));
+
+                            assertEquals(n + 10, LL.get(n + 10));
+                            assertEquals(n + 6, LL.get(n + 6));
+
+
+                        } catch (TXLibExceptions.QueueIsEmptyException exp) {
+                            fail("Queue should not be empty");
+
+                        } catch (TXLibExceptions.PQueueIsEmptyException exp) {
+                            fail("Priority Queue should not be empty");
+                        } finally {
+                            TX.TXend();
+                        }
+                    } catch (TXLibExceptions.AbortException exp) {
+                        continue;
+                    }
+                    break;
+                }
+            }
+        }
+    }
 }
