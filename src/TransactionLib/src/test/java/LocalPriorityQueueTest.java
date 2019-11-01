@@ -76,9 +76,8 @@ public class LocalPriorityQueueTest {
 
     }
 
-
     @Test
-    public void testOverall() {
+    public void testDecreasePriority() {
         final int range = 500;
         LocalPriorityQueue lpq = new LocalPriorityQueue();
         IntStream.range(0, range).forEachOrdered(n -> {
@@ -89,11 +88,51 @@ public class LocalPriorityQueueTest {
 
         testHeapInvariantRecursive(lpq.root);
 
+        PQNode maximumPriorityNode = lpq.enqueue(range, range);
+
+        Assert.assertEquals(lpq.size(), maximumPriorityNode.getIndex());
+
+        lpq.decreasePriority(maximumPriorityNode, -1);
+
+        Assert.assertEquals(1, maximumPriorityNode.getIndex());
+
+        try {
+            Assert.assertEquals(new Pair<>(-1, range), lpq.dequeue());
+
+        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+            e.printStackTrace();
+            fail("Local priority queue should not be empty");
+
+        }
+    }
+
+
+    @Test
+    public void testOverall() {
+        final int range = 500;
+        LocalPriorityQueue lpq = new LocalPriorityQueue();
+        PQNode nodesArray[] = new PQNode[range];
+        IntStream.range(0, range).forEachOrdered(n -> {
+            n = range - 1 - n;
+            nodesArray[n] = lpq.enqueue(n, n);
+            Assert.assertEquals(1, nodesArray[n].getIndex());
+        });
+
+        testHeapInvariantRecursive(lpq.root);
+
+        for (int i = nodesArray.length - 1; i >= 0; i--) {
+            PQNode maximumPriorityNode = nodesArray[i];
+            lpq.decreasePriority(maximumPriorityNode, (int) maximumPriorityNode.getPriority() - range - 1);
+            Assert.assertEquals(1, maximumPriorityNode.getIndex());
+        }
+
         Assert.assertEquals(range, lpq.size());
         IntStream.range(0, lpq.size()).forEachOrdered(n -> {
             try {
-                Assert.assertEquals(new Pair<>(n, n), lpq.top());
+                Assert.assertEquals(new Pair<>(n - range - 1, n), lpq.top());
                 lpq.dequeue();
+                testHeapInvariantRecursive(lpq.root);
+
 
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 e.printStackTrace();
