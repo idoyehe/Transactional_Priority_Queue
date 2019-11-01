@@ -21,12 +21,28 @@ public class PriorityQueueTXTest {
     @Test
     public void testPriorityQueueSingleThreadEnqueueLocalTXStorage() throws TXLibExceptions.PQueueIsEmptyException {
         PriorityQueue pQueue = new PriorityQueue();
-
+        final int range = 100;
         TX.TXbegin();
         assertTrue(pQueue.isEmpty());
-        IntStream.range(0, 100).map(i -> 100 - 1 - i).forEach(n -> {
-            pQueue.enqueue(n, n);
+        IntStream.range(0, range).map(i -> 100 - 1 - i).forEach(n -> {
+            PQNode newNode = pQueue.enqueue(n, n);
+            assertEquals(1, newNode.getIndex());
         });
+
+
+        PQNode maximumPriorityNode = pQueue.enqueue(range, range);
+        assertEquals(range + 1, maximumPriorityNode.getIndex());
+        pQueue.decreasePriority(maximumPriorityNode, -1);
+        assertEquals(1, maximumPriorityNode.getIndex());
+
+        try {
+            assertEquals(range, pQueue.dequeue());
+
+        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+            e.printStackTrace();
+            fail("Local priority queue should not be empty");
+        }
+
         assertFalse(pQueue.isEmpty());
         assertNull(pQueue.internalPriorityQueue.root);
         TX.TXend();
@@ -37,6 +53,7 @@ public class PriorityQueueTXTest {
 
     @Test
     public void testPriorityQueueSingleThreadDequeueLocalTXStorage() throws TXLibExceptions.PQueueIsEmptyException {
+        final int range = 100;
         PriorityQueue pQueue = new PriorityQueue();
         for (int iter = 0; iter < 2; iter++) {
             pQueue.setSingleton(false);
@@ -52,6 +69,21 @@ public class PriorityQueueTXTest {
             IntStream.range(0, 100).map(i -> 100 - 1 - i).forEach(n -> {
                 pQueue.enqueue(n, n);
             });
+
+            PQNode maximumPriorityNode = pQueue.enqueue(range, range);
+            assertEquals(range + 1, maximumPriorityNode.getIndex());
+            pQueue.decreasePriority(maximumPriorityNode, -1);
+            assertEquals(1, maximumPriorityNode.getIndex());
+
+            try {
+                assertEquals(range, pQueue.dequeue());
+
+            } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                e.printStackTrace();
+                fail("Local priority queue should not be empty");
+            }
+
+
             assertEquals(false, pQueue.isEmpty());
             assertEquals(null, pQueue.internalPriorityQueue.root);
             assertEquals(0, pQueue.top());
@@ -62,6 +94,9 @@ public class PriorityQueueTXTest {
                     fail("Local priority queue should not be empty");
                 }
             });
+            TX.TXend();
+
+            TX.TXbegin();
             assertEquals(true, pQueue.isEmpty());
             try {
                 pQueue.dequeue();
@@ -70,6 +105,7 @@ public class PriorityQueueTXTest {
                 assert e != null;
             }
             TX.TXend();
+
             assertEquals(true, pQueue.isEmpty());
             try {
                 pQueue.dequeue();
@@ -84,7 +120,8 @@ public class PriorityQueueTXTest {
     @Test
     public void testPriorityQueueSingleThreadEnqueueDequeueLocalTXStorage() throws TXLibExceptions.PQueueIsEmptyException {
         PriorityQueue pQueue = new PriorityQueue();
-        final int pqueueMaxSize = 100;
+        final int range = 100;
+
         TX.TXbegin(); // 1st transcation
         assertEquals(true, pQueue.isEmpty());
         try {
@@ -96,18 +133,34 @@ public class PriorityQueueTXTest {
         IntStream.range(0, 100).map(i -> 100 - 1 - i).forEach(n -> {
             pQueue.enqueue(n, n);
         });
+        PQNode maximumPriorityNode = pQueue.enqueue(range, range);
+        assertEquals(range + 1, maximumPriorityNode.getIndex());
+        pQueue.decreasePriority(maximumPriorityNode, -1);
+        assertEquals(1, maximumPriorityNode.getIndex());
+
         assertFalse(pQueue.isEmpty());
         assertNull(pQueue.internalPriorityQueue.root);
         TX.TXend();
+
+
         assertFalse(pQueue.isEmpty());
-        assertEquals(0, pQueue.top());
-        assertEquals(pqueueMaxSize, pQueue.internalPriorityQueue.size());
+        assertEquals(range, pQueue.top());
+        assertEquals(range + 1, pQueue.internalPriorityQueue.size());
         PriorityQueueTXTest.testHeapInvariantRecursive(pQueue.internalPriorityQueue.root);
         pQueue.setSingleton(false);
 
         TX.TXbegin(); // 2nd transaction
         assertFalse(pQueue.isEmpty());
-        for (int i = 0; i < pqueueMaxSize; i++) {
+
+        try {
+            assertEquals(range, pQueue.dequeue());
+
+        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+            e.printStackTrace();
+            fail("Local priority queue should not be empty");
+        }
+
+        for (int i = 0; i < range; i++) {
             try {
                 assertEquals(i, pQueue.top());
                 pQueue.dequeue();
@@ -189,7 +242,7 @@ public class PriorityQueueTXTest {
                 try {
                     try {
                         TX.TXbegin();
-                        pQueue.enqueue(p_d, d);
+                        PQNode maximumPriorityNode = pQueue.enqueue(p_d, d);
                         assertEquals(d, pQueue.top());
                         assertFalse(pQueue.isEmpty());
 
@@ -205,6 +258,10 @@ public class PriorityQueueTXTest {
                         assertEquals(a, pQueue.top());
                         assertFalse(pQueue.isEmpty());
 
+                        pQueue.decreasePriority(maximumPriorityNode, this.priorityRef);
+                        assertEquals(d, pQueue.top());
+                        pQueue.dequeue();
+
                         assertEquals(a, pQueue.top());
                         pQueue.dequeue();
 
@@ -212,9 +269,6 @@ public class PriorityQueueTXTest {
                         pQueue.dequeue();
 
                         assertEquals(c, pQueue.top());
-                        pQueue.dequeue();
-
-                        assertEquals(d, pQueue.top());
                         pQueue.dequeue();
 
                         assertTrue(pQueue.isEmpty());

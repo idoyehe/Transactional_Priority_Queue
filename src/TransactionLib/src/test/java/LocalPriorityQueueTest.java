@@ -84,6 +84,8 @@ public class LocalPriorityQueueTest {
             n = range - 1 - n;
             PQNode newNode = lpq.enqueue(n, n);
             Assert.assertEquals(1, newNode.getIndex());
+            lpq.decreasePriority(newNode, newNode.getPriority());
+            Assert.assertEquals(1, newNode.getIndex());
         });
 
         testHeapInvariantRecursive(lpq.root);
@@ -94,10 +96,16 @@ public class LocalPriorityQueueTest {
 
         lpq.decreasePriority(maximumPriorityNode, -1);
 
+        Assert.assertEquals(-1, maximumPriorityNode.getPriority());
+        Assert.assertEquals(1, maximumPriorityNode.getIndex());
+
+
+        lpq.decreasePriority(maximumPriorityNode, -2);
+        Assert.assertEquals(-2, maximumPriorityNode.getPriority());
         Assert.assertEquals(1, maximumPriorityNode.getIndex());
 
         try {
-            Assert.assertEquals(new Pair<>(-1, range), lpq.dequeue());
+            Assert.assertEquals(new Pair<>(-2, range), lpq.dequeue());
 
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             e.printStackTrace();

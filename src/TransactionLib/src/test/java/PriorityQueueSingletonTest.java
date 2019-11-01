@@ -23,6 +23,7 @@ public class PriorityQueueSingletonTest {
 
     @Test
     public void testTXPriorityQueueSingleton() throws TXLibExceptions.PQueueIsEmptyException {
+        final int range = 100;
         PriorityQueue pQueue = new PriorityQueue();
         Integer zero = 0;
         Assert.assertEquals(true, pQueue.isEmpty());
@@ -50,12 +51,32 @@ public class PriorityQueueSingletonTest {
         Assert.assertEquals(twoS, pQueue.dequeue());
         Assert.assertEquals(true, pQueue.isEmpty());
 
-
-        IntStream.range(0, 100).forEachOrdered(n -> {
-            pQueue.enqueue(n, n);
+        PQNode nodesArray[] = new PQNode[range];
+        IntStream.range(0, range).forEachOrdered(n -> {
+            n = range - 1 - n;
+            nodesArray[n] = pQueue.enqueue(n, n);
+            Assert.assertEquals(1, nodesArray[n].getIndex());
         });
+
+        PQNode maximumPriorityNode = pQueue.enqueue(range, range);
+
+        Assert.assertEquals(pQueue.internalPriorityQueue.size(), maximumPriorityNode.getIndex());
+
+        pQueue.decreasePriority(maximumPriorityNode, -1);
+
+        Assert.assertEquals(1, maximumPriorityNode.getIndex());
+
+        try {
+            Assert.assertEquals(range, pQueue.dequeue());
+
+        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+            e.printStackTrace();
+            fail("Local priority queue should not be empty");
+
+        }
+
         testHeapInvariantRecursive(pQueue.internalPriorityQueue.root);
-        Assert.assertEquals(pQueue.internalPriorityQueue.size(), 100);
+        Assert.assertEquals(pQueue.internalPriorityQueue.size(), range);
         IntStream.range(0, 100).forEachOrdered(n -> {
             try {
                 Assert.assertEquals(n, pQueue.top());
@@ -66,7 +87,7 @@ public class PriorityQueueSingletonTest {
                 fail("Local priority queue should not be empty");
             }
         });
-        Assert.assertEquals(pQueue.internalPriorityQueue.size(), 0);
+        Assert.assertTrue(pQueue.isEmpty());
     }
 
     @Test
@@ -178,7 +199,7 @@ class Run implements Runnable {
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
         //System.out.println(threadName + ": enqueue(" + p_d + "," + d + ")");
-        pQueue.enqueue(p_d, d);
+        PQNode maximumPriorityNode = pQueue.enqueue(p_d, d);
 
         Run.barrierAwaitWrapper();
         this.barrierResetWrapper();
@@ -189,9 +210,11 @@ class Run implements Runnable {
         if (threadName == "T0") {
             PriorityQueueSingletonTest.testHeapInvariantRecursive(pQueue.internalPriorityQueue.root);
         }
+        pQueue.decreasePriority(maximumPriorityNode, -this.priorityRef);
+
         try {
-            String minStr = "T0-a";
-            Assert.assertEquals(minStr, pQueue.top());
+            String suffix = "-d";
+            Assert.assertTrue(((String) pQueue.top()).endsWith(suffix));
         } catch (TXLibExceptions.PQueueIsEmptyException ex) {
             ex.printStackTrace();
         }

@@ -57,12 +57,4 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
         this._dequeueCounter++;
         assert (this.dequeueCounter() == internalPQueue.size() && this.pqTXState.isEmpty()) || (this.dequeueCounter() < internalPQueue.size() && !this.pqTXState.isEmpty());
     }
-
-    public void decreasePriority(final PQNode nodeToModify, Comparable newPriority) {
-        assert this.findPQNode(nodeToModify.getIndex()) == nodeToModify;//checking node is actually part of the heap
-        if (nodeToModify.getPriority().compareTo(newPriority) > 0) {
-            nodeToModify.setPriority(newPriority);
-            this.root = PrimitivePriorityQueue.nodeSiftUp(nodeToModify);
-        }
-    }
 }

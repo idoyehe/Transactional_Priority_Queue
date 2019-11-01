@@ -35,21 +35,21 @@ public class PQNode implements Comparable<PQNode> {
     }
 
     //smart setter
-    public void setRight(PQNode rightSon) {
+    void setRight(PQNode rightSon) {
         this.right = rightSon;
         if (this.right != null) {
             this.right.father = this;
         }
     }
 
-    public void setLeft(PQNode leftSon) {
+    void setLeft(PQNode leftSon) {
         this.left = leftSon;
         if (this.left != null) {
             this.left.father = this;
         }
     }
 
-    public void setFatherAndIndex(int index, PQNode newFather) {
+    void setFatherAndIndex(int index, PQNode newFather) {
         this.setIndex(index);
         this.father = newFather;
         if (this.father != null) {
@@ -62,15 +62,15 @@ public class PQNode implements Comparable<PQNode> {
         }
     }
 
-    public void setIndex(final int newIndex) {
+    void setIndex(final int newIndex) {
         this.index = newIndex;
     }
 
-    public void setValue(final Object newValue) {
+    void setValue(final Object newValue) {
         this.value = newValue;
     }
 
-    public void setPriority(final Comparable newPriority) {
+    void setPriority(final Comparable newPriority) {
         this.priority = newPriority;
     }
 

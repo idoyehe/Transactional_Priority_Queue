@@ -107,7 +107,7 @@ public class PriorityQueue {
         }
     }
 
-    public void enqueue(Comparable priority, Object value) throws TXLibExceptions.AbortException {
+    public final PQNode enqueue(Comparable priority, Object value) throws TXLibExceptions.AbortException {
 
         LocalStorage localStorage = TX.lStorage.get();
 
@@ -119,13 +119,13 @@ public class PriorityQueue {
             }
 
             this.lock();
-            this.internalPriorityQueue.enqueue(priority, value);
+            final PQNode newNode = this.internalPriorityQueue.enqueue(priority, value);
 
             this.setVersion(TX.getVersion());
             this.setSingleton(true);
 
             this.unlock();
-            return;
+            return newNode;
         }
 
         // TX
@@ -154,8 +154,61 @@ public class PriorityQueue {
         if (lPQueue == null) {//First time to enqueue the PriorityQueue
             lPQueue = new LocalPriorityQueue();
         }
-        lPQueue.enqueue(priority, value);
+        final PQNode newNode = lPQueue.enqueue(priority, value);
         pqMap.put(this, lPQueue);
+        return newNode;
+    }
+
+    public void decreasePriority(final PQNode nodeToModify, Comparable newPriority) throws TXLibExceptions.AbortException {
+        //TODO: check with Gal if need to enforce singleton in the exported node for mixed singleton and TX
+        LocalStorage localStorage = TX.lStorage.get();
+
+        // SINGLETON
+        if (!localStorage.TX) {
+
+            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+                System.out.println("Priority Queue decreasePriority - singleton");
+            }
+
+            this.lock();
+            this.internalPriorityQueue.decreasePriority(nodeToModify, newPriority);
+
+            this.setVersion(TX.getVersion());
+            this.setSingleton(true);
+
+            this.unlock();
+            return;
+        }
+
+        // TX
+
+        if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+            System.out.println("Priority Queue decreasePriority - in TX");
+        }
+
+        if (localStorage.readVersion < this.getVersion()) {
+            localStorage.TX = false;
+            TXLibExceptions excep = new TXLibExceptions();
+            throw excep.new AbortException();
+        }
+        if ((localStorage.readVersion == this.getVersion()) && (isSingleton())) {
+            TX.incrementAndGetVersion();
+            localStorage.TX = false;
+            TXLibExceptions excep = new TXLibExceptions();
+            throw excep.new AbortException();
+        }
+
+        HashMap<PriorityQueue, LocalPriorityQueue> pqMap = localStorage.priorityQueueMap;
+        LocalPriorityQueue lPQueue = pqMap.get(this);
+
+        localStorage.readOnly = false;
+
+        if (lPQueue == null) {//First time to enqueue the PriorityQueue
+            lPQueue = new LocalPriorityQueue();
+        }
+        lPQueue.decreasePriority(nodeToModify, newPriority);
+        pqMap.put(this, lPQueue);
+        return;
     }
 
 

@@ -139,7 +139,7 @@ public class PrimitivePriorityQueue {
     }
 
 
-    public PQNode enqueue(Comparable priority, Object value) {
+    public final PQNode enqueue(Comparable priority, Object value) {
         PQNode newNode = new PQNode();
         newNode.setPriority(priority);
         newNode.setValue(value);
@@ -164,6 +164,14 @@ public class PrimitivePriorityQueue {
         this.size += 1;
         this.root = PrimitivePriorityQueue.nodeSiftUp(newNode);
         return newNode;
+    }
+
+    public void decreasePriority(final PQNode nodeToModify, Comparable newPriority) {
+        assert this.findPQNode(nodeToModify.getIndex()) == nodeToModify;//checking node is actually part of the heap
+        if (nodeToModify.getPriority().compareTo(newPriority) > 0) {
+            nodeToModify.setPriority(newPriority);
+            this.root = PrimitivePriorityQueue.nodeSiftUp(nodeToModify);
+        }
     }
 
     public Pair<Comparable, Object> dequeue() throws TXLibExceptions.PQueueIsEmptyException {
