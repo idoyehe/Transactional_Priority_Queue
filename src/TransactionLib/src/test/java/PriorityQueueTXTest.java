@@ -158,7 +158,6 @@ public class PriorityQueueTXTest {
         TX.TXbegin(); // 2nd transaction
         assertFalse(pQueue.isEmpty());
 
-        assertEquals(range + 3, maximumPriorityNode.getIndex());
         assertEquals(1, minimumPriorityNode.getIndex());
         pQueue.decreasePriority(minimumPriorityNode, -5000);
 

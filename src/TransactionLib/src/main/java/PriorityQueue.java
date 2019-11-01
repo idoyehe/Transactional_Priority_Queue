@@ -57,25 +57,44 @@ public class PriorityQueue {
         pqLock.unlock();
     }
 
-    void enqueueNodes(LocalPriorityQueue lPQueue) {
+    void commitLocalChanges(LocalPriorityQueue lPQueue) {
         assert (lPQueue != null);
+        if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+            System.out.println("Priority Queue commitLocalChanges");
+        }
+        this.dequeueNodes(lPQueue.dequeueCounter());
+        PrimitivePriorityQueue oldInternalPriorityQueue = this.internalPriorityQueue;
+        this.internalPriorityQueue = lPQueue;
+        this.mergingNewNodes(oldInternalPriorityQueue, lPQueue);
+    }
+
+    private void mergingNewNodes(PrimitivePriorityQueue oldInternalPriorityQueue, LocalPriorityQueue lPQueue) {
+        assert (oldInternalPriorityQueue != null);
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
             System.out.println("Priority Queue enqueue Nodes");
         }
         try {
-            while (!lPQueue.isEmpty()) {
+            ArrayList<PQNode> modifiedNodesState = lPQueue.getModifiedNodesState();
+            while (!oldInternalPriorityQueue.isEmpty()) {
                 if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                     System.out.println("Priority Queue enqueueNodes - lPQueue is not empty");
                 }
                 PQNode dequeuedNode = lPQueue.dequeueAsNode();
                 assert dequeuedNode.getFather() == null && dequeuedNode.getRight() == null && dequeuedNode.getLeft() == null;
-
+                if (modifiedNodesState.contains(dequeuedNode)) {
+                    if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+                        System.out.println("Priority Queue mergingNewNodes - node has been modified therefore ignored");
+                    }
+                    modifiedNodesState.remove(dequeuedNode);
+                    continue;
+                }
                 if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                     System.out.println("Priority Queue enqueueNodes - lPQueue node priority is " + dequeuedNode.getPriority());
                     System.out.println("Priority Queue enqueueNodes - lPQueue node value is " + dequeuedNode.getValue());
                 }
                 this.internalPriorityQueue.enqueueAsNode(dequeuedNode);
             }
+            assert modifiedNodesState.size() == 0;//handled in all modified nodes
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                 System.out.println("Priority Queue enqueueNodes - local queue is empty");
@@ -83,7 +102,7 @@ public class PriorityQueue {
         }
     }
 
-    void dequeueNodes(int dequeueCounter) {
+    private void dequeueNodes(int dequeueCounter) {
 
         if (dequeueCounter == 0) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
@@ -105,35 +124,6 @@ public class PriorityQueue {
                 if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                     System.out.println("Priority Queue dequeueNodes - priority queue is empty");
                 }
-            }
-        }
-    }
-
-    void handleModifiedNodes(LocalPriorityQueue lPQueue) {
-        assert (lPQueue != null);
-        ArrayList<PQNode> modifiedNodes = lPQueue.getModifiedNodesState();
-        if (modifiedNodes.size() == 0) {
-            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-                System.out.println("Priority Queue handleModifiedNodes - modifiedNodes.size() is 0");
-            }
-            return;
-        }
-
-        if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-            System.out.println("Priority Queue handleModifiedNodes");
-        }
-        for (PQNode modifiedNode : modifiedNodes) {
-            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-                System.out.println("Priority Queue dequeueNodes - handling");
-            }
-
-            assert this.internalPriorityQueue.containsNode(modifiedNode);
-
-            try {
-                this.internalPriorityQueue.decreasePriority(modifiedNode, this.internalPriorityQueue.top().getKey());
-                this.internalPriorityQueue.dequeue();
-            } catch (TXLibExceptions.PQueueIsEmptyException e) {
-                System.out.println("Priority Queue handleModifiedNodes - priority queue is empty");
             }
         }
     }
