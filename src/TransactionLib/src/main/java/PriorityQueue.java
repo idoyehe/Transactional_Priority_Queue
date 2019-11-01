@@ -2,6 +2,7 @@ package TransactionLib.src.main.java;
 
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -66,13 +67,14 @@ public class PriorityQueue {
                 if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                     System.out.println("Priority Queue enqueueNodes - lPQueue is not empty");
                 }
-                Pair<Comparable, Object> prioValuePair = lPQueue.dequeue();
+                PQNode dequeuedNode = lPQueue.dequeueAsNode();
+                assert dequeuedNode.getFather() == null && dequeuedNode.getRight() == null && dequeuedNode.getLeft() == null;
 
                 if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-                    System.out.println("Priority Queue enqueueNodes - lPQueue node priority is " + prioValuePair.getKey());
-                    System.out.println("Priority Queue enqueueNodes - lPQueue node value is " + prioValuePair.getValue());
+                    System.out.println("Priority Queue enqueueNodes - lPQueue node priority is " + dequeuedNode.getPriority());
+                    System.out.println("Priority Queue enqueueNodes - lPQueue node value is " + dequeuedNode.getValue());
                 }
-                this.internalPriorityQueue.enqueue(prioValuePair.getKey(), prioValuePair.getValue());
+                this.internalPriorityQueue.enqueueAsNode(dequeuedNode);
             }
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
@@ -103,6 +105,35 @@ public class PriorityQueue {
                 if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                     System.out.println("Priority Queue dequeueNodes - priority queue is empty");
                 }
+            }
+        }
+    }
+
+    void handleModifiedNodes(LocalPriorityQueue lPQueue) {
+        assert (lPQueue != null);
+        ArrayList<PQNode> modifiedNodes = lPQueue.getModifiedNodesState();
+        if (modifiedNodes.size() == 0) {
+            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+                System.out.println("Priority Queue handleModifiedNodes - modifiedNodes.size() is 0");
+            }
+            return;
+        }
+
+        if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+            System.out.println("Priority Queue handleModifiedNodes");
+        }
+        for (PQNode modifiedNode : modifiedNodes) {
+            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+                System.out.println("Priority Queue dequeueNodes - handling");
+            }
+
+            assert this.internalPriorityQueue.containsNode(modifiedNode);
+
+            try {
+                this.internalPriorityQueue.decreasePriority(modifiedNode, this.internalPriorityQueue.top().getKey());
+                this.internalPriorityQueue.dequeue();
+            } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                System.out.println("Priority Queue handleModifiedNodes - priority queue is empty");
             }
         }
     }
@@ -159,8 +190,7 @@ public class PriorityQueue {
         return newNode;
     }
 
-    public void decreasePriority(final PQNode nodeToModify, Comparable newPriority) throws TXLibExceptions.AbortException {
-        //TODO: check with Gal if need to enforce singleton in the exported node for mixed singleton and TX
+    public PQNode decreasePriority(final PQNode nodeToModify, Comparable newPriority) throws TXLibExceptions.AbortException {
         LocalStorage localStorage = TX.lStorage.get();
 
         // SINGLETON
@@ -177,7 +207,7 @@ public class PriorityQueue {
             this.setSingleton(true);
 
             this.unlock();
-            return;
+            return nodeToModify;
         }
 
         // TX
@@ -206,9 +236,34 @@ public class PriorityQueue {
         if (lPQueue == null) {//First time to enqueue the PriorityQueue
             lPQueue = new LocalPriorityQueue();
         }
-        lPQueue.decreasePriority(nodeToModify, newPriority);
-        pqMap.put(this, lPQueue);
-        return;
+        if (lPQueue.containsNode(nodeToModify)) {
+            lPQueue.decreasePriority(nodeToModify, newPriority);
+            pqMap.put(this, lPQueue);
+            return nodeToModify;
+        }
+        //assuming the node is in the the transactional PQueue
+        if (!this.tryLock()) { // if priority queue is locked by another thread
+            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+                System.out.println("Priority Queue decreasePriority - couldn't lock");
+            }
+            localStorage.TX = false;
+            TXLibExceptions excep = new TXLibExceptions();
+            throw excep.new AbortException();
+        }
+
+        if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+            System.out.println("Priority Queue decreasePriority - now locked by me");
+        }
+        // now we have the lock
+
+        if (newPriority.compareTo(nodeToModify.getPriority()) < 0 && this.internalPriorityQueue.containsNode(nodeToModify)) {
+            lPQueue.addModifiedNode(nodeToModify);
+            PQNode newNode = lPQueue.enqueue(newPriority, nodeToModify.getValue());
+            pqMap.put(this, lPQueue);
+            return newNode;
+
+        }
+        return nodeToModify;
     }
 
 
@@ -222,7 +277,7 @@ public class PriorityQueue {
                 System.out.println("Priority Queue isEmpty - singleton");
             }
             this.lock();
-            int ret = internalPriorityQueue.size();//TODO: should be after lock or before lock as Queue?
+            int ret = internalPriorityQueue.size();
             setVersion(TX.getVersion());
             setSingleton(true);
             this.unlock();
@@ -274,7 +329,7 @@ public class PriorityQueue {
         qMap.put(this, lPQueue);
         assert this.internalPriorityQueue.size() - lPQueue.dequeueCounter() >= 0;
         assert lPQueue.size() >= 0;
-        return !((this.internalPriorityQueue.size() - lPQueue.dequeueCounter() + lPQueue.size()) > 0);
+        return !((this.internalPriorityQueue.size() - lPQueue.dequeueCounter() - lPQueue.modifiedNodesCounter() + lPQueue.size()) > 0);
     }
 
     public Object dequeue() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {

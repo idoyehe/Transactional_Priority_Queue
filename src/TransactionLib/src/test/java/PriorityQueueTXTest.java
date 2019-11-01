@@ -122,7 +122,7 @@ public class PriorityQueueTXTest {
         PriorityQueue pQueue = new PriorityQueue();
         final int range = 100;
 
-        TX.TXbegin(); // 1st transcation
+        TX.TXbegin(); // 1st transaction
         assertEquals(true, pQueue.isEmpty());
         try {
             pQueue.dequeue();
@@ -138,27 +138,42 @@ public class PriorityQueueTXTest {
         pQueue.decreasePriority(maximumPriorityNode, -1);
         assertEquals(1, maximumPriorityNode.getIndex());
 
+        maximumPriorityNode = pQueue.enqueue(range + 1, range + 1);//for next transaction
+        assertEquals(range + 2, maximumPriorityNode.getIndex());
+
+        PQNode minimumPriorityNode = pQueue.enqueue(-5, range + 500);//for next transaction
+        assertEquals(1, minimumPriorityNode.getIndex());
+
         assertFalse(pQueue.isEmpty());
         assertNull(pQueue.internalPriorityQueue.root);
         TX.TXend();
 
 
         assertFalse(pQueue.isEmpty());
-        assertEquals(range, pQueue.top());
-        assertEquals(range + 1, pQueue.internalPriorityQueue.size());
+        assertEquals(range + 500, pQueue.top());
+        assertEquals(range + 3, pQueue.internalPriorityQueue.size());
         PriorityQueueTXTest.testHeapInvariantRecursive(pQueue.internalPriorityQueue.root);
         pQueue.setSingleton(false);
 
         TX.TXbegin(); // 2nd transaction
         assertFalse(pQueue.isEmpty());
 
+        assertEquals(range + 3, maximumPriorityNode.getIndex());
+        assertEquals(1, minimumPriorityNode.getIndex());
+        pQueue.decreasePriority(minimumPriorityNode, -5000);
+
         try {
+            assertEquals(range + 500, pQueue.dequeue());
             assertEquals(range, pQueue.dequeue());
+            pQueue.decreasePriority(maximumPriorityNode, -2);
+            assertEquals(range + 1, pQueue.top());
+            assertEquals(range + 1, pQueue.dequeue());
 
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             e.printStackTrace();
             fail("Local priority queue should not be empty");
         }
+
 
         for (int i = 0; i < range; i++) {
             try {

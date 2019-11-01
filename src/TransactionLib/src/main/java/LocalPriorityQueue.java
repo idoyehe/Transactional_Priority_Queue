@@ -2,6 +2,7 @@ package TransactionLib.src.main.java;
 
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.PriorityQueue;
 
@@ -10,12 +11,14 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     private int _dequeueCounter = 0; // how many dequeue has done by the transaction
     boolean isLockedByMe = false; // is queue (not local queue) locked by me
     private PriorityQueue<PQNode> pqTXState = new PriorityQueue<>();
+    private ArrayList<PQNode> modifiedNodesState = new ArrayList<PQNode>();
 
     public int dequeueCounter() {
         return this._dequeueCounter;
     }
 
     public void clearInternalState() {
+        this.modifiedNodesState.clear();
         this.pqTXState.clear();
     }
 
@@ -28,6 +31,10 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
             pqTXState.add(internalPQueue.root);
         }
         assert pqTXState.peek() != null;
+        if (this.modifiedNodesState.contains(this.pqTXState.peek())) {
+            this.modifiedNodesState.remove(this.pqTXState.peek());
+            this.nextSmallest(internalPQueue);
+        }
         return new Pair<>(pqTXState.peek().getPriority(), pqTXState.peek().getValue());
     }
 
@@ -56,5 +63,22 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
 
         this._dequeueCounter++;
         assert (this.dequeueCounter() == internalPQueue.size() && this.pqTXState.isEmpty()) || (this.dequeueCounter() < internalPQueue.size() && !this.pqTXState.isEmpty());
+        if (this.pqTXState.peek() != null && this.modifiedNodesState.contains(this.pqTXState.peek())) {
+            this.modifiedNodesState.remove(this.pqTXState.peek());
+            this.nextSmallest(internalPQueue);
+        }
+    }
+
+    public void addModifiedNode(PQNode modifiedNode) {
+        assert !this.modifiedNodesState.contains(modifiedNode);
+        this.modifiedNodesState.add(modifiedNode);
+    }
+
+    public ArrayList<PQNode> getModifiedNodesState() {
+        return this.modifiedNodesState;
+    }
+
+    public int modifiedNodesCounter() {
+        return this.modifiedNodesState.size();
     }
 }

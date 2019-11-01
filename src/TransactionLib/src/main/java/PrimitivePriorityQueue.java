@@ -128,7 +128,9 @@ public class PrimitivePriorityQueue {
 
 
     protected PQNode findPQNode(int index) {
-        assert 0 < index && index <= this.size;
+        if (0 >= index || index > this.size) {
+            return null;
+        }
 
         ArrayList<Integer> binaryDigits = new ArrayList<>();
         String binaryIndex = Integer.toBinaryString(index);
@@ -138,14 +140,8 @@ public class PrimitivePriorityQueue {
         return PrimitivePriorityQueue.nodeSearch(this.root, index, binaryDigits);
     }
 
-
-    public final PQNode enqueue(Comparable priority, Object value) {
-        PQNode newNode = new PQNode();
-        newNode.setPriority(priority);
-        newNode.setValue(value);
+    final PQNode enqueueAsNode(PQNode newNode) {
         newNode.setIndex(this.size + 1);
-
-
         if (this.root == null) {
             assert this.size == 0;
             this.root = newNode;
@@ -166,27 +162,34 @@ public class PrimitivePriorityQueue {
         return newNode;
     }
 
+
+    public final PQNode enqueue(Comparable priority, Object value) {
+        PQNode newNode = new PQNode();
+        newNode.setPriority(priority);
+        newNode.setValue(value);
+        return this.enqueueAsNode(newNode);
+    }
+
     public void decreasePriority(final PQNode nodeToModify, Comparable newPriority) {
-        assert this.findPQNode(nodeToModify.getIndex()) == nodeToModify;//checking node is actually part of the heap
+        assert this.containsNode(nodeToModify);//checking node is actually part of the heap
         if (nodeToModify.getPriority().compareTo(newPriority) > 0) {
             nodeToModify.setPriority(newPriority);
             this.root = PrimitivePriorityQueue.nodeSiftUp(nodeToModify);
         }
     }
 
-    public Pair<Comparable, Object> dequeue() throws TXLibExceptions.PQueueIsEmptyException {
-
+    PQNode dequeueAsNode() throws TXLibExceptions.PQueueIsEmptyException {
         if (this.root == null) {
             assert this.size == 0;
             TXLibExceptions excep = new TXLibExceptions();
             throw excep.new PQueueIsEmptyException();
         }
-        Pair<Comparable, Object> prioValuePair = new Pair<>(this.root.getPriority(), this.root.getValue());
+        PQNode nodeToDequeue = this.root;
 
         if (this.size == 1) {
             this.root = null;
             this.size = 0;
-            return prioValuePair;
+            return nodeToDequeue;
         }
 
         PQNode maxIndexNode = this.findPQNode(this.size);
@@ -208,6 +211,15 @@ public class PrimitivePriorityQueue {
         this.size -= 1;
         this.root = maxIndexNode;
         this.root = PrimitivePriorityQueue.nodeSiftDown(this.root);
-        return prioValuePair;
+        return nodeToDequeue;
+    }
+
+    public Pair<Comparable, Object> dequeue() throws TXLibExceptions.PQueueIsEmptyException {
+        PQNode dequeuedNode = this.dequeueAsNode();
+        return new Pair<Comparable, Object>(dequeuedNode.getPriority(), dequeuedNode.getValue());
+    }
+
+    public boolean containsNode(PQNode node) {
+        return this.findPQNode(node.getIndex()) == node;
     }
 }

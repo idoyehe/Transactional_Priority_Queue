@@ -75,7 +75,7 @@ public class PQNode implements Comparable<PQNode> {
     }
 
     @Override
-    public int compareTo(PQNode pqNode) {
-        return this.priority.compareTo(pqNode.priority);
+    public int compareTo(PQNode pqNode) {//TODO>:workaround
+        return (this.getPriority().compareTo(pqNode.getPriority()) <= 0) ? -1 : 1;
     }
 }
