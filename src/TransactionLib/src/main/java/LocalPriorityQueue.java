@@ -28,7 +28,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
             pqTXState.add(internalPQueue.root);
         }
         assert pqTXState.peek() != null;
-        return new Pair<>(pqTXState.peek().priority, pqTXState.peek().value);
+        return new Pair<>(pqTXState.peek().getPriority(), pqTXState.peek().getValue());
     }
 
     public void nextSmallest(PrimitivePriorityQueue internalPQueue) throws TXLibExceptions.PQueueIsEmptyException {
@@ -47,14 +47,24 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
             assert false; //shouldn't be here
         }
 
-        if (top.left != null) {
-            pqTXState.add(top.left);
+        if (top.getLeft() != null) {
+            pqTXState.add(top.getLeft());
         }
-        if (top.right != null) {
-            pqTXState.add(top.right);
+        if (top.getRight() != null) {
+            pqTXState.add(top.getRight());
         }
 
         this._dequeueCounter++;
         assert (this.dequeueCounter() == internalPQueue.size() && this.pqTXState.isEmpty()) || (this.dequeueCounter() < internalPQueue.size() && !this.pqTXState.isEmpty());
     }
+
+//    public void modifyPriority(final PQNode nodeToModify, Comparable newPriority) {
+//        assert this.findPQNode(nodeToModify.index) == nodeToModify;
+//        if (nodeToModify.priority.compareTo(newPriority) > 0) {
+//            nodeToModify.priority = newPriority;
+//            PrimitivePriorityQueue.nodeSiftUp(nodeToModify);
+//        } else {
+//            nodeToModify.priority = newPriority;
+//        }
+//    }
 }

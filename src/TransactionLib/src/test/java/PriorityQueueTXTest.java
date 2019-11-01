@@ -13,9 +13,9 @@ public class PriorityQueueTXTest {
         if (node == null) {
             return;
         }
-        assert node.father == null || node.priority.compareTo(node.father.priority) > 0;
-        testHeapInvariantRecursive(node.left);
-        testHeapInvariantRecursive(node.right);
+        assert node.getFather() == null || node.compareTo(node.getFather()) > 0;
+        testHeapInvariantRecursive(node.getLeft());
+        testHeapInvariantRecursive(node.getRight());
     }
 
     @Test

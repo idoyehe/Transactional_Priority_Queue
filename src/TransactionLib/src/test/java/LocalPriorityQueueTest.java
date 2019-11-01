@@ -16,9 +16,9 @@ public class LocalPriorityQueueTest {
         if (node == null) {
             return;
         }
-        assert node.father == null || node.priority.compareTo(node.father.priority) > 0;
-        testHeapInvariantRecursive(node.left);
-        testHeapInvariantRecursive(node.right);
+        assert node.getFather() == null || node.compareTo(node.getFather()) > 0;
+        testHeapInvariantRecursive(node.getLeft());
+        testHeapInvariantRecursive(node.getRight());
     }
 
     @Test
@@ -53,8 +53,8 @@ public class LocalPriorityQueueTest {
         lpq.enqueue(3, 3);
         Assert.assertEquals(new Pair<>(1, 1), lpq.top());
         Assert.assertEquals(3, lpq.size());
-        Assert.assertEquals(2, lpq.root.left.value);
-        Assert.assertEquals(3, lpq.root.right.value);
+        Assert.assertEquals(2, lpq.root.getLeft().getValue());
+        Assert.assertEquals(3, lpq.root.getRight().getValue());
 
         lpq.dequeue();
         Assert.assertEquals(lpq.top(), new Pair<>(2, 2));
@@ -79,12 +79,17 @@ public class LocalPriorityQueueTest {
 
     @Test
     public void testOverall() {
+        final int range = 500;
         LocalPriorityQueue lpq = new LocalPriorityQueue();
-        IntStream.range(0, 100).forEachOrdered(n -> {
-            lpq.enqueue(n, n);
+        IntStream.range(0, range).forEachOrdered(n -> {
+            n = range - 1 - n;
+            PQNode newNode = lpq.enqueue(n, n);
+            Assert.assertEquals(1, newNode.getIndex());
         });
+
         testHeapInvariantRecursive(lpq.root);
-        Assert.assertEquals(100, lpq.size());
+
+        Assert.assertEquals(range, lpq.size());
         IntStream.range(0, lpq.size()).forEachOrdered(n -> {
             try {
                 Assert.assertEquals(new Pair<>(n, n), lpq.top());
@@ -92,7 +97,7 @@ public class LocalPriorityQueueTest {
 
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 e.printStackTrace();
-                                fail("Local priority queue should not be empty");
+                fail("Local priority queue should not be empty");
 
             }
         });
