@@ -64,7 +64,6 @@ public class PriorityQueue {
         this.dequeueNodes(lPQueue.dequeueCounter());
         PQNode[] oldExportedPQueue = this.internalPriorityQueue.exportNodesToArray();
         PQNode[] newExportedPQueue = lPQueue.exportNodesToArray();
-        this.internalPriorityQueue = new PrimitivePriorityQueue();
         ArrayList<PQNode> modifiedNodesState = lPQueue.getModifiedNodesState();
         this.mergingNewNodes(oldExportedPQueue, newExportedPQueue, modifiedNodesState);
     }

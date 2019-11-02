@@ -8,8 +8,6 @@ import static junit.framework.TestCase.*;
 import static junit.framework.TestCase.fail;
 
 import javafx.util.Pair;
-
-import java.util.ArrayList;
 import java.util.stream.IntStream;
 
 
