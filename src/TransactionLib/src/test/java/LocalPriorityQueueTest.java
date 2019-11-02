@@ -2,10 +2,10 @@ package TransactionLib.src.test.java;
 
 import TransactionLib.src.main.java.*;
 
+import org.junit.Test;
+
 import static junit.framework.TestCase.*;
 import static junit.framework.TestCase.fail;
-
-import org.junit.Test;
 
 import javafx.util.Pair;
 
@@ -40,7 +40,6 @@ public class LocalPriorityQueueTest {
         assertEquals(element, lpq.top());
         lpq.testHeapInvariantRecursive();
         assertEquals(1, lpq.size());
-
     }
 
     @Test

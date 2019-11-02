@@ -64,21 +64,21 @@ public class PriorityQueue {
         this.dequeueNodes(lPQueue.dequeueCounter());
         PrimitivePriorityQueue oldInternalPriorityQueue = this.internalPriorityQueue;
         this.internalPriorityQueue = lPQueue;
-        this.mergingNewNodes(oldInternalPriorityQueue, lPQueue);
+        ArrayList<PQNode> modifiedNodesState = lPQueue.getModifiedNodesState();
+        this.mergingNewNodes(oldInternalPriorityQueue, modifiedNodesState);
     }
 
-    private void mergingNewNodes(PrimitivePriorityQueue oldInternalPriorityQueue, LocalPriorityQueue lPQueue) {
+    private void mergingNewNodes(PrimitivePriorityQueue oldInternalPriorityQueue, ArrayList<PQNode> modifiedNodesState) {
         assert (oldInternalPriorityQueue != null);
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
             System.out.println("Priority Queue enqueue Nodes");
         }
         try {
-            ArrayList<PQNode> modifiedNodesState = lPQueue.getModifiedNodesState();
             while (!oldInternalPriorityQueue.isEmpty()) {
                 if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                     System.out.println("Priority Queue enqueueNodes - lPQueue is not empty");
                 }
-                PQNode dequeuedNode = lPQueue.dequeueAsNode();
+                PQNode dequeuedNode = oldInternalPriorityQueue.dequeueAsNode();
                 assert dequeuedNode.getFather() == null && dequeuedNode.getRight() == null && dequeuedNode.getLeft() == null;
                 if (modifiedNodesState.contains(dequeuedNode)) {
                     if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
@@ -256,30 +256,30 @@ public class PriorityQueue {
     }
 
 
-    public boolean isEmpty() throws TXLibExceptions.AbortException {
+    public int size() throws TXLibExceptions.AbortException {
 
         LocalStorage localStorage = TX.lStorage.get();
 
         // SINGLETON
         if (!localStorage.TX) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-                System.out.println("Priority Queue isEmpty - singleton");
+                System.out.println("Priority Queue size - singleton");
             }
             this.lock();
             int ret = internalPriorityQueue.size();
             setVersion(TX.getVersion());
             setSingleton(true);
             this.unlock();
-            return (ret <= 0);
+            return ret;
         }
 
         // TX
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-            System.out.println("Priority Queue isEmpty - in TX");
+            System.out.println("Priority Queue size - in TX");
         }
 
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-            System.out.println("Priority Queue isEmpty - yet not locked by me");
+            System.out.println("Priority Queue size - yet not locked by me");
         }
 
         if (localStorage.readVersion < this.getVersion()) {
@@ -296,7 +296,7 @@ public class PriorityQueue {
 
         if (!this.tryLock()) { // if priority queue is locked by another thread
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-                System.out.println("Priority Queue isEmpty - couldn't lock");
+                System.out.println("Priority Queue size - couldn't lock");
             }
             localStorage.TX = false;
             TXLibExceptions excep = new TXLibExceptions();
@@ -304,7 +304,7 @@ public class PriorityQueue {
         }
 
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-            System.out.println("Priority Queue isEmpty - now locked by me");
+            System.out.println("Priority Queue size - now locked by me");
         }
 
         // now we have the lock
@@ -318,7 +318,11 @@ public class PriorityQueue {
         qMap.put(this, lPQueue);
         assert this.internalPriorityQueue.size() - lPQueue.dequeueCounter() >= 0;
         assert lPQueue.size() >= 0;
-        return !((this.internalPriorityQueue.size() - lPQueue.dequeueCounter() - lPQueue.modifiedNodesCounter() + lPQueue.size()) > 0);
+        return this.internalPriorityQueue.size() - lPQueue.dequeueCounter() - lPQueue.modifiedNodesCounter() + lPQueue.size();
+    }
+
+    public boolean isEmpty() {
+        return this.size() <= 0;
     }
 
     public Object dequeue() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
