@@ -62,44 +62,50 @@ public class PriorityQueue {
             System.out.println("Priority Queue commitLocalChanges");
         }
         this.dequeueNodes(lPQueue.dequeueCounter());
-        PrimitivePriorityQueue oldInternalPriorityQueue = this.internalPriorityQueue;
-        this.internalPriorityQueue = lPQueue;
+        PQNode[] oldExportedPQueue = this.internalPriorityQueue.exportNodesToArray();
+        PQNode[] newExportedPQueue = lPQueue.exportNodesToArray();
+        this.internalPriorityQueue = new PrimitivePriorityQueue();
         ArrayList<PQNode> modifiedNodesState = lPQueue.getModifiedNodesState();
-        this.mergingNewNodes(oldInternalPriorityQueue, modifiedNodesState);
+        this.mergingNewNodes(oldExportedPQueue, newExportedPQueue, modifiedNodesState);
     }
 
-    private void mergingNewNodes(PrimitivePriorityQueue oldInternalPriorityQueue, ArrayList<PQNode> modifiedNodesState) {
-        assert (oldInternalPriorityQueue != null);
+    private void mergingNewNodes(PQNode[] oldExportedPQueue, PQNode[] newExportedPQueue, ArrayList<PQNode> modifiedNodesState) {
+        assert (oldExportedPQueue != null);
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
             System.out.println("Priority Queue enqueue Nodes");
         }
-        try {
-            while (!oldInternalPriorityQueue.isEmpty()) {
-                if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-                    System.out.println("Priority Queue enqueueNodes - lPQueue is not empty");
-                }
-                PQNode dequeuedNode = oldInternalPriorityQueue.dequeueAsNode();
-                assert dequeuedNode.getFather() == null && dequeuedNode.getRight() == null && dequeuedNode.getLeft() == null;
-                if (modifiedNodesState.contains(dequeuedNode)) {
-                    if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-                        System.out.println("Priority Queue mergingNewNodes - node has been modified therefore ignored");
-                    }
-                    modifiedNodesState.remove(dequeuedNode);
-                    continue;
-                }
-                if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-                    System.out.println("Priority Queue enqueueNodes - lPQueue node priority is " + dequeuedNode.getPriority());
-                    System.out.println("Priority Queue enqueueNodes - lPQueue node value is " + dequeuedNode.getValue());
-                }
-                this.internalPriorityQueue.enqueueAsNode(dequeuedNode);
-            }
-            assert modifiedNodesState.size() == 0;//handled in all modified nodes
-            assert oldInternalPriorityQueue.size() == 0;
-        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+        int modifiedCounter = modifiedNodesState.size();
+        for (int i = 0; i < oldExportedPQueue.length; i++) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-                System.out.println("Priority Queue enqueueNodes - local queue is empty");
+                System.out.println("Priority Queue mergingNewNodes - merge old nodes");
             }
+            PQNode nodeToEnqueue = oldExportedPQueue[i];
+            oldExportedPQueue[i] = null;
+            assert nodeToEnqueue.getFather() == null && nodeToEnqueue.getRight() == null && nodeToEnqueue.getLeft() == null;
+            if (modifiedNodesState.contains(nodeToEnqueue)) {
+                if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+                    System.out.println("Priority Queue mergingNewNodes - node has been modified therefore ignored");
+                }
+                modifiedNodesState.remove(nodeToEnqueue);
+                continue;
+            }
+            this.internalPriorityQueue.enqueueAsNode(nodeToEnqueue);
         }
+
+        for (int i = 0; i < newExportedPQueue.length; i++) {
+            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+                System.out.println("Priority Queue mergingNewNodes - merge new nodes");
+            }
+            PQNode nodeToEnqueue = newExportedPQueue[i];
+            newExportedPQueue[i] = null;
+            assert nodeToEnqueue.getFather() == null && nodeToEnqueue.getRight() == null && nodeToEnqueue.getLeft() == null;
+            assert !modifiedNodesState.contains(nodeToEnqueue);
+            this.internalPriorityQueue.enqueueAsNode(nodeToEnqueue);
+        }
+
+        assert modifiedNodesState.size() == 0;//handled in all modified nodes
+        assert this.internalPriorityQueue.size() == newExportedPQueue.length + oldExportedPQueue.length - modifiedCounter;
+
     }
 
     private void dequeueNodes(int dequeueCounter) {

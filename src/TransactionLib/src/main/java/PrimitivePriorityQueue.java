@@ -243,4 +243,26 @@ public class PrimitivePriorityQueue {
         PrimitivePriorityQueue.testHeapInvariantRecursiveAUX(this.root);
     }
 
+    public PQNode[] exportNodesToArray() {
+        PQNode nodesArr[] = new PQNode[this.size];
+        this.exportNodesToArrayAux(this.root, nodesArr);
+        for (PQNode node : nodesArr) {
+            node.setLeft(null);
+            node.setRight(null);
+            node.setIndexAndFather(node.getIndex(), null);
+        }
+        this.size = 0;
+        this.root =null;
+        return nodesArr;
+    }
+
+    private void exportNodesToArrayAux(PQNode root, PQNode[] nodesArr) {
+        if (root == null) {
+            return;
+        }
+        nodesArr[root.getIndex() - 1] = root;
+        this.exportNodesToArrayAux(root.getLeft(), nodesArr);
+        this.exportNodesToArrayAux(root.getRight(), nodesArr);
+    }
+
 }

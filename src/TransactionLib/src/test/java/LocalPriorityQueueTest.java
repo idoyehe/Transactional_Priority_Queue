@@ -9,6 +9,7 @@ import static junit.framework.TestCase.fail;
 
 import javafx.util.Pair;
 
+import java.util.ArrayList;
 import java.util.stream.IntStream;
 
 
@@ -306,6 +307,40 @@ public class LocalPriorityQueueTest {
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 fail("should not throw empty Queue Exception");
             }
+        });
+    }
+
+    @Test
+    public void testExportNodesToArray() throws TXLibExceptions.PQueueIsEmptyException, Exception {
+        LocalPriorityQueue lpq = new LocalPriorityQueue();
+
+        IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
+            final PQNode newRoot = lpq.enqueue(n, n);
+            try {
+                lpq.testHeapInvariantRecursive();
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail(e.getMessage());
+            }
+            assertEquals(1, newRoot.getIndex());
+            assertEquals(n, newRoot.getPriority());
+        });
+        assertEquals(this.range, lpq.size());
+
+        PQNode nodesArr[] = lpq.exportNodesToArray();
+
+        assertEquals(0, lpq.size());
+        assertTrue(lpq.isEmpty());
+        try {
+            lpq.top();
+            fail("LocalPriorityQueue should be empty");
+        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+        }
+
+        IntStream.range(0, this.range).forEach(n -> {
+            assertEquals(null, nodesArr[n].getFather());
+            assertEquals(null, nodesArr[n].getLeft());
+            assertEquals(null, nodesArr[n].getLeft());
         });
     }
 }
