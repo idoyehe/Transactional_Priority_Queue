@@ -2,10 +2,11 @@ package TransactionLib.src.main.java;
 
 import javafx.util.Pair;
 
+import java.lang.Exception;
 import java.util.ArrayList;
 
 public class PrimitivePriorityQueue {
-    public PQNode root = null;
+    protected PQNode root = null;
     private int size = 0;
 
 
@@ -32,7 +33,7 @@ public class PrimitivePriorityQueue {
 
             node.setLeft(nodeFather);//here nodeFather.father set to node
             node.setRight(fatherRightSonBuffer);
-            node.setFatherAndIndex(fatherIndexBuffer, grandFatherBuffer);
+            node.setIndexAndFather(fatherIndexBuffer, grandFatherBuffer);
 
             return PrimitivePriorityQueue.nodeSiftUp(node);
         }
@@ -48,7 +49,7 @@ public class PrimitivePriorityQueue {
 
         node.setRight(nodeFather);//here nodeFather.father set to node
         node.setLeft(fatherLeftSonBuffer);
-        node.setFatherAndIndex(fatherIndexBuffer, grandFatherBuffer);
+        node.setIndexAndFather(fatherIndexBuffer, grandFatherBuffer);
 
         return PrimitivePriorityQueue.nodeSiftUp(node);
     }
@@ -68,10 +69,10 @@ public class PrimitivePriorityQueue {
 
             node.setRight(minSon.getRight());
             node.setLeft(minSon.getLeft());
-            node.setFatherAndIndex(minSon.getIndex(), minSon);//here minSon.right == node
+            node.setIndexAndFather(minSon.getIndex(), minSon);//here minSon.right == node
 
             minSon.setLeft(leftSonBuffer);
-            minSon.setFatherAndIndex(indexBuffer, fatherBuffer);
+            minSon.setIndexAndFather(indexBuffer, fatherBuffer);
             minSon.setRight(PrimitivePriorityQueue.nodeSiftDown(node));
             return minSon;
         }
@@ -83,10 +84,10 @@ public class PrimitivePriorityQueue {
 
             node.setRight(minSon.getRight());
             node.setLeft(minSon.getLeft());
-            node.setFatherAndIndex(minSon.getIndex(), minSon);//here minSon.left == node
+            node.setIndexAndFather(minSon.getIndex(), minSon);//here minSon.left == node
 
             minSon.setRight(rightSonBuffer);
-            minSon.setFatherAndIndex(indexBuffer, fatherBuffer);
+            minSon.setIndexAndFather(indexBuffer, fatherBuffer);
             minSon.setLeft(PrimitivePriorityQueue.nodeSiftDown(node));
             return minSon;
         }
@@ -200,7 +201,7 @@ public class PrimitivePriorityQueue {
             assert this.size % 2 == PQNodeTurn.RIGHT.getValue();
             maxIndexNode.getFather().setRight(null);
         }
-        maxIndexNode.setFatherAndIndex(1, null);
+        maxIndexNode.setIndexAndFather(1, null);
         maxIndexNode.setRight(this.root.getRight());
         maxIndexNode.setLeft(this.root.getLeft());
 
@@ -219,7 +220,27 @@ public class PrimitivePriorityQueue {
         return new Pair<Comparable, Object>(dequeuedNode.getPriority(), dequeuedNode.getValue());
     }
 
-    public boolean containsNode(PQNode node) {
+    boolean containsNode(PQNode node) {
         return this.findPQNode(node.getIndex()) == node;
     }
+
+    private static void testHeapInvariantRecursiveAUX(PQNode root) throws Exception {
+        if (root == null) {
+            return;
+        }
+        if (root.getFather() != null && root.compareTo(root.getFather()) <= 0) {
+            throw new Exception("Heap invariant is violated");
+        }
+        if (root.getFather() != null && root.getIndex() / 2 != root.getFather().getIndex()) {
+            throw new Exception("Heap invariant is violated");
+        }
+
+        PrimitivePriorityQueue.testHeapInvariantRecursiveAUX(root.getLeft());
+        PrimitivePriorityQueue.testHeapInvariantRecursiveAUX(root.getRight());
+    }
+
+    public void testHeapInvariantRecursive() throws Exception {
+        PrimitivePriorityQueue.testHeapInvariantRecursiveAUX(this.root);
+    }
+
 }

@@ -23,7 +23,6 @@ public class PriorityQueue {
 
     void setVersion(long version) {
         long l = versionAndFlags.get();
-//		assert ((l & lockMask) != 0);
         l &= versionNegMask;
         l |= (version & (~versionNegMask));
         versionAndFlags.set(l);
@@ -95,6 +94,7 @@ public class PriorityQueue {
                 this.internalPriorityQueue.enqueueAsNode(dequeuedNode);
             }
             assert modifiedNodesState.size() == 0;//handled in all modified nodes
+            assert oldInternalPriorityQueue.size() == 0;
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                 System.out.println("Priority Queue enqueueNodes - local queue is empty");
@@ -251,7 +251,6 @@ public class PriorityQueue {
             PQNode newNode = lPQueue.enqueue(newPriority, nodeToModify.getValue());
             pqMap.put(this, lPQueue);
             return newNode;
-
         }
         return nodeToModify;
     }

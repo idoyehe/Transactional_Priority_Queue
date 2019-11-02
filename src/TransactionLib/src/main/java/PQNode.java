@@ -49,7 +49,7 @@ public class PQNode implements Comparable<PQNode> {
         }
     }
 
-    void setFatherAndIndex(int index, PQNode newFather) {
+    void setIndexAndFather(int index, PQNode newFather) {
         this.setIndex(index);
         this.father = newFather;
         if (this.father != null) {

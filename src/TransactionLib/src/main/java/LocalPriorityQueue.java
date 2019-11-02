@@ -20,21 +20,29 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     public void clearInternalState() {
         this.modifiedNodesState.clear();
         this.pqTXState.clear();
+        this.pqTXState = null;
+        this.modifiedNodesState = null;
     }
 
     public Pair<Comparable, Object> currentSmallest(PrimitivePriorityQueue internalPQueue) throws TXLibExceptions.PQueueIsEmptyException {
         if (this.pqTXState.isEmpty()) {
-            if (internalPQueue.root == null) {
+            if (internalPQueue.isEmpty()) {
                 TXLibExceptions excep = new TXLibExceptions();
                 throw excep.new PQueueIsEmptyException();
             }
             pqTXState.add(internalPQueue.root);
         }
-        assert pqTXState.peek() != null;
         if (this.modifiedNodesState.contains(this.pqTXState.peek())) {
             this.modifiedNodesState.remove(this.pqTXState.peek());
             this.nextSmallest(internalPQueue);
         }
+
+        if (this.dequeueCounter() >= internalPQueue.size()) {
+            TXLibExceptions excep = new TXLibExceptions();
+            throw excep.new PQueueIsEmptyException();
+        }
+
+        assert pqTXState.peek() != null;
         return new Pair<>(pqTXState.peek().getPriority(), pqTXState.peek().getValue());
     }
 
