@@ -114,6 +114,7 @@ public class PriorityQueue {
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
             System.out.println("Priority Queue dequeueNodes");
         }
+        assert dequeueCounter <= this.internalPriorityQueue.size();
         for (int i = 0; i < dequeueCounter; i++) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                 System.out.println("Priority Queue dequeueNodes - dequeueing");
