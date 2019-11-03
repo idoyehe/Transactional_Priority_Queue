@@ -161,11 +161,9 @@ public class PriorityQueueMultiThreadsTest {
         Thread[] threadsARR = new Thread[this.numberOfThreads];
         for (int i = 0; i < this.numberOfThreads; i++) {
             threadsARR[i] = new Thread(new RunTransaction("T" + i, latch, barrier, pQueue, i * numberOfThreads, numberOfThreads));
-        }
-        latch.countDown();
-        for (int i = 0; i < this.numberOfThreads; i++) {
             threadsARR[i].start();
         }
+        latch.countDown();
         for (int i = 0; i < this.numberOfThreads; i++) {
             threadsARR[i].join();
         }
