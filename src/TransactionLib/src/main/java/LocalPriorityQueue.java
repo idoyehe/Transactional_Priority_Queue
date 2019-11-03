@@ -25,20 +25,13 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     }
 
     public Pair<Comparable, Object> currentSmallest(PrimitivePriorityQueue internalPQueue) throws TXLibExceptions.PQueueIsEmptyException {
-        if (this.pqTXState.isEmpty()) {
-            if (internalPQueue.isEmpty()) {
-                TXLibExceptions excep = new TXLibExceptions();
-                throw excep.new PQueueIsEmptyException();
+        boolean isModifiedNode = this.modifiedNodesState.contains(this.pqTXState.peek());
+        while (this.pqTXState.isEmpty() || isModifiedNode) {
+            if (isModifiedNode) {
+                this.modifiedNodesState.remove(this.pqTXState.peek());
             }
-            pqTXState.add(internalPQueue.root);
-        }
-        while (this.modifiedNodesState.contains(this.pqTXState.peek())) {
-            this.modifiedNodesState.remove(this.pqTXState.peek());
             this.nextSmallest(internalPQueue);
-        }
-        if (this.dequeueCounter() >= internalPQueue.size()) {
-            TXLibExceptions excep = new TXLibExceptions();
-            throw excep.new PQueueIsEmptyException();
+            isModifiedNode = this.modifiedNodesState.contains(this.pqTXState.peek());
         }
 
         assert pqTXState.peek() != null;
@@ -50,6 +43,11 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
         if (this.dequeueCounter() >= internalPQueue.size() || internalPQueue.isEmpty()) {
             TXLibExceptions excep = new TXLibExceptions();
             throw excep.new PQueueIsEmptyException();
+        }
+
+        if (this.pqTXState.isEmpty()) {
+            pqTXState.add(internalPQueue.root);
+            return;
         }
 
         assert pqTXState.peek() != null;

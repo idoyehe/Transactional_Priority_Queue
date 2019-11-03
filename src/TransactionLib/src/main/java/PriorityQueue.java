@@ -5,6 +5,7 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Predicate;
 
 public class PriorityQueue {
     private static final long singletonMask = 0x4000000000000000L;
@@ -56,55 +57,38 @@ public class PriorityQueue {
         pqLock.unlock();
     }
 
+    class IsModified<PQNode> implements Predicate<PQNode> {
+        private ArrayList<PQNode> _modifiedNodes;
+
+        IsModified(ArrayList<PQNode> modifiedNodes) {
+            this._modifiedNodes = modifiedNodes;
+        }
+
+        @Override
+        public boolean test(PQNode pqNode) {
+            return !this._modifiedNodes.remove(pqNode);
+        }
+    }
+
     void commitLocalChanges(LocalPriorityQueue lPQueue) {
         assert (lPQueue != null);
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
             System.out.println("Priority Queue commitLocalChanges");
         }
-        this.dequeueNodes(lPQueue.dequeueCounter());
-        PQNode[] oldExportedPQueue = this.internalPriorityQueue.exportNodesToArray();
-        PQNode[] newExportedPQueue = lPQueue.exportNodesToArray();
-        ArrayList<PQNode> modifiedNodesState = lPQueue.getModifiedNodesState();
-        this.mergingNewNodes(oldExportedPQueue, newExportedPQueue, modifiedNodesState);
-    }
-
-    private void mergingNewNodes(PQNode[] oldExportedPQueue, PQNode[] newExportedPQueue, ArrayList<PQNode> modifiedNodesState) {
-        assert (oldExportedPQueue != null);
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-            System.out.println("Priority Queue enqueue Nodes");
+            System.out.println("Priority Queue commitLocalChanges - dequeue nodes");
         }
-        int modifiedCounter = modifiedNodesState.size();
-        for (int i = 0; i < oldExportedPQueue.length; i++) {
-            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-                System.out.println("Priority Queue mergingNewNodes - merge old nodes");
-            }
-            PQNode nodeToEnqueue = oldExportedPQueue[i];
-            oldExportedPQueue[i] = null;
-            assert nodeToEnqueue.getFather() == null && nodeToEnqueue.getRight() == null && nodeToEnqueue.getLeft() == null;
-            if (modifiedNodesState.contains(nodeToEnqueue)) {
-                if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-                    System.out.println("Priority Queue mergingNewNodes - node has been modified therefore ignored");
-                }
-                modifiedNodesState.remove(nodeToEnqueue);
-                continue;
-            }
-            this.internalPriorityQueue.enqueueAsNode(nodeToEnqueue);
+        this.dequeueNodes(lPQueue.dequeueCounter());
+
+        ArrayList<PQNode> modifiedNodesState = lPQueue.getModifiedNodesState();
+        PrimitivePriorityQueue oldInternalQueue = this.internalPriorityQueue;
+        this.internalPriorityQueue = lPQueue;
+        if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+            System.out.println("Priority Queue commitLocalChanges - merge old nodes to new nodes");
         }
-
-        for (int i = 0; i < newExportedPQueue.length; i++) {
-            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-                System.out.println("Priority Queue mergingNewNodes - merge new nodes");
-            }
-            PQNode nodeToEnqueue = newExportedPQueue[i];
-            newExportedPQueue[i] = null;
-            assert nodeToEnqueue.getFather() == null && nodeToEnqueue.getRight() == null && nodeToEnqueue.getLeft() == null;
-            assert !modifiedNodesState.contains(nodeToEnqueue);
-            this.internalPriorityQueue.enqueueAsNode(nodeToEnqueue);
-        }
-
-        assert modifiedNodesState.size() == 0;//handled in all modified nodes
-        assert this.internalPriorityQueue.size() == newExportedPQueue.length + oldExportedPQueue.length - modifiedCounter;
-
+        this.internalPriorityQueue.mergingPriorityQueues(oldInternalQueue, new IsModified<>(modifiedNodesState));
+        assert oldInternalQueue.root == null;
+        assert oldInternalQueue.size() == 0;
     }
 
     private void dequeueNodes(int dequeueCounter) {

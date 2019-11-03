@@ -4,10 +4,12 @@ import javafx.util.Pair;
 
 import java.lang.Exception;
 import java.util.ArrayList;
+import java.util.function.Predicate;
 
 public class PrimitivePriorityQueue {
     protected PQNode root = null;
     private int size = 0;
+    private Predicate<PQNode> _mergingPredicate = null;
 
 
     protected static PQNode nodeSiftUp(PQNode node) {
@@ -142,6 +144,9 @@ public class PrimitivePriorityQueue {
     }
 
     final PQNode enqueueAsNode(PQNode newNode) {
+        assert newNode.getFather() == null;
+        assert newNode.getRight() == null;
+        assert newNode.getLeft() == null;
         newNode.setIndex(this.size + 1);
         if (this.root == null) {
             assert this.size == 0;
@@ -243,26 +248,25 @@ public class PrimitivePriorityQueue {
         PrimitivePriorityQueue.testHeapInvariantRecursiveAUX(this.root);
     }
 
-    public PQNode[] exportNodesToArray() {
-        PQNode nodesArr[] = new PQNode[this.size];
-        this.exportNodesToArrayAux(this.root, nodesArr);
-        for (PQNode node : nodesArr) {
-            node.setLeft(null);
-            node.setRight(null);
-            node.setIndexAndFather(node.getIndex(), null);
-        }
-        this.size = 0;
-        this.root =null;
-        return nodesArr;
+    public void mergingPriorityQueues(PrimitivePriorityQueue pQueue, Predicate<PQNode> mergingPredicate) {
+        this._mergingPredicate = mergingPredicate;
+        this.mergingPriorityQueuesAux(pQueue.root);
+        pQueue.root = null;
+        pQueue.size = 0;
+        this._mergingPredicate = null;
     }
 
-    private void exportNodesToArrayAux(PQNode root, PQNode[] nodesArr) {
-        if (root == null) {
+    private void mergingPriorityQueuesAux(PQNode currentRoot) {
+        if (currentRoot == null) {
             return;
         }
-        nodesArr[root.getIndex() - 1] = root;
-        this.exportNodesToArrayAux(root.getLeft(), nodesArr);
-        this.exportNodesToArrayAux(root.getRight(), nodesArr);
+        this.mergingPriorityQueuesAux(currentRoot.getLeft());
+        this.mergingPriorityQueuesAux(currentRoot.getRight());
+        currentRoot.setRight(null);
+        currentRoot.setLeft(null);
+        currentRoot.setIndexAndFather(-1, null);
+        if (this._mergingPredicate.test(currentRoot)) {
+            this.enqueueAsNode(currentRoot);
+        }
     }
-
 }
