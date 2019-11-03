@@ -25,13 +25,8 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     }
 
     public Pair<Comparable, Object> currentSmallest(PrimitivePriorityQueue internalPQueue) throws TXLibExceptions.PQueueIsEmptyException {
-        boolean isModifiedNode = this.modifiedNodesState.contains(this.pqTXState.peek());
-        while (this.pqTXState.isEmpty() || isModifiedNode) {
-            if (isModifiedNode) {
-                this.modifiedNodesState.remove(this.pqTXState.peek());
-            }
+        while (this.pqTXState.isEmpty() || this.modifiedNodesState.remove(this.pqTXState.peek())) {
             this.nextSmallest(internalPQueue);
-            isModifiedNode = this.modifiedNodesState.contains(this.pqTXState.peek());
         }
 
         assert pqTXState.peek() != null;
