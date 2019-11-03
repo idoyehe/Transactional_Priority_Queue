@@ -32,11 +32,10 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
             }
             pqTXState.add(internalPQueue.root);
         }
-        if (this.modifiedNodesState.contains(this.pqTXState.peek())) {
+        while (this.modifiedNodesState.contains(this.pqTXState.peek())) {
             this.modifiedNodesState.remove(this.pqTXState.peek());
             this.nextSmallest(internalPQueue);
         }
-
         if (this.dequeueCounter() >= internalPQueue.size()) {
             TXLibExceptions excep = new TXLibExceptions();
             throw excep.new PQueueIsEmptyException();
@@ -71,10 +70,6 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
 
         this._dequeueCounter++;
         assert (this.dequeueCounter() == internalPQueue.size() && this.pqTXState.isEmpty()) || (this.dequeueCounter() < internalPQueue.size() && !this.pqTXState.isEmpty());
-        if (this.pqTXState.peek() != null && this.modifiedNodesState.contains(this.pqTXState.peek())) {
-            this.modifiedNodesState.remove(this.pqTXState.peek());
-            this.nextSmallest(internalPQueue);
-        }
     }
 
     public void addModifiedNode(PQNode modifiedNode) {
