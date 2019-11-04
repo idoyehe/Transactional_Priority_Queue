@@ -1,6 +1,5 @@
 package TransactionLib.src.main.java;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Predicate;
@@ -55,19 +54,6 @@ public class PriorityQueue {
         pqLock.unlock();
     }
 
-    class IsModified<PQNode> implements Predicate<PQNode> {
-        private LocalPriorityQueue _lpq;
-
-        IsModified(LocalPriorityQueue lpq) {
-            this._lpq = lpq;
-        }
-
-        @Override
-        public boolean test(PQNode pqNode) {
-            return this._lpq.removeModifiedNode((TransactionLib.src.main.java.PQNode) pqNode);
-        }
-    }
-
     void commitLocalChanges(LocalPriorityQueue lPQueue) {
         assert (lPQueue != null);
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
@@ -78,13 +64,12 @@ public class PriorityQueue {
         }
         this.dequeueNodes(lPQueue.dequeueCounter());
 
-        PrimitivePriorityQueue oldInternalQueue = this.internalPriorityQueue;
-        this.internalPriorityQueue = lPQueue;
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
             System.out.println("Priority Queue commitLocalChanges - merge old nodes to new nodes");
         }
-        this.internalPriorityQueue.mergingPriorityQueues(oldInternalQueue, new IsModified<PQNode>(lPQueue));
-        assert oldInternalQueue.size() == 0;
+        lPQueue.mergingPriorityQueuesWithoutModification(this.internalPriorityQueue);
+        assert this.internalPriorityQueue.size() == 0;
+        this.internalPriorityQueue = lPQueue;
     }
 
     private void dequeueNodes(int dequeueCounter) {

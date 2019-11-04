@@ -76,4 +76,49 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     public int modifiedNodesCounter() {
         return this.modifiedNodesState.size();
     }
+
+    public void mergingPriorityQueuesWithoutModification(PrimitivePriorityQueue pQueue) {
+        ArrayList<PQNode> sorted1 = this.sortedArray;
+        ArrayList<PQNode> sorted2 = pQueue.sortedArray;
+
+        sorted2.removeIf(this::removeModifiedNode);//removing all modified nodes from the array
+
+        assert this.modifiedNodesCounter() == 0;
+
+        int totalSize = sorted1.size() + sorted2.size();
+        this.sortedArray = new ArrayList<PQNode>(totalSize);//allocating new Array
+        int it1 = 0, it2 = 0;
+        // Traverse both array
+        while (it1 < sorted1.size() && it2 < sorted2.size()) {
+            // Check if current element of first
+            // array is smaller than current element
+            // of second array. If yes, store first
+            // array element and increment first array
+            // index. Otherwise do same with second array
+            PQNode node1 = sorted1.get(it1);
+            PQNode node2 = sorted2.get(it2);
+            if (node1.compareTo(node2) < 0) {
+                this.sortedArray.add(node1);
+                it1++;
+            } else {
+                this.sortedArray.add(node2);
+                it2++;
+            }
+        }
+
+        // Store remaining elements of first array
+        while (it1 < sorted1.size())
+            this.sortedArray.add(sorted1.get(it1++));
+
+        // Store remaining elements of second array
+        while (it2 < sorted2.size())
+            this.sortedArray.add(sorted2.get(it2++));
+
+        assert it1 == sorted1.size();
+        assert it2 == sorted2.size();
+        assert this.sortedArray.size() == totalSize;
+
+        sorted1.clear();
+        sorted2.clear();
+    }
 }

@@ -292,10 +292,11 @@ public class LocalPriorityQueueTest {
             assertEquals(n, newRoot.getPriority());
             assertEquals(n, newRoot.getValue());
             nodesArray[n] = newRoot;
+            lpq1.addModifiedNode(newRoot);
         });
         assertEquals(this.range, lpq2.size());
 
-        lpq1.mergingPriorityQueues(lpq2, new StaticTrue<>());
+        lpq1.mergingPriorityQueuesWithoutModification(lpq2);
         assertEquals(this.range, lpq1.size());
         assertEquals(0, lpq2.size());
 
@@ -316,7 +317,7 @@ public class LocalPriorityQueueTest {
         assertEquals(this.range, lpq2.size());
 
 
-        lpq1.mergingPriorityQueues(lpq2, new StaticFalse<>());
+        lpq1.mergingPriorityQueuesWithoutModification(lpq2);
         assertEquals(this.range * 2, lpq1.size());
         assertEquals(0, lpq2.size());
 

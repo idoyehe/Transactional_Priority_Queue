@@ -3,6 +3,7 @@ package TransactionLib.src.main.java;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.function.Predicate;
 
 
@@ -69,46 +70,5 @@ public class PrimitivePriorityQueue {
     boolean containsNode(PQNode node) {
         int index = Collections.binarySearch(this.sortedArray, node);
         return index > -1;
-    }
-
-
-    public void mergingPriorityQueues(PrimitivePriorityQueue pQueue, Predicate<PQNode> removePredicate) {
-        pQueue.sortedArray.removeIf(removePredicate);
-
-        ArrayList<PQNode> oldSorted = this.sortedArray;
-
-        int totalSize = oldSorted.size() + pQueue.sortedArray.size();
-        this.sortedArray = new ArrayList<PQNode>(totalSize);
-        int i = 0, j = 0, k = 0;
-        // Traverse both array
-        while (i < oldSorted.size() && j < pQueue.sortedArray.size()) {
-            // Check if current element of first
-            // array is smaller than current element
-            // of second array. If yes, store first
-            // array element and increment first array
-            // index. Otherwise do same with second array
-            PQNode node1 = oldSorted.get(i);
-            PQNode node2 = pQueue.sortedArray.get(j);
-
-            if (node1.compareTo(node2) < 0) {
-                this.sortedArray.add(k++, node1);
-                i++;
-            } else {
-                this.sortedArray.add(k++, node2);
-                j++;
-            }
-        }
-
-        // Store remaining elements of first array
-        while (i < oldSorted.size())
-            this.sortedArray.add(k++, oldSorted.get(i++));
-
-        // Store remaining elements of second array
-        while (j < pQueue.sortedArray.size())
-            this.sortedArray.add(k++, pQueue.sortedArray.get(j++));
-
-        assert k == totalSize && i == oldSorted.size() && j == pQueue.sortedArray.size();
-        oldSorted.clear();
-        pQueue.sortedArray.clear();
     }
 }
