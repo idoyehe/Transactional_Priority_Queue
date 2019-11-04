@@ -60,18 +60,6 @@ public class PriorityQueueMultiThreadsTest {
             }
         }
 
-        protected void invariantValidator() {
-            if (this.threadName.equals(this.masterThread)) {
-                try {
-                    pQueue.internalPriorityQueue.testHeapInvariantRecursive();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    fail(e.getMessage());
-                }
-            }
-        }
-
-
         @Override
         public void run() {
             PQNode globalNodesArr[] = new PQNode[this.numberOfThread];
@@ -81,8 +69,6 @@ public class PriorityQueueMultiThreadsTest {
                 globalNodesArr[n] = newNode;
                 assertEquals(n + this.priorityRef, newNode.getPriority());
             });
-            this.await();
-            this.invariantValidator();
             this.await();
             assertFalse(pQueue.isEmpty());
             assertEquals(this.numberOfThread * this.numberOfThread, pQueue.size());
@@ -94,8 +80,6 @@ public class PriorityQueueMultiThreadsTest {
                 });
             }
             this.await();
-            this.invariantValidator();
-            this.await();
             assertFalse(pQueue.isEmpty());
             assertEquals(this.numberOfThread * this.numberOfThread, pQueue.size());
 
@@ -105,8 +89,6 @@ public class PriorityQueueMultiThreadsTest {
                 e.printStackTrace();
             }
 
-            this.await();
-            this.invariantValidator();
             this.await();
             assertFalse(pQueue.isEmpty());
             assertEquals(this.numberOfThread * this.numberOfThread, pQueue.size());
@@ -118,8 +100,6 @@ public class PriorityQueueMultiThreadsTest {
                 e.printStackTrace();
             }
 
-            this.await();
-            this.invariantValidator();
             this.await();
             assertFalse(pQueue.isEmpty());
             assertEquals(this.numberOfThread * (this.numberOfThread - 1), pQueue.size());
@@ -137,17 +117,9 @@ public class PriorityQueueMultiThreadsTest {
 
 
             this.await();
-            this.invariantValidator();
-            this.await();
             assertTrue(pQueue.isEmpty());
             assertEquals(0, pQueue.size());
             this.await();
-
-            IntStream.range(0, this.numberOfThread).forEach(n -> {
-                assertEquals(null, globalNodesArr[n].getFather());
-                assertEquals(null, globalNodesArr[n].getLeft());
-                assertEquals(null, globalNodesArr[n].getLeft());
-            });
         }
     }
 
@@ -209,8 +181,6 @@ public class PriorityQueueMultiThreadsTest {
                 break;
             }
             this.await();
-            this.invariantValidator();
-            this.await();
             assertFalse(pQueue.isEmpty());
             assertEquals(this.numberOfThread * this.numberOfThread, pQueue.size());
             pQueue.setSingleton(false);
@@ -241,15 +211,10 @@ public class PriorityQueueMultiThreadsTest {
                 break;
             }
             IntStream.range(0, this.numberOfThread).forEach(n -> {
-                assertEquals(null, globalNodesArr[n].getFather());
-                assertEquals(null, globalNodesArr[n].getLeft());
-                assertEquals(null, globalNodesArr[n].getLeft());
                 globalNodesArr[n] = localNodesArr[n];
                 localNodesArr[n] = null;
             });
 
-            this.await();
-            this.invariantValidator();
             this.await();
             assertFalse(pQueue.isEmpty());
             assertEquals(this.numberOfThread * (this.numberOfThread - 1), pQueue.size());
@@ -277,8 +242,6 @@ public class PriorityQueueMultiThreadsTest {
                 }
                 break;
             }
-                        this.await();
-            this.invariantValidator();
             this.await();
             assertTrue(pQueue.isEmpty());
             assertEquals(0, pQueue.size());

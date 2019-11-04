@@ -1,7 +1,5 @@
 package TransactionLib.src.main.java;
 
-import javafx.util.Pair;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
@@ -58,15 +56,15 @@ public class PriorityQueue {
     }
 
     class IsModified<PQNode> implements Predicate<PQNode> {
-        private ArrayList<PQNode> _modifiedNodes;
+        private LocalPriorityQueue _lpq;
 
-        IsModified(ArrayList<PQNode> modifiedNodes) {
-            this._modifiedNodes = modifiedNodes;
+        IsModified(LocalPriorityQueue lpq) {
+            this._lpq = lpq;
         }
 
         @Override
         public boolean test(PQNode pqNode) {
-            return !this._modifiedNodes.remove(pqNode);
+            return this._lpq.removeModifiedNode((TransactionLib.src.main.java.PQNode) pqNode);
         }
     }
 
@@ -80,14 +78,12 @@ public class PriorityQueue {
         }
         this.dequeueNodes(lPQueue.dequeueCounter());
 
-        ArrayList<PQNode> modifiedNodesState = lPQueue.getModifiedNodesState();
         PrimitivePriorityQueue oldInternalQueue = this.internalPriorityQueue;
         this.internalPriorityQueue = lPQueue;
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
             System.out.println("Priority Queue commitLocalChanges - merge old nodes to new nodes");
         }
-        this.internalPriorityQueue.mergingPriorityQueues(oldInternalQueue, new IsModified<>(modifiedNodesState));
-        assert oldInternalQueue.root == null;
+        this.internalPriorityQueue.mergingPriorityQueues(oldInternalQueue, new IsModified<PQNode>(lPQueue));
         assert oldInternalQueue.size() == 0;
     }
 
@@ -327,11 +323,11 @@ public class PriorityQueue {
             }
 
             this.lock();
-            Pair<Comparable, Object> ret = this.internalPriorityQueue.dequeue();
+            PQNode node = this.internalPriorityQueue.dequeue();
             setVersion(TX.getVersion());
             setSingleton(true);
             this.unlock();
-            return ret.getValue();
+            return node.getValue();
         }
 
         // TX
@@ -376,7 +372,7 @@ public class PriorityQueue {
             lPQueue = new LocalPriorityQueue();
         }
 
-        Pair<Comparable, Object> pQueueMin = null;
+        PQNode pQueueMin = null;
 
         try {
             pQueueMin = lPQueue.currentSmallest(this.internalPriorityQueue);
@@ -386,7 +382,7 @@ public class PriorityQueue {
             }
         }
 
-        Pair<Comparable, Object> lPQueueMin = null;
+        PQNode lPQueueMin = null;
 
         try {
             lPQueueMin = lPQueue.top();
@@ -399,7 +395,7 @@ public class PriorityQueue {
             }
         }
 
-        if (pQueueMin != null && (lPQueueMin == null || pQueueMin.getKey().compareTo(lPQueueMin.getKey()) < 0)) {// the minimum node is in the priority queue
+        if (pQueueMin != null && (lPQueueMin == null || pQueueMin.compareTo(lPQueueMin) < 0)) {// the minimum node is in the priority queue
             lPQueue.nextSmallest(this.internalPriorityQueue);
             pqMap.put(this, lPQueue);
             return pQueueMin.getValue();
@@ -422,7 +418,7 @@ public class PriorityQueue {
             }
 
             this.lock();
-            Pair<Comparable, Object> ret = this.internalPriorityQueue.top();
+            PQNode ret = this.internalPriorityQueue.top();
             setVersion(TX.getVersion());
             setSingleton(true);
             this.unlock();
@@ -461,7 +457,7 @@ public class PriorityQueue {
             lPQueue = new LocalPriorityQueue();
         }
 
-        Pair<Comparable, Object> pQueueMin = null;
+        PQNode pQueueMin = null;
         try {
             pQueueMin = lPQueue.currentSmallest(this.internalPriorityQueue);
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
@@ -470,7 +466,7 @@ public class PriorityQueue {
             }
         }
 
-        Pair<Comparable, Object> lPQueueMin = null;
+        PQNode lPQueueMin = null;
 
         try {
             lPQueueMin = lPQueue.top();
@@ -480,7 +476,7 @@ public class PriorityQueue {
             }
         }
 
-        if (pQueueMin != null && (lPQueueMin == null || pQueueMin.getKey().compareTo(lPQueueMin.getKey()) < 0)) {// the minimum node is in the priority queue
+        if (pQueueMin != null && (lPQueueMin == null || pQueueMin.compareTo(lPQueueMin) < 0)) {// the minimum node is in the priority queue
             return pQueueMin.getValue();
         }
         // the minimum node is in the local priority queue

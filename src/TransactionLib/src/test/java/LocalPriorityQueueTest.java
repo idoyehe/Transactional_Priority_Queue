@@ -7,8 +7,6 @@ import org.junit.Test;
 import static junit.framework.TestCase.*;
 import static junit.framework.TestCase.fail;
 
-import javafx.util.Pair;
-
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
@@ -34,26 +32,27 @@ public class LocalPriorityQueueTest {
     }
 
     @Test
-    public void testSingleEnqueue() throws TXLibExceptions.PQueueIsEmptyException, Exception {
-        final Pair<Comparable, Object> element = new Pair<>(1, 1);
+    public void testSingleEnqueue() throws TXLibExceptions.PQueueIsEmptyException {
+        final PQNode element = new PQNode(1, 1);
         LocalPriorityQueue lpq = new LocalPriorityQueue();
-        lpq.enqueue(element.getKey(), element.getValue());
-        assertEquals(element, lpq.top());
-        lpq.testHeapInvariantRecursive();
+        lpq.enqueue(element.getPriority(), element.getValue());
+        assertEquals(element.getPriority(), lpq.top().getPriority());
+        assertEquals(element.getValue(), lpq.top().getValue());
         assertEquals(1, lpq.size());
     }
 
     @Test
-    public void testSingleEnqueueAndSingleDequeue() throws TXLibExceptions.PQueueIsEmptyException, Exception {
-        final Pair<Comparable, Object> element = new Pair<>(1, 1);
+    public void testSingleEnqueueAndSingleDequeue() throws TXLibExceptions.PQueueIsEmptyException {
+        final PQNode element = new PQNode(1, 1);
         LocalPriorityQueue lpq = new LocalPriorityQueue();
-        lpq.enqueue(element.getKey(), element.getValue());
-        assertEquals(element, lpq.top());
-        lpq.testHeapInvariantRecursive();
-        assertEquals(1, lpq.size());
 
-        assertEquals(element, lpq.dequeue());
-        lpq.testHeapInvariantRecursive();
+        lpq.enqueue(element.getPriority(), element.getValue());
+
+        assertEquals(element.getPriority(), lpq.top().getPriority());
+        assertEquals(element.getValue(), lpq.top().getValue());
+
+        assertEquals(1, lpq.size());
+        assertTrue(element.isContentEqual(lpq.dequeue()));
     }
 
     @Test
@@ -62,31 +61,20 @@ public class LocalPriorityQueueTest {
 
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             final PQNode newRoot = lpq.enqueue(n, n);
-            try {
-                lpq.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
-            }
-            assertEquals(1, newRoot.getIndex());
             assertEquals(n, newRoot.getPriority());
         });
         assertEquals(this.range, lpq.size());
 
         IntStream.range(0, this.range).forEach(n -> {
             try {
-                final Pair<Comparable, Object> element = new Pair<>(n, n);
-                assertEquals(element, lpq.top());
-                assertEquals(element, lpq.dequeue());
+                final PQNode element = new PQNode(n, n);
+                assertEquals(element.getPriority(), lpq.top().getPriority());
+                assertEquals(element.getValue(), lpq.top().getValue());
+
+                assertTrue(element.isContentEqual(lpq.dequeue()));
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 e.printStackTrace();
                 fail("LocalPriorityQueue should not be empty");
-            }
-            try {
-                lpq.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
             }
         });
     }
@@ -98,13 +86,8 @@ public class LocalPriorityQueueTest {
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             final PQNode newRoot = lpq.enqueue(n, n);
             nodesArr[n] = newRoot;
-            try {
-                lpq.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
-            }
-            assertEquals(1, newRoot.getIndex());
+
+            assertEquals(n, newRoot.getValue());
             assertEquals(n, newRoot.getPriority());
         });
         assertEquals(this.range, lpq.size());
@@ -117,30 +100,18 @@ public class LocalPriorityQueueTest {
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             Integer oldPrio = (Integer) nodesArr[n].getPriority();
             lpq.decreasePriority(nodesArr[n], -oldPrio);
-            try {
-                lpq.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
-            }
             assertEquals(-oldPrio, nodesArr[n].getPriority());
         });
 
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             try {
-                final Pair<Comparable, Object> element = new Pair<>(-n, n);
-                assertEquals(element, lpq.top());
-                assertEquals(new Pair<>(nodesArr[n].getPriority(), nodesArr[n].getValue()), lpq.top());
-                assertEquals(element, lpq.dequeue());
+                final PQNode element = new PQNode(-n, n);
+                assertTrue(element.isContentEqual(lpq.top()));
+                assertTrue(nodesArr[n].isContentEqual(lpq.top()));
+                assertTrue(element.isContentEqual(lpq.dequeue()));
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 e.printStackTrace();
                 fail("LocalPriorityQueue should not be empty");
-            }
-            try {
-                lpq.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
             }
         });
     }
@@ -152,15 +123,9 @@ public class LocalPriorityQueueTest {
         PQNode nodesArr[] = new PQNode[this.range];
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             final PQNode newRoot = anotherPrimitive.enqueue(n, n);
-            nodesArr[n] = newRoot;
-            try {
-                anotherPrimitive.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
-            }
-            assertEquals(1, newRoot.getIndex());
+            assertEquals(n, newRoot.getValue());
             assertEquals(n, newRoot.getPriority());
+            nodesArr[n] = newRoot;
         });
 
         assertEquals(this.range, anotherPrimitive.size());
@@ -169,7 +134,7 @@ public class LocalPriorityQueueTest {
 
         IntStream.range(0, this.range).forEachOrdered(n -> {
             try {
-                assertEquals(new Pair<>(n, n), lpq.currentSmallest(anotherPrimitive));
+                assertTrue(new PQNode(n, n).isContentEqual(lpq.currentSmallest(anotherPrimitive)));
                 lpq.nextSmallest(anotherPrimitive);
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 e.printStackTrace();
@@ -197,21 +162,21 @@ public class LocalPriorityQueueTest {
 
         try {
             int newPrio = -1;
-            assertEquals(new Pair<>(nodesArr[0].getPriority(), nodesArr[0].getValue()), anotherPrimitive.top());
+            assertTrue(nodesArr[0].isContentEqual(anotherPrimitive.top()));
             anotherPrimitive.decreasePriority(nodesArr[0], newPrio);
-            assertEquals(new Pair<>(newPrio, nodesArr[0].getValue()), anotherPrimitive.top());
+            assertTrue(nodesArr[0].isContentEqual(anotherPrimitive.top()));
             assertEquals(newPrio, nodesArr[0].getPriority());
             lpq2.addModifiedNode(nodesArr[0]);
 
-            assertEquals(new Pair<>(nodesArr[1].getPriority(), nodesArr[1].getValue()), lpq2.currentSmallest(anotherPrimitive));
+            assertTrue(nodesArr[1].isContentEqual(lpq2.currentSmallest(anotherPrimitive)));
 
             int newPrio2 = 1;
             anotherPrimitive.decreasePriority(nodesArr[1], newPrio2);
-            assertEquals(new Pair<>(newPrio, nodesArr[0].getValue()), anotherPrimitive.top());
+            assertEquals(nodesArr[0], anotherPrimitive.top());
             assertEquals(newPrio2, nodesArr[1].getPriority());
             lpq2.addModifiedNode(nodesArr[1]);
 
-            assertEquals(new Pair<>(nodesArr[2].getPriority(), nodesArr[2].getValue()), lpq2.currentSmallest(anotherPrimitive));
+            assertTrue(nodesArr[2].isContentEqual(lpq2.currentSmallest(anotherPrimitive)));
 
 
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
@@ -229,7 +194,7 @@ public class LocalPriorityQueueTest {
         }
         nodesArr[0] = anotherPrimitive.enqueue(0, 0);
         try {
-            assertEquals(new Pair<>(nodesArr[0].getPriority(), nodesArr[0].getValue()), anotherPrimitive.top());
+            assertEquals(nodesArr[0], anotherPrimitive.top());
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             e.printStackTrace();
             fail("Local priority queue should not be empty");
@@ -241,8 +206,8 @@ public class LocalPriorityQueueTest {
         }
         for (int i = 0; i < nodesArr.length / 2; i++) {
             try {
-                assertEquals(new Pair<>(nodesArr[nodesArr.length - 1].getPriority(), nodesArr[nodesArr.length - 1].getValue()), anotherPrimitive.top());
-                assertEquals(new Pair<>(i, i), lpq3.currentSmallest(anotherPrimitive));
+                assertEquals(nodesArr[nodesArr.length - 1], anotherPrimitive.top());
+                assertTrue(new PQNode(i, i).isContentEqual(lpq3.currentSmallest(anotherPrimitive)));
                 lpq3.nextSmallest(anotherPrimitive);
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 e.printStackTrace();
@@ -259,23 +224,14 @@ public class LocalPriorityQueueTest {
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             final PQNode newRoot = primitivePQ.enqueue(n, n);
             nodesArray[n] = newRoot;
-
             try {
-                assertEquals(new Pair<>(n, n), primitivePQ.top());
-                assertEquals(1, newRoot.getIndex());
+                assertEquals(nodesArray[n], primitivePQ.top());
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 e.printStackTrace();
                 fail("Local priority queue should not be empty");
             }
-
-            try {
-                primitivePQ.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
-            }
-            assertEquals(1, newRoot.getIndex());
             assertEquals(n, newRoot.getPriority());
+            assertEquals(n, newRoot.getValue());
         });
 
         final LocalPriorityQueue lpq = new LocalPriorityQueue();
@@ -283,17 +239,9 @@ public class LocalPriorityQueueTest {
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             primitivePQ.decreasePriority(nodesArray[n], -n);
             lpq.addModifiedNode(nodesArray[n]);
-
-            try {
-                primitivePQ.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
-            }
             assertEquals(-n, nodesArray[n].getPriority());
         });
         assertEquals(this.range, lpq.getModifiedNodesState().size());
-
 
         try {
             lpq.currentSmallest(primitivePQ);
@@ -306,18 +254,18 @@ public class LocalPriorityQueueTest {
         final LocalPriorityQueue lpq2 = new LocalPriorityQueue();
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             try {
-                assertEquals(new Pair<>(-n, n), lpq2.currentSmallest(primitivePQ));
+                assertTrue(new PQNode(-n, n).isContentEqual(lpq2.currentSmallest(primitivePQ)));
                 lpq2.nextSmallest(primitivePQ);
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 fail("should not throw empty Queue Exception");
             }
         });
-        assertEquals(0, lpq2.getModifiedNodesState().size());
+        assertEquals(0, lpq2.modifiedNodesCounter());
         assertEquals(this.range, lpq2.dequeueCounter());
 
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             try {
-                assertEquals(new Pair<>(-n, n), primitivePQ.dequeue());
+                assertTrue(new PQNode(-n, n).isContentEqual(primitivePQ.dequeue()));
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 fail("should not throw empty Queue Exception");
             }
@@ -328,34 +276,26 @@ public class LocalPriorityQueueTest {
     public void testMerging2LocalPriorityQueue() throws TXLibExceptions.PQueueIsEmptyException, Exception {
         LocalPriorityQueue lpq1 = new LocalPriorityQueue();
         LocalPriorityQueue lpq2 = new LocalPriorityQueue();
+        PQNode nodesArray[] = new PQNode[this.range * 2];
+
 
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             final PQNode newRoot = lpq1.enqueue(n, n);
-            try {
-                lpq1.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
-            }
-            assertEquals(1, newRoot.getIndex());
             assertEquals(n, newRoot.getPriority());
+            assertEquals(n, newRoot.getValue());
+            nodesArray[n] = newRoot;
         });
         assertEquals(this.range, lpq1.size());
 
         IntStream.range(this.range, this.range * 2).map(i -> this.range * 2 - 1 - (i - this.range)).forEach(n -> {
             final PQNode newRoot = lpq2.enqueue(n, n);
-            try {
-                lpq2.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
-            }
-            assertEquals(1, newRoot.getIndex());
             assertEquals(n, newRoot.getPriority());
+            assertEquals(n, newRoot.getValue());
+            nodesArray[n] = newRoot;
         });
         assertEquals(this.range, lpq2.size());
 
-        lpq1.mergingPriorityQueues(lpq2, new StaticFalse<>());
+        lpq1.mergingPriorityQueues(lpq2, new StaticTrue<>());
         assertEquals(this.range, lpq1.size());
         assertEquals(0, lpq2.size());
 
@@ -366,51 +306,23 @@ public class LocalPriorityQueueTest {
             assertTrue(e != null);
         }
 
-
-        try {
-            lpq1.testHeapInvariantRecursive();
-            lpq2.testHeapInvariantRecursive();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-
         IntStream.range(this.range, this.range * 2).map(i -> this.range * 2 - 1 - (i - this.range)).forEach(n -> {
             final PQNode newRoot = lpq2.enqueue(n, n);
-            try {
-                lpq2.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
-            }
-            assertEquals(1, newRoot.getIndex());
             assertEquals(n, newRoot.getPriority());
+            assertEquals(n, newRoot.getValue());
+            nodesArray[n] = newRoot;
+
         });
         assertEquals(this.range, lpq2.size());
 
 
-        lpq1.mergingPriorityQueues(lpq2, new StaticTrue<>());
+        lpq1.mergingPriorityQueues(lpq2, new StaticFalse<>());
         assertEquals(this.range * 2, lpq1.size());
         assertEquals(0, lpq2.size());
 
-        try {
-            lpq1.testHeapInvariantRecursive();
-            lpq2.testHeapInvariantRecursive();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-
-        try {
-            lpq1.testHeapInvariantRecursive();
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail(e.getMessage());
-        }
-
         IntStream.range(0, this.range * 2).forEach(n -> {
             try {
-                assertEquals(new Pair<>(n, n), lpq1.dequeue());
+                assertEquals(nodesArray[n], lpq1.dequeue());
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 fail("should not throw empty Queue Exception");
             }

@@ -43,43 +43,33 @@ public class PriorityQueueSingleThreadTest {
         pQueue.setSingleton(true);
         pQueue.enqueue(element.getKey(), element.getValue());
         assertEquals(element.getValue(), pQueue.top());
-        pQueue.internalPriorityQueue.testHeapInvariantRecursive();
         assertEquals(1, pQueue.size());
         assertFalse(pQueue.isEmpty());
     }
 
     @Test
-    public void testSingletonPriorityQueueSingleEnqueueAndSingleDequeue() throws TXLibExceptions.PQueueIsEmptyException, Exception {
+    public void testSingletonPriorityQueueSingleEnqueueAndSingleDequeue() throws TXLibExceptions.PQueueIsEmptyException {
         final Pair<Comparable, Object> element = new Pair<>(-1, 1);
         PriorityQueue pQueue = new PriorityQueue();
         pQueue.setSingleton(true);
         pQueue.enqueue(element.getKey(), element.getValue());
         assertEquals(element.getValue(), pQueue.top());
-        pQueue.internalPriorityQueue.testHeapInvariantRecursive();
         assertEquals(1, pQueue.size());
         assertFalse(pQueue.isEmpty());
-
         assertEquals(element.getValue(), pQueue.dequeue());
-        pQueue.internalPriorityQueue.testHeapInvariantRecursive();
         assertEquals(0, pQueue.size());
         assertTrue(pQueue.isEmpty());
     }
 
     @Test
-    public void testSingletonPriorityQueueMultiplyEnqueueAndMultiplyDequeue() throws TXLibExceptions.PQueueIsEmptyException, Exception {
+    public void testSingletonPriorityQueueMultiplyEnqueueAndMultiplyDequeue() throws TXLibExceptions.PQueueIsEmptyException {
         PriorityQueue pQueue = new PriorityQueue();
         pQueue.setSingleton(true);
 
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             final PQNode newRoot = pQueue.enqueue(n, n);
-            try {
-                pQueue.internalPriorityQueue.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
-            }
-            assertEquals(1, newRoot.getIndex());
             assertEquals(n, newRoot.getPriority());
+            assertEquals(n, newRoot.getValue());
         });
         assertEquals(this.range, pQueue.size());
         assertFalse(pQueue.isEmpty());
@@ -94,12 +84,6 @@ public class PriorityQueueSingleThreadTest {
                 e.printStackTrace();
                 fail("PriorityQueue should not be empty");
             }
-            try {
-                pQueue.internalPriorityQueue.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
-            }
         });
     }
 
@@ -111,14 +95,9 @@ public class PriorityQueueSingleThreadTest {
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             final PQNode newRoot = pQueue.enqueue(n, n);
             nodesArr[n] = newRoot;
-            try {
-                pQueue.internalPriorityQueue.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
-            }
-            assertEquals(1, newRoot.getIndex());
+
             assertEquals(n, newRoot.getPriority());
+            assertEquals(n, newRoot.getValue());
         });
         assertEquals(this.range, pQueue.size());
         assertFalse(pQueue.isEmpty());
@@ -131,13 +110,6 @@ public class PriorityQueueSingleThreadTest {
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             Integer oldPrio = (Integer) nodesArr[n].getPriority();
             pQueue.decreasePriority(nodesArr[n], -oldPrio);
-            try {
-                assertEquals(this.range - 1, pQueue.top());
-                pQueue.internalPriorityQueue.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
-            }
             assertEquals(-oldPrio, nodesArr[n].getPriority());
         });
 
@@ -150,12 +122,6 @@ public class PriorityQueueSingleThreadTest {
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 e.printStackTrace();
                 fail("LocalPriorityQueue should not be empty");
-            }
-            try {
-                pQueue.internalPriorityQueue.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
             }
         });
     }
@@ -188,7 +154,7 @@ public class PriorityQueueSingleThreadTest {
     }
 
     @Test
-    public void testTransactionalPriorityQueueSingleEnqueue() throws TXLibExceptions.PQueueIsEmptyException, Exception {
+    public void testTransactionalPriorityQueueSingleEnqueue() throws TXLibExceptions.PQueueIsEmptyException {
         final Pair<Comparable, Object> element = new Pair<>(-1, 1);
         PriorityQueue pQueue = new PriorityQueue();
         pQueue.setSingleton(false);
@@ -198,13 +164,12 @@ public class PriorityQueueSingleThreadTest {
         assertEquals(1, pQueue.size());
         assertFalse(pQueue.isEmpty());
         TX.TXend();
-        pQueue.internalPriorityQueue.testHeapInvariantRecursive();
         assertEquals(1, pQueue.internalPriorityQueue.size());
         assertFalse(pQueue.internalPriorityQueue.isEmpty());
     }
 
     @Test
-    public void testTransactionalPriorityQueueSingleEnqueueAndSingleDequeue() throws TXLibExceptions.PQueueIsEmptyException, Exception {
+    public void testTransactionalPriorityQueueSingleEnqueueAndSingleDequeue() throws TXLibExceptions.PQueueIsEmptyException {
         final Pair<Comparable, Object> element = new Pair<>(-1, 1);
         PriorityQueue pQueue = new PriorityQueue();
         pQueue.setSingleton(false);
@@ -217,28 +182,26 @@ public class PriorityQueueSingleThreadTest {
         assertEquals(0, pQueue.size());
         assertTrue(pQueue.isEmpty());
         TX.TXend();
-        pQueue.internalPriorityQueue.testHeapInvariantRecursive();
         assertEquals(0, pQueue.internalPriorityQueue.size());
         assertTrue(pQueue.internalPriorityQueue.isEmpty());
     }
 
     @Test
-    public void testTransactionalPriorityQueueEnqueueThenDequeue() throws TXLibExceptions.PQueueIsEmptyException, Exception {
+    public void testTransactionalPriorityQueueEnqueueThenDequeue() {
         PriorityQueue pQueue = new PriorityQueue();
         pQueue.setSingleton(false);
 
         TX.TXbegin();//1ST transaction only enqueue
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             final PQNode newRoot = pQueue.enqueue(n, n);
-            assertEquals(1, newRoot.getIndex());
             assertEquals(n, newRoot.getPriority());
+            assertEquals(n, newRoot.getValue());
         });
         assertEquals(this.range, pQueue.size());
         assertFalse(pQueue.isEmpty());
         TX.TXend();
 
         pQueue.setSingleton(true);
-        pQueue.internalPriorityQueue.testHeapInvariantRecursive();
         assertEquals(this.range, pQueue.size());
         assertFalse(pQueue.isEmpty());
         assertEquals(this.range, pQueue.internalPriorityQueue.size());
@@ -263,7 +226,6 @@ public class PriorityQueueSingleThreadTest {
 
         TX.TXend();
         pQueue.setSingleton(true);
-        pQueue.internalPriorityQueue.testHeapInvariantRecursive();
         assertEquals(0, pQueue.size());
         assertTrue(pQueue.isEmpty());
         assertEquals(0, pQueue.internalPriorityQueue.size());
@@ -271,15 +233,15 @@ public class PriorityQueueSingleThreadTest {
     }
 
     @Test
-    public void testTransactionalPriorityQueueEnqueueThenDequeueNotEqual() throws TXLibExceptions.PQueueIsEmptyException, Exception {
+    public void testTransactionalPriorityQueueEnqueueThenDequeueNotEqual() {
         PriorityQueue pQueue = new PriorityQueue();
         pQueue.setSingleton(false);
 
         TX.TXbegin();//1ST transaction only enqueue
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             final PQNode newRoot = pQueue.enqueue(n, n);
-            assertEquals(1, newRoot.getIndex());
             assertEquals(n, newRoot.getPriority());
+            assertEquals(n, newRoot.getValue());
         });
         assertEquals(this.range, pQueue.size());
         assertFalse(pQueue.isEmpty());
@@ -300,7 +262,6 @@ public class PriorityQueueSingleThreadTest {
 
         TX.TXend();
         pQueue.setSingleton(true);
-        pQueue.internalPriorityQueue.testHeapInvariantRecursive();
         assertEquals(this.range / 2, pQueue.size());
         assertFalse(pQueue.isEmpty());
         assertEquals(this.range / 2, pQueue.internalPriorityQueue.size());
@@ -318,15 +279,14 @@ public class PriorityQueueSingleThreadTest {
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             final PQNode newRoot = pQueue.enqueue(n, n);
             globalNodesArr[n] = newRoot;
-            assertEquals(1, newRoot.getIndex());
             assertEquals(n, newRoot.getPriority());
+            assertEquals(n, newRoot.getValue());
         });
         assertEquals(this.range, pQueue.size());
         assertFalse(pQueue.isEmpty());
         TX.TXend();
 
         pQueue.setSingleton(true);
-        pQueue.internalPriorityQueue.testHeapInvariantRecursive();
         assertEquals(this.range, pQueue.size());
         assertFalse(pQueue.isEmpty());
 
@@ -335,8 +295,8 @@ public class PriorityQueueSingleThreadTest {
         IntStream.range(this.range, this.range * 2).map(i -> this.range * 2 - 1 - (i - this.range)).forEach(n -> {
             final PQNode newRoot = pQueue.enqueue(n, n);
             localNodesArr[n] = newRoot;
-            assertEquals(1, newRoot.getIndex());
             assertEquals(n, newRoot.getPriority());
+            assertEquals(n, newRoot.getValue());
         });
         assertEquals(this.range * 2, pQueue.size());
         assertFalse(pQueue.isEmpty());
@@ -365,9 +325,6 @@ public class PriorityQueueSingleThreadTest {
                 int expectedValue = this.range / 2 - n - 1;
                 try {
                     assertEquals(expectedValue, pQueue.dequeue());
-                    assertEquals(null, localNodesArr[expectedValue].getFather());
-                    assertEquals(null, localNodesArr[expectedValue].getLeft());
-                    assertEquals(null, localNodesArr[expectedValue].getLeft());
                 } catch (TXLibExceptions.PQueueIsEmptyException e) {
                     fail("PriorityQueue should not be empty");
                 }
@@ -383,14 +340,6 @@ public class PriorityQueueSingleThreadTest {
 
         TX.TXend();
         pQueue.setSingleton(true);
-
-        IntStream.range(0, this.range).forEach(n -> {
-            assertEquals(null, globalNodesArr[n].getFather());
-            assertEquals(null, globalNodesArr[n].getLeft());
-            assertEquals(null, globalNodesArr[n].getLeft());
-        });
-
-        pQueue.internalPriorityQueue.testHeapInvariantRecursive();
         assertEquals(0, pQueue.size());
         assertTrue(pQueue.isEmpty());
         assertEquals(0, pQueue.internalPriorityQueue.size());
