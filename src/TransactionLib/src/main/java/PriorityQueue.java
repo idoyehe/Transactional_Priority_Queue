@@ -2,7 +2,6 @@ package TransactionLib.src.main.java;
 
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.function.Predicate;
 
 public class PriorityQueue {
     private static final long singletonMask = 0x4000000000000000L;

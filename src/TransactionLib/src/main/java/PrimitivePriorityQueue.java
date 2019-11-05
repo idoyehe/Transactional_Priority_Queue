@@ -3,11 +3,10 @@ package TransactionLib.src.main.java;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.function.Predicate;
 
 
 public class PrimitivePriorityQueue {
+    protected long time = 0;
     ArrayList<PQNode> sortedArray;
 
 
@@ -20,16 +19,11 @@ public class PrimitivePriorityQueue {
     }
 
 
-    final PQNode enqueueAsNode(PQNode newNode) {
+    public final PQNode enqueue(Comparable priority, Object value) {
+        PQNode newNode = new PQNode(priority, value,this.time++);
         int index = -1 - Collections.binarySearch(this.sortedArray, newNode);
         this.sortedArray.add(index, newNode);
-        return newNode; // here implementing binary
-    }
-
-
-    public final PQNode enqueue(Comparable priority, Object value) {
-        PQNode newNode = new PQNode(priority, value);
-        return this.enqueueAsNode(newNode);
+        return newNode;
     }
 
     public void decreasePriority(final PQNode nodeToModify, Comparable newPriority) {

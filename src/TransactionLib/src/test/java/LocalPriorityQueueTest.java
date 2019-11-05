@@ -324,25 +324,42 @@ public class LocalPriorityQueueTest {
         IntStream.range(0, this.range * 2).forEach(n -> {
             try {
                 assertEquals(nodesArray[n], lpq1.dequeue());
+                assertEquals(n, nodesArray[n].getTime());
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 fail("should not throw empty Queue Exception");
             }
         });
-    }
 
-    class StaticTrue<PQNode> implements Predicate<PQNode> {
+        lpq1.clearInternalState();
+        lpq2.clearInternalState();
 
-        @Override
-        public boolean test(PQNode pqNode) {
-            return true;
-        }
-    }
+        LocalPriorityQueue lpq3 = new LocalPriorityQueue();
+        LocalPriorityQueue lpq4 = new LocalPriorityQueue();
+        IntStream.range(1, this.range + 1).forEach(n -> {
+            assertEquals(n - 1, lpq3.enqueue(n, n).getTime());
+            assertEquals(n - 1, lpq4.enqueue(n, n * 2).getTime());
+        });
 
-    class StaticFalse<PQNode> implements Predicate<PQNode> {
+        lpq3.mergingPriorityQueuesWithoutModification(lpq4);
+        assertEquals(this.range * 2, lpq3.size());
+        assertEquals(0, lpq4.size());
 
-        @Override
-        public boolean test(PQNode pqNode) {
-            return false;
-        }
+
+        IntStream.range(1, this.range + 1).forEach(n -> {
+            try {
+                final PQNode node1 = lpq3.dequeue();
+                assertEquals(n, node1.getPriority());
+                assertEquals(n * 2, node1.getValue());//node from lpq4
+                assertEquals((n - 1) * 2, node1.getTime());
+
+                final PQNode node2 = lpq3.dequeue();
+                assertEquals(n, node2.getPriority());
+                assertEquals(n, node2.getValue());
+                assertEquals((n - 1) * 2 + 1, node2.getTime());
+            } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                fail("should not throw empty Queue Exception");
+            }
+        });
+
     }
 }

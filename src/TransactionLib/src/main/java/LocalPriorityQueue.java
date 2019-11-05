@@ -87,6 +87,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
 
         int totalSize = sorted1.size() + sorted2.size();
         this.sortedArray = new ArrayList<PQNode>(totalSize);//allocating new Array
+        this.time = 0;
         int it1 = 0, it2 = 0;
         // Traverse both array
         while (it1 < sorted1.size() && it2 < sorted2.size()) {
@@ -98,21 +99,25 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
             PQNode node1 = sorted1.get(it1);
             PQNode node2 = sorted2.get(it2);
             if (node1.compareTo(node2) < 0) {
+                node1.setTime(this.time);
                 this.sortedArray.add(node1);
                 it1++;
             } else {
+                node2.setTime(this.time);
                 this.sortedArray.add(node2);
                 it2++;
             }
+            this.time++;
         }
 
         // Store remaining elements of first array
-        while (it1 < sorted1.size())
-            this.sortedArray.add(sorted1.get(it1++));
+        while (it1 < sorted1.size()) {
+            this.sortedArray.add(sorted1.get(it1++).setTime(this.time++));
+        }
 
         // Store remaining elements of second array
         while (it2 < sorted2.size())
-            this.sortedArray.add(sorted2.get(it2++));
+            this.sortedArray.add(sorted2.get(it2++).setTime(this.time++));
 
         assert it1 == sorted1.size();
         assert it2 == sorted2.size();
