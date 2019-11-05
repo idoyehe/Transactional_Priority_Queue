@@ -286,9 +286,10 @@ public class PriorityQueue {
             lPQueue = new LocalPriorityQueue();
         }
         qMap.put(this, lPQueue);
-        assert this.internalPriorityQueue.size() - lPQueue.dequeueCounter() >= 0;
+        int pQueueSize = this.internalPriorityQueue.size();
+        assert pQueueSize - lPQueue.dequeueCounter() + lPQueue.modifiedNodesCounter() >= 0;
         assert lPQueue.size() >= 0;
-        return this.internalPriorityQueue.size() - lPQueue.dequeueCounter() - lPQueue.modifiedNodesCounter() + lPQueue.size();
+        return pQueueSize - lPQueue.dequeueCounter() - lPQueue.modifiedNodesCounter() + lPQueue.size();
     }
 
     public boolean isEmpty() {
@@ -359,7 +360,7 @@ public class PriorityQueue {
         PQNode pQueueMin = null;
 
         try {
-            pQueueMin = lPQueue.currentSmallest(this.internalPriorityQueue);
+            pQueueMin = lPQueue.currentSmallest(this.internalPriorityQueue);// here allocating new PQNode
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                 System.out.println("Priority Queue dequeue - transactional priority queue is empty");
@@ -369,10 +370,10 @@ public class PriorityQueue {
         PQNode lPQueueMin = null;
 
         try {
-            lPQueueMin = lPQueue.top();
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-                System.out.println("Priority Queue dequeue - dequeue from local queue");
+                System.out.println("Priority Queue dequeue - top from local queue");
             }
+            lPQueueMin = lPQueue.top();
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                 System.out.println("Priority Queue dequeue - local queue is empty");

@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 
 
 public class PriorityQueueMultiThreadsTest {
-    final int numberOfThreads = 200;
+    final int numberOfThreads = 100;
 
 
     @Test
