@@ -7,7 +7,6 @@ import org.junit.Test;
 import static junit.framework.TestCase.*;
 import static junit.framework.TestCase.fail;
 
-import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 
@@ -80,7 +79,7 @@ public class LocalPriorityQueueTest {
     }
 
     @Test
-    public void testDecreasePriority() {
+    public void testModifyPriority() {
         LocalPriorityQueue lpq = new LocalPriorityQueue();
         PQNode nodesArr[] = new PQNode[this.range];
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
@@ -99,13 +98,45 @@ public class LocalPriorityQueueTest {
 
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             Integer oldPrio = (Integer) nodesArr[n].getPriority();
-            lpq.decreasePriority(nodesArr[n], -oldPrio);
+            lpq.modifyPriority(nodesArr[n], -oldPrio);
             assertEquals(-oldPrio, nodesArr[n].getPriority());
         });
 
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             try {
                 final PQNode element = new PQNode(-n, n);
+                assertTrue(element.isContentEqual(lpq.top()));
+                assertTrue(nodesArr[n].isContentEqual(lpq.top()));
+                assertTrue(element.isContentEqual(lpq.dequeue()));
+            } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                e.printStackTrace();
+                fail("LocalPriorityQueue should not be empty");
+            }
+        });
+
+        IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
+            final PQNode newRoot = lpq.enqueue(-n, n);
+            nodesArr[n] = newRoot;
+
+            assertEquals(-n, newRoot.getPriority());
+            assertEquals(n, newRoot.getValue());
+        });
+
+        for (int i = 0; i < nodesArr.length; i++) {
+            assertEquals(-i, nodesArr[i].getPriority());
+            assertEquals(i, nodesArr[i].getValue());
+        }
+
+
+        IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
+            Integer oldPrio = (Integer) nodesArr[n].getPriority();
+            lpq.modifyPriority(nodesArr[n], -oldPrio);
+            assertEquals(-oldPrio, nodesArr[n].getPriority());
+        });
+
+        IntStream.range(0, this.range).forEach(n -> {
+            try {
+                final PQNode element = new PQNode(n, n);
                 assertTrue(element.isContentEqual(lpq.top()));
                 assertTrue(nodesArr[n].isContentEqual(lpq.top()));
                 assertTrue(element.isContentEqual(lpq.dequeue()));
@@ -163,7 +194,7 @@ public class LocalPriorityQueueTest {
         try {
             int newPrio = -1;
             assertTrue(nodesArr[0].isContentEqual(anotherPrimitive.top()));
-            anotherPrimitive.decreasePriority(nodesArr[0], newPrio);
+            anotherPrimitive.modifyPriority(nodesArr[0], newPrio);
             assertTrue(nodesArr[0].isContentEqual(anotherPrimitive.top()));
             assertEquals(newPrio, nodesArr[0].getPriority());
             lpq2.addModifiedNode(nodesArr[0]);
@@ -171,7 +202,7 @@ public class LocalPriorityQueueTest {
             assertTrue(nodesArr[1].isContentEqual(lpq2.currentSmallest(anotherPrimitive)));
 
             int newPrio2 = 1;
-            anotherPrimitive.decreasePriority(nodesArr[1], newPrio2);
+            anotherPrimitive.modifyPriority(nodesArr[1], newPrio2);
             assertEquals(nodesArr[0], anotherPrimitive.top());
             assertEquals(newPrio2, nodesArr[1].getPriority());
             lpq2.addModifiedNode(nodesArr[1]);
@@ -201,7 +232,7 @@ public class LocalPriorityQueueTest {
         }
 
         for (int i = nodesArr.length / 2; i < nodesArr.length; i++) {
-            anotherPrimitive.decreasePriority(nodesArr[i], -(Integer) nodesArr[i].getPriority());
+            anotherPrimitive.modifyPriority(nodesArr[i], -(Integer) nodesArr[i].getPriority());
             lpq3.addModifiedNode(nodesArr[i]);
         }
         for (int i = 0; i < nodesArr.length / 2; i++) {
@@ -237,7 +268,7 @@ public class LocalPriorityQueueTest {
         final LocalPriorityQueue lpq = new LocalPriorityQueue();
 
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
-            primitivePQ.decreasePriority(nodesArray[n], -n);
+            primitivePQ.modifyPriority(nodesArray[n], -n);
             lpq.addModifiedNode(nodesArray[n]);
             assertEquals(-n, nodesArray[n].getPriority());
         });

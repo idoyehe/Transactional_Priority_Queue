@@ -20,21 +20,22 @@ public class PrimitivePriorityQueue {
 
 
     public final PQNode enqueue(Comparable priority, Object value) {
-        PQNode newNode = new PQNode(priority, value,this.time++);
+        PQNode newNode = new PQNode(priority, value, this.time++);
         int index = -1 - Collections.binarySearch(this.sortedArray, newNode);
         this.sortedArray.add(index, newNode);
         return newNode;
     }
 
-    public void decreasePriority(final PQNode nodeToModify, Comparable newPriority) {
+    public void modifyPriority(final PQNode nodeToModify, Comparable newPriority) {
         assert this.containsNode(nodeToModify);//checking node is actually part of the heap
-        if (nodeToModify.getPriority().compareTo(newPriority) > 0) {
-            int index = Collections.binarySearch(this.sortedArray, nodeToModify);
-            this.sortedArray.remove(index);
-            nodeToModify.setPriority(newPriority);
-            int newIndex = -1 - Collections.binarySearch(this.sortedArray, nodeToModify);
-            this.sortedArray.add(newIndex, nodeToModify);
+        if (nodeToModify.getPriority() == newPriority) {
+            return;
         }
+        int index = Collections.binarySearch(this.sortedArray, nodeToModify);
+        this.sortedArray.remove(index);
+        nodeToModify.setPriority(newPriority);
+        int newIndex = -1 - Collections.binarySearch(this.sortedArray, nodeToModify);
+        this.sortedArray.add(newIndex, nodeToModify);
     }
 
     public boolean isEmpty() {

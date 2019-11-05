@@ -74,7 +74,7 @@ public class PriorityQueueMultiThreadsTest {
 
             if (this.threadName.equals(this.masterThread)) {
                 IntStream.range(0, this.numberOfThread).map(i -> this.numberOfThread - 1 - i).forEach(n -> {
-                    final PQNode newNode = pQueue.decreasePriority(globalNodesArr[n], -(Integer) globalNodesArr[n].getPriority());
+                    final PQNode newNode = pQueue.modifyPriority(globalNodesArr[n], -(Integer) globalNodesArr[n].getPriority());
                     assertEquals(newNode, globalNodesArr[n]);
                 });
             }
@@ -189,7 +189,7 @@ public class PriorityQueueMultiThreadsTest {
                         TX.TXbegin();
 
                         IntStream.range(0, this.numberOfThread).forEach(n -> {
-                            localNodesArr[n] = pQueue.decreasePriority(globalNodesArr[n], -(Integer) globalNodesArr[n].getPriority() - 1);
+                            localNodesArr[n] = pQueue.modifyPriority(globalNodesArr[n], -(Integer) globalNodesArr[n].getPriority() - 1);
                             assertTrue(globalNodesArr[n] != localNodesArr[n]);
                         });
                         try {

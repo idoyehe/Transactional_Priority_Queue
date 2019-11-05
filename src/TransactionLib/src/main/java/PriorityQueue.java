@@ -159,7 +159,7 @@ public class PriorityQueue {
         return newNode;
     }
 
-    public PQNode decreasePriority(final PQNode nodeToModify, Comparable newPriority) throws TXLibExceptions.AbortException {
+    public PQNode modifyPriority(final PQNode nodeToModify, Comparable newPriority) throws TXLibExceptions.AbortException {
         LocalStorage localStorage = TX.lStorage.get();
 
         // SINGLETON
@@ -170,7 +170,7 @@ public class PriorityQueue {
             }
 
             this.lock();
-            this.internalPriorityQueue.decreasePriority(nodeToModify, newPriority);
+            this.internalPriorityQueue.modifyPriority(nodeToModify, newPriority);
 
             this.setVersion(TX.getVersion());
             this.setSingleton(true);
@@ -197,7 +197,7 @@ public class PriorityQueue {
             lPQueue = new LocalPriorityQueue();
         }
         if (lPQueue.containsNode(nodeToModify)) {
-            lPQueue.decreasePriority(nodeToModify, newPriority);
+            lPQueue.modifyPriority(nodeToModify, newPriority);
             pqMap.put(this, lPQueue);
             return nodeToModify;
         }
@@ -216,7 +216,7 @@ public class PriorityQueue {
         }
         // now we have the lock
 
-        if (newPriority.compareTo(nodeToModify.getPriority()) < 0 && this.internalPriorityQueue.containsNode(nodeToModify)) {
+        if (this.internalPriorityQueue.containsNode(nodeToModify)) {
             lPQueue.addModifiedNode(nodeToModify);
             PQNode newNode = lPQueue.enqueue(newPriority, nodeToModify.getValue());
             pqMap.put(this, lPQueue);

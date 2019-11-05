@@ -109,7 +109,7 @@ public class PriorityQueueSingleThreadTest {
 
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             Integer oldPrio = (Integer) nodesArr[n].getPriority();
-            pQueue.decreasePriority(nodesArr[n], -oldPrio);
+            pQueue.modifyPriority(nodesArr[n], -oldPrio);
             assertEquals(-oldPrio, nodesArr[n].getPriority());
         });
 
@@ -301,20 +301,19 @@ public class PriorityQueueSingleThreadTest {
         assertEquals(this.range * 2, pQueue.size());
         assertFalse(pQueue.isEmpty());
 
-        IntStream.range(0, this.range).forEach(n -> {
+        IntStream.range(0, this.range / 2).forEach(n -> {
             assertEquals(n, globalNodesArr[n].getPriority());
-            final PQNode newRoot = pQueue.decreasePriority(globalNodesArr[n], 2 * n);
-            assertEquals(newRoot, globalNodesArr[n]);
+            localNodesArr[n] = pQueue.modifyPriority(globalNodesArr[n], this.range * 2 + n);
+            assertTrue(localNodesArr[n] != globalNodesArr[n]);
             assertEquals(n, globalNodesArr[n].getPriority());
-            assertEquals(n, newRoot.getPriority());
+            assertEquals(this.range * 2 + n, localNodesArr[n].getPriority());
         });
 
-        IntStream.range(0, this.range / 2).forEach(n -> {
-            int newPrio = -n - 1;
+        IntStream.range(this.range / 2, this.range).forEach(n -> {
+            int newPrio = -n;
             assertEquals(n, globalNodesArr[n].getPriority());
-            final PQNode newRef = pQueue.decreasePriority(globalNodesArr[n], newPrio);
-            assertTrue(globalNodesArr[n] != newRef);
-            localNodesArr[n] = newRef;
+            localNodesArr[n] = pQueue.modifyPriority(globalNodesArr[n], newPrio);
+            assertTrue(globalNodesArr[n] != localNodesArr[n]);
             assertEquals(n, globalNodesArr[n].getPriority());
             assertEquals(newPrio, localNodesArr[n].getPriority());
         });
@@ -322,14 +321,21 @@ public class PriorityQueueSingleThreadTest {
 
         IntStream.range(0, this.range * 2).forEach(n -> {
             if (n < this.range / 2) {
-                int expectedValue = this.range / 2 - n - 1;
+                int expectedValue = this.range - n - 1;
+                try {
+                    assertEquals(expectedValue, pQueue.dequeue());
+                } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                    fail("PriorityQueue should not be empty");
+                }
+            } else if (n < this.range * 1.5) {
+                int expectedValue = n + this.range / 2;
                 try {
                     assertEquals(expectedValue, pQueue.dequeue());
                 } catch (TXLibExceptions.PQueueIsEmptyException e) {
                     fail("PriorityQueue should not be empty");
                 }
             } else {
-                int expectedValue = n;
+                int expectedValue = (int)(n - this.range * 1.5);
                 try {
                     assertEquals(expectedValue, pQueue.dequeue());
                 } catch (TXLibExceptions.PQueueIsEmptyException e) {
