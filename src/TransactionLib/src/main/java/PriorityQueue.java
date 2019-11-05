@@ -30,6 +30,10 @@ public class PriorityQueue {
         return (l & singletonMask) != 0;
     }
 
+    private boolean isSameVersionAndSingleton(long version) {
+        return versionAndFlags.get() == version && this.isSingleton();
+    }
+
     public void setSingleton(boolean value) {
         long l = versionAndFlags.get();
         if (value) {
@@ -130,7 +134,7 @@ public class PriorityQueue {
             TXLibExceptions excep = new TXLibExceptions();
             throw excep.new AbortException();
         }
-        if ((localStorage.readVersion == this.getVersion()) && (isSingleton())) {
+        if (this.isSameVersionAndSingleton(localStorage.readVersion)) {
             TX.incrementAndGetVersion();
             localStorage.TX = false;
             TXLibExceptions excep = new TXLibExceptions();
@@ -181,7 +185,7 @@ public class PriorityQueue {
             TXLibExceptions excep = new TXLibExceptions();
             throw excep.new AbortException();
         }
-        if ((localStorage.readVersion == this.getVersion()) && (isSingleton())) {
+        if (this.isSameVersionAndSingleton(localStorage.readVersion)) {
             TX.incrementAndGetVersion();
             localStorage.TX = false;
             TXLibExceptions excep = new TXLibExceptions();
@@ -257,7 +261,7 @@ public class PriorityQueue {
             TXLibExceptions excep = new TXLibExceptions();
             throw excep.new AbortException();
         }
-        if ((localStorage.readVersion == this.getVersion()) && (isSingleton())) {
+        if (this.isSameVersionAndSingleton(localStorage.readVersion)) {
             TX.incrementAndGetVersion();
             localStorage.TX = false;
             TXLibExceptions excep = new TXLibExceptions();
@@ -330,7 +334,7 @@ public class PriorityQueue {
             TXLibExceptions excep = new TXLibExceptions();
             throw excep.new AbortException();
         }
-        if ((localStorage.readVersion == this.getVersion()) && (isSingleton())) {
+        if (this.isSameVersionAndSingleton(localStorage.readVersion)) {
             TX.incrementAndGetVersion();
             localStorage.TX = false;
             TXLibExceptions excep = new TXLibExceptions();
@@ -421,7 +425,7 @@ public class PriorityQueue {
             TXLibExceptions excep = new TXLibExceptions();
             throw excep.new AbortException();
         }
-        if ((localStorage.readVersion == this.getVersion()) && (isSingleton())) {
+        if (this.isSameVersionAndSingleton(localStorage.readVersion)) {
             TX.incrementAndGetVersion();
             localStorage.TX = false;
             TXLibExceptions excep = new TXLibExceptions();
