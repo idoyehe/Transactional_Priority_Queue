@@ -30,9 +30,23 @@ public class PriorityQueue {
         return (l & singletonMask) != 0;
     }
 
-    private boolean isSameVersionAndSingleton(long version) {
-        return versionAndFlags.get() == version && this.isSingleton();
+    private void validateVersionAndSingleton(LocalStorage localStorage) throws TXLibExceptions.AbortException {
+        long thisVersion = this.getVersion();
+        long readVersion = localStorage.readVersion;
+        if (readVersion < thisVersion) {
+            localStorage.TX = false;
+            TXLibExceptions excep = new TXLibExceptions();
+            throw excep.new AbortException();
+        }
+
+        if (readVersion == thisVersion && this.isSingleton()) {
+            TX.incrementAndGetVersion();
+            localStorage.TX = false;
+            TXLibExceptions excep = new TXLibExceptions();
+            throw excep.new AbortException();
+        }
     }
+
 
     public void setSingleton(boolean value) {
         long l = versionAndFlags.get();
@@ -129,17 +143,8 @@ public class PriorityQueue {
             System.out.println("Priority Queue enqueue - in TX");
         }
 
-        if (localStorage.readVersion < this.getVersion()) {
-            localStorage.TX = false;
-            TXLibExceptions excep = new TXLibExceptions();
-            throw excep.new AbortException();
-        }
-        if (this.isSameVersionAndSingleton(localStorage.readVersion)) {
-            TX.incrementAndGetVersion();
-            localStorage.TX = false;
-            TXLibExceptions excep = new TXLibExceptions();
-            throw excep.new AbortException();
-        }
+        this.validateVersionAndSingleton(localStorage);
+
 
         HashMap<PriorityQueue, LocalPriorityQueue> pqMap = localStorage.priorityQueueMap;
         LocalPriorityQueue lPQueue = pqMap.get(this);
@@ -180,17 +185,8 @@ public class PriorityQueue {
             System.out.println("Priority Queue decreasePriority - in TX");
         }
 
-        if (localStorage.readVersion < this.getVersion()) {
-            localStorage.TX = false;
-            TXLibExceptions excep = new TXLibExceptions();
-            throw excep.new AbortException();
-        }
-        if (this.isSameVersionAndSingleton(localStorage.readVersion)) {
-            TX.incrementAndGetVersion();
-            localStorage.TX = false;
-            TXLibExceptions excep = new TXLibExceptions();
-            throw excep.new AbortException();
-        }
+        this.validateVersionAndSingleton(localStorage);
+
 
         HashMap<PriorityQueue, LocalPriorityQueue> pqMap = localStorage.priorityQueueMap;
         LocalPriorityQueue lPQueue = pqMap.get(this);
@@ -256,17 +252,8 @@ public class PriorityQueue {
             System.out.println("Priority Queue size - yet not locked by me");
         }
 
-        if (localStorage.readVersion < this.getVersion()) {
-            localStorage.TX = false;
-            TXLibExceptions excep = new TXLibExceptions();
-            throw excep.new AbortException();
-        }
-        if (this.isSameVersionAndSingleton(localStorage.readVersion)) {
-            TX.incrementAndGetVersion();
-            localStorage.TX = false;
-            TXLibExceptions excep = new TXLibExceptions();
-            throw excep.new AbortException();
-        }
+        this.validateVersionAndSingleton(localStorage);
+
 
         if (!this.tryLock()) { // if priority queue is locked by another thread
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
@@ -329,17 +316,9 @@ public class PriorityQueue {
             System.out.println("Priority Queue dequeue - yet not locked by me");
         }
 
-        if (localStorage.readVersion < this.getVersion()) {
-            localStorage.TX = false;
-            TXLibExceptions excep = new TXLibExceptions();
-            throw excep.new AbortException();
-        }
-        if (this.isSameVersionAndSingleton(localStorage.readVersion)) {
-            TX.incrementAndGetVersion();
-            localStorage.TX = false;
-            TXLibExceptions excep = new TXLibExceptions();
-            throw excep.new AbortException();
-        }
+
+        this.validateVersionAndSingleton(localStorage);
+
 
         if (!this.tryLock()) { // if queue is locked by another thread
             localStorage.TX = false;
@@ -420,17 +399,9 @@ public class PriorityQueue {
             System.out.println("Priority Queue dequeue - in TX");
         }
 
-        if (localStorage.readVersion < this.getVersion()) {
-            localStorage.TX = false;
-            TXLibExceptions excep = new TXLibExceptions();
-            throw excep.new AbortException();
-        }
-        if (this.isSameVersionAndSingleton(localStorage.readVersion)) {
-            TX.incrementAndGetVersion();
-            localStorage.TX = false;
-            TXLibExceptions excep = new TXLibExceptions();
-            throw excep.new AbortException();
-        }
+
+        this.validateVersionAndSingleton(localStorage);
+
 
         if (!this.tryLock()) { // if queue is locked by another thread
             localStorage.TX = false;
