@@ -6,6 +6,7 @@ import java.util.Collections;
 
 
 public class PrimitivePriorityQueue {
+    protected ArrayList<PQNode> modifiedNodesState = new ArrayList<PQNode>();
     protected long time = 0;
     protected ArrayList<PQObject> _sortedArray;
     private PQObject _topRef = null;
