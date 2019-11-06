@@ -7,7 +7,6 @@ import java.util.Iterator;
 public class LocalPriorityQueue extends PrimitivePriorityQueue {
     private int _dequeueCounter = 0; // how many dequeue has done by the transaction
     boolean isLockedByMe = false; // is queue (not local queue) locked by me
-    private ArrayList<PQNode> modifiedNodesState = new ArrayList<PQNode>();
     Iterator<PQNode> iterator = null;
     PQNode currentSmallest = null;
 
@@ -61,6 +60,9 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     }
 
     boolean removeModifiedNode(PQNode modifiedNode) {
+        if (this.modifiedNodesState.isEmpty()) {
+            return false;
+        }
         int index = Collections.binarySearch(this.modifiedNodesState, modifiedNode);
         if (-1 < index) {
             this.modifiedNodesState.remove(index);
