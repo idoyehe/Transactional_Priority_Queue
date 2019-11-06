@@ -42,13 +42,13 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     public void nextSmallest(PrimitivePriorityQueue internalPQueue) throws TXLibExceptions.PQueueIsEmptyException {
 
 
-        if (internalPQueue.isEmpty() || this.dequeueCounter() == internalPQueue._sortedArray.size()) {
+        if (internalPQueue.isEmpty() || this.dequeueCounter() == internalPQueue._heapContainer.size()) {
             TXLibExceptions excep = new TXLibExceptions();
             throw excep.new PQueueIsEmptyException();
         }
 
         if (this.iterator == null) {
-            this.iterator = internalPQueue._sortedArray.iterator();
+            this.iterator = internalPQueue._heapContainer.iterator();
         } else {
             this._dequeueCounter++;
         }
@@ -59,8 +59,8 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
             this.currentSmallest = null;
         }
 
-        assert (this.dequeueCounter() == internalPQueue._sortedArray.size() && this.iterator == null ||
-                (this.dequeueCounter() < internalPQueue._sortedArray.size()));
+        assert (this.dequeueCounter() == internalPQueue._heapContainer.size() && this.iterator == null ||
+                (this.dequeueCounter() < internalPQueue._heapContainer.size()));
     }
 
     public void addModifiedElementFromState(PQObject modifiedObject) {
@@ -87,7 +87,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
 
 
     public void mergingPriorityQueues(PrimitivePriorityQueue pQueue) {
-        for (PQObject element : this._sortedArray) {
+        for (PQObject element : this._heapContainer) {
             pQueue.enqueue(element);
         }
 
@@ -95,7 +95,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
             element.setIgnored();
         }
         pQueue._ignoredCounter += this.getIgnoredElemntsState().size();
-        this._sortedArray.clear();
+        this._heapContainer.clear();
         this._ignoredElemntsState.clear();
     }
 }

@@ -174,7 +174,7 @@ public class PriorityQueue {
             }
 
             this.lock();
-            this.internalPriorityQueue.modifyPriority(nodeToModify, newPriority);
+//            this.internalPriorityQueue.modifyPriority(nodeToModify, newPriority);
 
             this.setVersion(TX.getVersion());
             this.setSingleton(true);
@@ -201,7 +201,7 @@ public class PriorityQueue {
             lPQueue = new LocalPriorityQueue(this.internalPriorityQueue.getTime());
         }
         if (lPQueue.containsNode(nodeToModify)) {
-            lPQueue.modifyPriority(nodeToModify, newPriority);
+//            lPQueue.modifyPriority(nodeToModify, newPriority);
             pqMap.put(this, lPQueue);
             return nodeToModify;
         }
@@ -356,16 +356,16 @@ public class PriorityQueue {
 
         PQObject lPQueueMin = null;
 
-        try {
-            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-                System.out.println("Priority Queue dequeue - top from local queue");
-            }
-            lPQueueMin = lPQueue.top();
-        } catch (TXLibExceptions.PQueueIsEmptyException e) {
-            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-                System.out.println("Priority Queue dequeue - local queue is empty");
-            }
-        }
+//        try {
+//            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+//                System.out.println("Priority Queue dequeue - top from local queue");
+//            }
+////            lPQueueMin = lPQueue.top();
+//        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+//            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+//                System.out.println("Priority Queue dequeue - local queue is empty");
+//            }
+//        }
 
         if (pQueueMin != null && (lPQueueMin == null || pQueueMin.compareTo(lPQueueMin) < 0)) {// the minimum node is in the priority queue
             lPQueue.nextSmallest(this.internalPriorityQueue);

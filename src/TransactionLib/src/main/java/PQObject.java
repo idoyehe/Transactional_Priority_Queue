@@ -1,6 +1,7 @@
 package TransactionLib.src.main.java;
 
 public class PQObject implements Comparable<PQObject> {
+    private long ref;
     private long time;
     private Comparable priority;
     private Object value;
@@ -42,6 +43,9 @@ public class PQObject implements Comparable<PQObject> {
         return this.isIgnored;
     }
 
+    public long getRef() {
+        return this.ref;
+    }
 
     //setters
 
@@ -52,6 +56,10 @@ public class PQObject implements Comparable<PQObject> {
 
     void setPriority(final Comparable newPriority) {
         this.priority = newPriority;
+    }
+
+    void setRef(long ref) {
+        this.ref = ref;
     }
 
     public void setIgnored() {
