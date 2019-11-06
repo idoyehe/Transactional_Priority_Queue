@@ -61,10 +61,10 @@ public class PriorityQueueMultiThreadsTest {
 
         @Override
         public void run() {
-            PQNode globalNodesArr[] = new PQNode[this.numberOfThread];
+            PQObject globalNodesArr[] = new PQObject[this.numberOfThread];
 
             IntStream.range(0, this.numberOfThread).map(i -> this.numberOfThread - 1 - i).forEach(n -> {
-                final PQNode newNode = pQueue.enqueue(n + this.priorityRef, n + this.priorityRef);
+                final PQObject newNode = pQueue.enqueue(n + this.priorityRef, n + this.priorityRef);
                 globalNodesArr[n] = newNode;
                 assertEquals(n + this.priorityRef, newNode.getPriority());
             });
@@ -74,7 +74,7 @@ public class PriorityQueueMultiThreadsTest {
 
             if (this.threadName.equals(this.masterThread)) {
                 IntStream.range(0, this.numberOfThread).map(i -> this.numberOfThread - 1 - i).forEach(n -> {
-                    final PQNode newNode = pQueue.modifyPriority(globalNodesArr[n], -(Integer) globalNodesArr[n].getPriority());
+                    final PQObject newNode = pQueue.modifyPriority(globalNodesArr[n], -(Integer) globalNodesArr[n].getPriority());
                     assertEquals(newNode, globalNodesArr[n]);
                 });
             }
@@ -152,7 +152,7 @@ public class PriorityQueueMultiThreadsTest {
             } catch (BrokenBarrierException | InterruptedException exp) {
                 System.out.println(threadName + ": InterruptedException");
             }
-            PQNode globalNodesArr[] = new PQNode[this.numberOfThread];
+            PQObject globalNodesArr[] = new PQObject[this.numberOfThread];
 
             //first transaction
             while (true) {
@@ -161,7 +161,7 @@ public class PriorityQueueMultiThreadsTest {
                         TX.TXbegin();
                         int initSize = pQueue.size();
                         IntStream.range(0, this.numberOfThread).map(i -> this.numberOfThread - 1 - i).forEach(n -> {
-                            final PQNode newNode = pQueue.enqueue(n + this.priorityRef, n + this.priorityRef);
+                            final PQObject newNode = pQueue.enqueue(n + this.priorityRef, n + this.priorityRef);
                             globalNodesArr[n] = newNode;
                             assertEquals(n + this.priorityRef, newNode.getPriority());
                         });
@@ -181,7 +181,7 @@ public class PriorityQueueMultiThreadsTest {
             pQueue.setSingleton(false);
             this.await();
 
-            PQNode localNodesArr[] = new PQNode[this.numberOfThread];
+            PQObject localNodesArr[] = new PQObject[this.numberOfThread];
 
             while (true) {
                 try {

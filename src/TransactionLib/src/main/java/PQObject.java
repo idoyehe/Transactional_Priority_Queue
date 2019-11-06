@@ -1,22 +1,23 @@
 package TransactionLib.src.main.java;
 
-public class PQNode implements Comparable<PQNode> {
+public class PQObject implements Comparable<PQObject> {
     private long time;
     private Comparable priority;
     private Object value;
+    private boolean isIgnored = false;
 
-    public PQNode(Comparable priority, Object value) {
+    public PQObject(Comparable priority, Object value) {
         this.priority = priority;
         this.value = value;
         this.time = 0;
     }
 
-    public PQNode(Comparable priority, Object value, long time) {
+    public PQObject(Comparable priority, Object value, long time) {
         this(priority, value);
         this.time = time;
     }
 
-    public PQNode(PQNode node) {
+    public PQObject(PQObject node) {
         assert node != null;
         this.priority = node.getPriority();
         this.value = node.getValue();
@@ -37,9 +38,14 @@ public class PQNode implements Comparable<PQNode> {
         return this.value;
     }
 
+    public boolean getIsIgnored() {
+        return this.isIgnored;
+    }
+
+
     //setters
 
-    PQNode setTime(final long newTime) {
+    PQObject setTime(final long newTime) {
         this.time = newTime;
         return this;
     }
@@ -48,16 +54,21 @@ public class PQNode implements Comparable<PQNode> {
         this.priority = newPriority;
     }
 
-    @Override
-    public int compareTo(PQNode pqNode) {
-        int ret = this.getPriority().compareTo(pqNode.getPriority());
-        if(ret !=0){
-            return ret;
-        }
-        return (int)Math.signum(pqNode.getTime()-this.getTime());
+    public void setIgnored() {
+        assert !this.isIgnored;
+        this.isIgnored = true;
     }
 
-    public boolean isContentEqual(PQNode pqNode) {
-        return this.getPriority().compareTo(pqNode.getPriority()) == 0 && this.value == value;
+    @Override
+    public int compareTo(PQObject pqNode) {
+        int ret = this.getPriority().compareTo(pqNode.getPriority());
+        if (ret != 0) {
+            return ret;
+        }
+        return (int) Math.signum(pqNode.getTime() - this.getTime());
+    }
+
+    public boolean isContentEqual(PQObject pqNode) {
+        return this.getPriority().compareTo(pqNode.getPriority()) == 0 && this.value.equals(pqNode.value);
     }
 }

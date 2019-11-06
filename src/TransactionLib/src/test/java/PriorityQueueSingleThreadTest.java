@@ -67,7 +67,7 @@ public class PriorityQueueSingleThreadTest {
         pQueue.setSingleton(true);
 
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
-            final PQNode newRoot = pQueue.enqueue(n, n);
+            final PQObject newRoot = pQueue.enqueue(n, n);
             assertEquals(n, newRoot.getPriority());
             assertEquals(n, newRoot.getValue());
         });
@@ -91,9 +91,9 @@ public class PriorityQueueSingleThreadTest {
     public void testSingletonPriorityQueueDecreasePriority() {
         PriorityQueue pQueue = new PriorityQueue();
         pQueue.setSingleton(true);
-        PQNode nodesArr[] = new PQNode[this.range];
+        PQObject nodesArr[] = new PQObject[this.range];
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
-            final PQNode newRoot = pQueue.enqueue(n, n);
+            final PQObject newRoot = pQueue.enqueue(n, n);
             nodesArr[n] = newRoot;
 
             assertEquals(n, newRoot.getPriority());
@@ -193,7 +193,7 @@ public class PriorityQueueSingleThreadTest {
 
         TX.TXbegin();//1ST transaction only enqueue
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
-            final PQNode newRoot = pQueue.enqueue(n, n);
+            final PQObject newRoot = pQueue.enqueue(n, n);
             assertEquals(n, newRoot.getPriority());
             assertEquals(n, newRoot.getValue());
         });
@@ -239,7 +239,7 @@ public class PriorityQueueSingleThreadTest {
 
         TX.TXbegin();//1ST transaction only enqueue
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
-            final PQNode newRoot = pQueue.enqueue(n, n);
+            final PQObject newRoot = pQueue.enqueue(n, n);
             assertEquals(n, newRoot.getPriority());
             assertEquals(n, newRoot.getValue());
         });
@@ -272,12 +272,12 @@ public class PriorityQueueSingleThreadTest {
     public void testTransactionalDecreasePriority() throws Exception {
         PriorityQueue pQueue = new PriorityQueue();
         pQueue.setSingleton(false);
-        PQNode globalNodesArr[] = new PQNode[this.range];
-        PQNode localNodesArr[] = new PQNode[this.range * 2];
+        PQObject globalNodesArr[] = new PQObject[this.range];
+        PQObject localNodesArr[] = new PQObject[this.range * 2];
 
         TX.TXbegin();//1ST transaction only enqueue
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
-            final PQNode newRoot = pQueue.enqueue(n, n);
+            final PQObject newRoot = pQueue.enqueue(n, n);
             globalNodesArr[n] = newRoot;
             assertEquals(n, newRoot.getPriority());
             assertEquals(n, newRoot.getValue());
@@ -293,7 +293,7 @@ public class PriorityQueueSingleThreadTest {
         pQueue.setSingleton(false);
         TX.TXbegin();//2ND transaction
         IntStream.range(this.range, this.range * 2).map(i -> this.range * 2 - 1 - (i - this.range)).forEach(n -> {
-            final PQNode newRoot = pQueue.enqueue(n, n);
+            final PQObject newRoot = pQueue.enqueue(n, n);
             localNodesArr[n] = newRoot;
             assertEquals(n, newRoot.getPriority());
             assertEquals(n, newRoot.getValue());
