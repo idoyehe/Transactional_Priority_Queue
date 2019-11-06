@@ -444,7 +444,7 @@ public class LocalPriorityQueueTest {
         });
         assertEquals(this.range, lpq2.size());
 
-        lpq2.mergingPriorityQueuesWithoutModification(lpq1);
+        lpq2.mergingPriorityQueues(lpq1);
         assertEquals(this.range, lpq1.size());
         assertEquals(0, lpq2.size());
 

@@ -87,7 +87,7 @@ public class PriorityQueue {
         int newNodesCounter = lPQueue.size();
         int newIgnoredNodesCounter = lPQueue.getIgnoredElemntsState().size();
         int oldSize = this.internalPriorityQueue.size();
-        lPQueue.mergingPriorityQueuesWithoutModification(this.internalPriorityQueue);
+        lPQueue.mergingPriorityQueues(this.internalPriorityQueue);
         assert lPQueue.size() == 0;
         assert this.internalPriorityQueue.size() == newNodesCounter - newIgnoredNodesCounter + oldSize;
     }

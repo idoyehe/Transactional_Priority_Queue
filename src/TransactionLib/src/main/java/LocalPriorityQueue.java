@@ -86,7 +86,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     }
 
 
-    public void mergingPriorityQueuesWithoutModification(PrimitivePriorityQueue pQueue) {
+    public void mergingPriorityQueues(PrimitivePriorityQueue pQueue) {
         for (PQObject element : this._sortedArray) {
             pQueue.enqueue(element);
         }
