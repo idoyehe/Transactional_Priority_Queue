@@ -3,6 +3,7 @@ package TransactionLib.src.main.java;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.PriorityQueue;
 
@@ -25,7 +26,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     }
 
     public Pair<Comparable, Object> currentSmallest(PrimitivePriorityQueue internalPQueue) throws TXLibExceptions.PQueueIsEmptyException {
-        while (this.pqTXState.isEmpty() || this.modifiedNodesState.remove(this.pqTXState.peek())) {
+        while (this.pqTXState.isEmpty() || this.removeModifiedNode(this.pqTXState.peek())) {
             this.nextSmallest(internalPQueue);
         }
 
@@ -67,7 +68,20 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
 
     public void addModifiedNode(PQNode modifiedNode) {
         assert !this.modifiedNodesState.contains(modifiedNode);
-        this.modifiedNodesState.add(modifiedNode);
+        int index = -1 - Collections.binarySearch(this.modifiedNodesState, modifiedNode);
+        this.modifiedNodesState.add(index, modifiedNode);
+    }
+
+    boolean removeModifiedNode(PQNode modifiedNode) {
+        if (this.modifiedNodesState.isEmpty()) {
+            return false;
+        }
+        int index = Collections.binarySearch(this.modifiedNodesState, modifiedNode);
+        if (-1 < index) {
+            this.modifiedNodesState.remove(index);
+            return true;
+        }
+        return false;
     }
 
     public ArrayList<PQNode> getModifiedNodesState() {
