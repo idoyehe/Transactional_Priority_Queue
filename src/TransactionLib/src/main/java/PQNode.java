@@ -198,7 +198,7 @@ public class PQNode implements Comparable<PQNode> {
         return this;
     }
 
-    public boolean isContentEqual(PQNode pqNode) {
-        return this.getPriority().compareTo(pqNode.getPriority()) == 0 && this.value == value;
+    public boolean isContentEqual(PQNode PQObject) {
+        return this.getPriority().compareTo(PQObject.getPriority()) == 0 && this.value.equals(PQObject.value);
     }
 }
