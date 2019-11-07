@@ -156,7 +156,7 @@ public class PriorityQueue {
         localStorage.readOnly = false;
 
         if (lPQueue == null) {//First time to enqueue the PriorityQueue
-            lPQueue = new LocalPriorityQueue(this.internalPriorityQueue.getTime());
+            lPQueue = new LocalPriorityQueue();
         }
         final PQObject newNode = lPQueue.enqueue(priority, value);
         pqMap.put(this, lPQueue);
@@ -198,7 +198,7 @@ public class PriorityQueue {
         localStorage.readOnly = false;
 
         if (lPQueue == null) {//First time to enqueue the PriorityQueue
-            lPQueue = new LocalPriorityQueue(this.internalPriorityQueue.getTime());
+            lPQueue = new LocalPriorityQueue();
         }
         if (lPQueue.containsNode(nodeToModify)) {
 //            lPQueue.modifyPriority(nodeToModify, newPriority);
@@ -278,7 +278,7 @@ public class PriorityQueue {
         HashMap<PriorityQueue, LocalPriorityQueue> qMap = localStorage.priorityQueueMap;
         LocalPriorityQueue lPQueue = qMap.get(this);
         if (lPQueue == null) {
-            lPQueue = new LocalPriorityQueue(this.internalPriorityQueue.getTime());
+            lPQueue = new LocalPriorityQueue();
         }
         qMap.put(this, lPQueue);
         int pQueueSize = this.internalPriorityQueue.size();
@@ -341,7 +341,7 @@ public class PriorityQueue {
         localStorage.readOnly = false;
 
         if (lPQueue == null) {
-            lPQueue = new LocalPriorityQueue(this.internalPriorityQueue.getTime());
+            lPQueue = new LocalPriorityQueue();
         }
 
         PQObject pQueueMin = null;
@@ -418,7 +418,7 @@ public class PriorityQueue {
         LocalPriorityQueue lPQueue = pqMap.get(this);
 
         if (lPQueue == null) {
-            lPQueue = new LocalPriorityQueue(this.internalPriorityQueue.getTime());
+            lPQueue = new LocalPriorityQueue();
         }
 
         PQObject pQueueMin = null;

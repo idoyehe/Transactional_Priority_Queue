@@ -45,12 +45,36 @@ public class PQObject implements Comparable<PQObject> {
         this._isIgnored = true;
     }
 
+    void setIndex(int value) {
+        this.index = value;
+    }
+
+
     @Override
     public int compareTo(PQObject PQObject) {
         return this.getPriority().compareTo(PQObject.getPriority());
     }
 
+    public int compareTo(Comparable priority) {
+        return this.getPriority().compareTo(priority);
+    }
+
     public boolean isContentEqual(PQObject PQObject) {
         return this.getPriority().compareTo(PQObject.getPriority()) == 0 && this.value.equals(PQObject.value);
+    }
+
+    // to get index of parent of node at index i
+    static int parent(int i) {
+        return (i - 1) / 2;
+    }
+
+    // to get index of left child of node at index i
+    static int left(int i) {
+        return (2 * i + 1);
+    }
+
+    // to get index of right child of node at index i
+    static int right(int i) {
+        return (2 * i + 2);
     }
 }
