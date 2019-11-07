@@ -266,7 +266,7 @@ public class TX {
             if (lPQueue.isLockedByMe) {
                 pQueue.unlock();
                 lPQueue.isLockedByMe = false;
-                lPQueue.clearInternalState();
+                lPQueue.clearLocalState();
             }
         }
 
