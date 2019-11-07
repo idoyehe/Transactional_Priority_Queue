@@ -144,7 +144,7 @@ public class PrimitivePriorityQueue {
 
     public boolean containsNode(PQObject node) {
         int nodeIndex = node.getIndex();
-        if (nodeIndex < 0 || nodeIndex > this._heapContainer.size()) {
+        if (nodeIndex < 0 || nodeIndex >= this._heapContainer.size()) {
             return false;
         }
         return this._heapContainer.get(nodeIndex) == node;
