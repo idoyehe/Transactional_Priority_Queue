@@ -97,7 +97,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     }
 
     public void mergingPrimitivePriorityQueue(PrimitivePriorityQueue pQueue) {
-        Predicate<PQNode> _isModifiedNode = pqNode -> Collections.binarySearch(this._decreasingPriorityNodesState, pqNode) > -1;
-        this.mergingPrimitivePriorityQueue(pQueue, _isModifiedNode);
+        Predicate<PQNode> _isNotModifiedNode = pqNode -> Collections.binarySearch(this._decreasingPriorityNodesState, pqNode) < 0;
+        this.mergingPrimitivePriorityQueue(pQueue, _isNotModifiedNode);
     }
 }

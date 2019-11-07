@@ -352,8 +352,29 @@ public class LocalPriorityQueueTest {
         });
         assertEquals(this.range, lpq2.size());
 
+
         lpq1.mergingPrimitivePriorityQueue(lpq2);
-        assertEquals(this.range, lpq1.size());
+        assertEquals(this.range * 2, lpq1.size());
+        assertEquals(0, lpq2.size());
+
+
+        IntStream.range(this.range * 2, this.range * 3).map(i -> this.range * 2 - 1 - (i - this.range)).forEach(n -> {
+            final PQNode newRoot = lpq2.enqueue(n, n);
+            lpq1.addModifiedNode(newRoot);
+
+            try {
+                lpq2.testHeapInvariantRecursive();
+            } catch (Exception e) {
+                e.printStackTrace();
+                fail(e.getMessage());
+            }
+            assertEquals(1, newRoot.getIndex());
+            assertEquals(n, newRoot.getPriority());
+        });
+        assertEquals(this.range, lpq2.size());
+
+        lpq1.mergingPrimitivePriorityQueue(lpq2);
+        assertEquals(this.range * 2, lpq1.size());
         assertEquals(0, lpq2.size());
 
         try {
@@ -370,25 +391,6 @@ public class LocalPriorityQueueTest {
             e.printStackTrace();
             fail(e.getMessage());
         }
-
-        IntStream.range(this.range, this.range * 2).map(i -> this.range * 2 - 1 - (i - this.range)).forEach(n -> {
-            final PQNode newRoot = lpq2.enqueue(n, n);
-            lpq1.addModifiedNode(newRoot);
-            try {
-                lpq2.testHeapInvariantRecursive();
-            } catch (Exception e) {
-                e.printStackTrace();
-                fail(e.getMessage());
-            }
-            assertEquals(1, newRoot.getIndex());
-            assertEquals(n, newRoot.getPriority());
-        });
-        assertEquals(this.range, lpq2.size());
-
-
-        lpq1.mergingPrimitivePriorityQueue(lpq2);
-        assertEquals(this.range * 2, lpq1.size());
-        assertEquals(0, lpq2.size());
 
         try {
             lpq1.testHeapInvariantRecursive();

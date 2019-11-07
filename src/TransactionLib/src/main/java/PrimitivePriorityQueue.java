@@ -161,5 +161,9 @@ public class PrimitivePriorityQueue {
         if (mergingPredicate.test(currentRoot)) {
             this.enqueueAsNode(currentRoot);
         }
+        else {
+            currentRoot.setLeft(null);
+            currentRoot.setRight(null);
+        }
     }
 }
