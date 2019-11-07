@@ -105,8 +105,7 @@ public class PrimitivePriorityQueue {
         }
         assert binaryDigits.size() > 0;
 
-        Integer currentTurn = binaryDigits.get(0);
-        binaryDigits.remove(0);
+        Integer currentTurn = binaryDigits.remove(binaryDigits.size()-1);
         if (currentTurn.equals(PQNodeTurn.LEFT.getValue())) {
             return PrimitivePriorityQueue.nodeSearch(node.getLeft(), index, binaryDigits);
         }
@@ -137,7 +136,7 @@ public class PrimitivePriorityQueue {
 
         ArrayList<Integer> binaryDigits = new ArrayList<>();
         String binaryIndex = Integer.toBinaryString(index);
-        for (int i = 1; i < binaryIndex.length(); i++) {
+        for (int i = binaryIndex.length() -1; i > 0; i--) {
             binaryDigits.add(Character.getNumericValue(binaryIndex.charAt(i)));
         }
         return PrimitivePriorityQueue.nodeSearch(this.root, index, binaryDigits);
