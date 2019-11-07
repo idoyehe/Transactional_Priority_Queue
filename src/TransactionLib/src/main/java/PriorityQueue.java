@@ -84,12 +84,12 @@ public class PriorityQueue {
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
             System.out.println("Priority Queue commitLocalChanges - merge old nodes to new nodes");
         }
-        int newNodesCounter = lPQueue.size();
-        int newIgnoredNodesCounter = lPQueue.getIgnoredElemntsState().size();
-        int oldSize = this.internalPriorityQueue.size();
-        lPQueue.mergingPriorityQueues(this.internalPriorityQueue);
-        assert lPQueue.size() == 0;
-        assert this.internalPriorityQueue.size() == newNodesCounter - newIgnoredNodesCounter + oldSize;
+
+        lPQueue.mergingPriorityQueues(this.internalPriorityQueue);//the global queue is merged into the local queue
+
+        assert this.internalPriorityQueue.size() == 0;
+        this.internalPriorityQueue = lPQueue;//global queue is now the local queue
+
     }
 
     private void dequeueNodes(int dequeueCounter) {
@@ -361,7 +361,6 @@ public class PriorityQueue {
                 System.out.println("Priority Queue dequeue - top from local queue");
             }
             lPQueueMin = lPQueue.top();
-            assert !lPQueueMin.getIsIgnored();//cannot dequeue node from local state that is ignored
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                 System.out.println("Priority Queue dequeue - local queue is empty");
@@ -391,7 +390,7 @@ public class PriorityQueue {
             }
 
             this.lock();
-            PQObject ret = this.internalPriorityQueue.topWithClearIgnored();
+            PQObject ret = this.internalPriorityQueue.top();
             setVersion(TX.getVersion());
             setSingleton(true);
             this.unlock();
@@ -435,7 +434,6 @@ public class PriorityQueue {
 
         try {
             lPQueueMin = lPQueue.top();
-            assert !lPQueueMin.getIsIgnored();//cannot dequeue node from local state that is ignored
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                 System.out.println("Priority Queue dequeue - local queue is empty");

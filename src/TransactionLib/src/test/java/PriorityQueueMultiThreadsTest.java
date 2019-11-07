@@ -6,12 +6,13 @@ import org.junit.Test;
 import static junit.framework.TestCase.*;
 
 import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.stream.IntStream;
 
 
 public class PriorityQueueMultiThreadsTest {
-    final int numberOfThreads = 200;
+    final int numberOfThreads = 32;
 
 
     @Test
@@ -59,6 +60,7 @@ public class PriorityQueueMultiThreadsTest {
             }
         }
 
+
         @Override
         public void run() {
             PQObject globalNodesArr[] = new PQObject[this.numberOfThread];
@@ -68,6 +70,7 @@ public class PriorityQueueMultiThreadsTest {
                 globalNodesArr[n] = newNode;
                 assertEquals(n + this.priorityRef, newNode.getPriority());
             });
+            this.await();
             this.await();
             assertFalse(pQueue.isEmpty());
             assertEquals(this.numberOfThread * this.numberOfThread, pQueue.size());
@@ -100,7 +103,6 @@ public class PriorityQueueMultiThreadsTest {
             }
 
             this.await();
-            assertFalse(pQueue.isEmpty());
             assertEquals(this.numberOfThread * (this.numberOfThread - 1), pQueue.size());
             this.await();
 
@@ -116,6 +118,7 @@ public class PriorityQueueMultiThreadsTest {
 
 
             this.await();
+
             assertTrue(pQueue.isEmpty());
             assertEquals(0, pQueue.size());
             this.await();
@@ -126,30 +129,34 @@ public class PriorityQueueMultiThreadsTest {
     public void testPriorityQueueMultiThreadTransaction() throws InterruptedException {
         PriorityQueue pQueue = new PriorityQueue();
         pQueue.setSingleton(false);
+        CountDownLatch latch = new CountDownLatch(1);
         CyclicBarrier barrier = new CyclicBarrier(this.numberOfThreads);
 
         Thread[] threadsARR = new Thread[this.numberOfThreads];
         for (int i = 0; i < this.numberOfThreads; i++) {
-            threadsARR[i] = new Thread(new RunTransaction("T" + i, barrier, pQueue, i * numberOfThreads, numberOfThreads));
+            threadsARR[i] = new Thread(new RunTransaction("T" + i, latch, barrier, pQueue, i * numberOfThreads, numberOfThreads));
             threadsARR[i].start();
         }
+        latch.countDown();
         for (int i = 0; i < this.numberOfThreads; i++) {
             threadsARR[i].join();
         }
     }
 
     class RunTransaction extends RunSingletone {
+        private CountDownLatch latch;
 
 
-        RunTransaction(String name, CyclicBarrier barrier, PriorityQueue pq, int priorityRef, int numberOfThread) {
+        RunTransaction(String name, CountDownLatch latch, CyclicBarrier barrier, PriorityQueue pq, int priorityRef, int numberOfThread) {
             super(name, barrier, pq, priorityRef, numberOfThread);
+            this.latch = latch;
         }
 
         @Override
         public void run() {
             try {
-                this.barrier.await();
-            } catch (BrokenBarrierException | InterruptedException exp) {
+                latch.await();
+            } catch (InterruptedException exp) {
                 System.out.println(threadName + ": InterruptedException");
             }
             PQObject globalNodesArr[] = new PQObject[this.numberOfThread];
@@ -205,13 +212,8 @@ public class PriorityQueueMultiThreadsTest {
                 }
                 break;
             }
-            IntStream.range(0, this.numberOfThread).forEach(n -> {
-                globalNodesArr[n] = localNodesArr[n];
-                localNodesArr[n] = null;
-            });
 
             this.await();
-            assertFalse(pQueue.isEmpty());
             assertEquals(this.numberOfThread * (this.numberOfThread - 1), pQueue.size());
             pQueue.setSingleton(false);
             this.await();

@@ -2,6 +2,7 @@ package TransactionLib.src.main.java;
 
 import java.util.*;
 import java.util.PriorityQueue;
+import java.util.function.Predicate;
 
 public class LocalPriorityQueue extends PrimitivePriorityQueue {
     private int _dequeueCounter = 0; // how many dequeue has done by the transaction
@@ -24,7 +25,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     }
 
     public PQObject currentSmallest(PrimitivePriorityQueue internalPQueue) throws TXLibExceptions.PQueueIsEmptyException {
-        while (this.pqTXState.peek() == null || this.pqTXState.peek().getIsIgnored() || this.removeModifiedElementFromState(this.pqTXState.peek())) {
+        while (this.pqTXState.peek() == null || this.removeModifiedElementFromState(this.pqTXState.peek())) {
             this.nextSmallest(internalPQueue);
         }
 
@@ -66,8 +67,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
 //                (this.dequeueCounter() == internalPQueue._heapContainer.size() && this.pqTXState.isEmpty());
         if (this.dequeueCounter() == internalPQueue._heapContainer.size()) {
             assert this.pqTXState.isEmpty();
-        }
-        else{
+        } else {
             assert this.dequeueCounter() < internalPQueue._heapContainer.size();
             assert !this.pqTXState.isEmpty();
         }
@@ -98,15 +98,15 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
 
 
     public void mergingPriorityQueues(PrimitivePriorityQueue pQueue) {
-        for (PQObject element : this._heapContainer) {
-            pQueue.enqueue(element);
+        Predicate<PQObject> _isNotModifiedNode = pqNode -> Collections.binarySearch(this._ignoredElementsState, pqNode) >= 0;
+
+        pQueue._heapContainer.removeIf(_isNotModifiedNode);
+
+        for (PQObject element : pQueue._heapContainer) {
+            this.enqueue(element);
         }
 
-        for (PQObject element : this.getIgnoredElemntsState()) {
-            element.setIgnored();
-        }
-        pQueue._ignoredCounter += this.getIgnoredElemntsState().size();
-        this._heapContainer.clear();
+        pQueue._heapContainer.clear();
         this._ignoredElementsState.clear();
     }
 }
