@@ -46,7 +46,7 @@ public class PrimitivePriorityQueue {
     }
 
 
-    private PQObject singleDequeue() throws TXLibExceptions.PQueueIsEmptyException {
+    PQObject singleDequeue() throws TXLibExceptions.PQueueIsEmptyException {
         int heapSize = this._heapContainer.size();
         if (heapSize <= 0) {
             TXLibExceptions excep = new TXLibExceptions();

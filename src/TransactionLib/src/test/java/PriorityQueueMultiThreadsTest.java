@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 
 
 public class PriorityQueueMultiThreadsTest {
-    final int numberOfThreads = 100;
+    final int numberOfThreads = 200;
 
 
     @Test
@@ -74,7 +74,7 @@ public class PriorityQueueMultiThreadsTest {
 
             if (this.threadName.equals(this.masterThread)) {
                 IntStream.range(0, this.numberOfThread).map(i -> this.numberOfThread - 1 - i).forEach(n -> {
-                    final PQObject newNode = pQueue.modifyPriority(globalNodesArr[n], -(Integer) globalNodesArr[n].getPriority());
+                    final PQObject newNode = pQueue.decreasePriority(globalNodesArr[n], -(Integer) globalNodesArr[n].getPriority());
                     assertEquals(newNode, globalNodesArr[n]);
                 });
             }
@@ -189,7 +189,7 @@ public class PriorityQueueMultiThreadsTest {
                         TX.TXbegin();
 
                         IntStream.range(0, this.numberOfThread).forEach(n -> {
-                            localNodesArr[n] = pQueue.modifyPriority(globalNodesArr[n], -(Integer) globalNodesArr[n].getPriority() - 1);
+                            localNodesArr[n] = pQueue.decreasePriority(globalNodesArr[n], -(Integer) globalNodesArr[n].getPriority() - 1);
                             assertTrue(globalNodesArr[n] != localNodesArr[n]);
                         });
                         try {

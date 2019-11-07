@@ -109,7 +109,7 @@ public class PriorityQueueSingleThreadTest {
 
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
             Integer oldPrio = (Integer) nodesArr[n].getPriority();
-            pQueue.modifyPriority(nodesArr[n], -oldPrio);
+            pQueue.decreasePriority(nodesArr[n], -oldPrio);
             assertEquals(-oldPrio, nodesArr[n].getPriority());
         });
 
@@ -303,16 +303,15 @@ public class PriorityQueueSingleThreadTest {
 
         IntStream.range(0, this.range / 2).forEach(n -> {
             assertEquals(n, globalNodesArr[n].getPriority());
-            localNodesArr[n] = pQueue.modifyPriority(globalNodesArr[n], this.range * 2 + n);
-            assertTrue(localNodesArr[n] != globalNodesArr[n]);
+            PQObject node = pQueue.decreasePriority(globalNodesArr[n], this.range * 2 + n);
+            assertTrue(node == globalNodesArr[n]);
             assertEquals(n, globalNodesArr[n].getPriority());
-            assertEquals(this.range * 2 + n, localNodesArr[n].getPriority());
         });
 
         IntStream.range(this.range / 2, this.range).forEach(n -> {
             int newPrio = -n;
             assertEquals(n, globalNodesArr[n].getPriority());
-            localNodesArr[n] = pQueue.modifyPriority(globalNodesArr[n], newPrio);
+            localNodesArr[n] = pQueue.decreasePriority(globalNodesArr[n], newPrio);
             assertTrue(globalNodesArr[n] != localNodesArr[n]);
             assertEquals(n, globalNodesArr[n].getPriority());
             assertEquals(newPrio, localNodesArr[n].getPriority());
@@ -327,17 +326,16 @@ public class PriorityQueueSingleThreadTest {
                 } catch (TXLibExceptions.PQueueIsEmptyException e) {
                     fail("PriorityQueue should not be empty");
                 }
-            } else if (n < this.range * 1.5) {
-                int expectedValue = n + this.range / 2;
+            } else if (n < this.range) {
+                int expectedValue = n - this.range / 2;
                 try {
                     assertEquals(expectedValue, pQueue.dequeue());
                 } catch (TXLibExceptions.PQueueIsEmptyException e) {
                     fail("PriorityQueue should not be empty");
                 }
             } else {
-                int expectedValue = (int)(n - this.range * 1.5);
                 try {
-                    assertEquals(expectedValue, pQueue.dequeue());
+                    assertEquals(n, pQueue.dequeue());
                 } catch (TXLibExceptions.PQueueIsEmptyException e) {
                     fail("PriorityQueue should not be empty");
                 }

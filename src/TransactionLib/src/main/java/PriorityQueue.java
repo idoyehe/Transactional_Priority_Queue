@@ -110,7 +110,7 @@ public class PriorityQueue {
                 System.out.println("Priority Queue dequeueNodes - dequeueing");
             }
             try {
-                this.internalPriorityQueue.dequeue();
+                this.internalPriorityQueue.singleDequeue();
             } catch (TXLibExceptions.PQueueIsEmptyException e) {
                 e.printStackTrace();
                 if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
@@ -163,7 +163,7 @@ public class PriorityQueue {
         return newNode;
     }
 
-    public PQObject modifyPriority(final PQObject nodeToModify, Comparable newPriority) throws TXLibExceptions.AbortException {
+    public PQObject decreasePriority(final PQObject nodeToModify, Comparable newPriority) throws TXLibExceptions.AbortException {
         LocalStorage localStorage = TX.lStorage.get();
 
         // SINGLETON
@@ -174,7 +174,7 @@ public class PriorityQueue {
             }
 
             this.lock();
-//            this.internalPriorityQueue.modifyPriority(nodeToModify, newPriority);
+            this.internalPriorityQueue.decreasePriority(nodeToModify, newPriority);
 
             this.setVersion(TX.getVersion());
             this.setSingleton(true);
@@ -201,7 +201,7 @@ public class PriorityQueue {
             lPQueue = new LocalPriorityQueue();
         }
         if (lPQueue.containsNode(nodeToModify)) {
-//            lPQueue.modifyPriority(nodeToModify, newPriority);
+            lPQueue.decreasePriority(nodeToModify, newPriority);
             pqMap.put(this, lPQueue);
             return nodeToModify;
         }
@@ -220,7 +220,7 @@ public class PriorityQueue {
         }
         // now we have the lock
 
-        if (this.internalPriorityQueue.containsNode(nodeToModify)) {
+        if (nodeToModify.compareTo(newPriority) > 0 && this.internalPriorityQueue.containsNode(nodeToModify)) {
             lPQueue.addModifiedElementFromState(nodeToModify);
             PQObject newNode = lPQueue.enqueue(newPriority, nodeToModify.getValue());
             pqMap.put(this, lPQueue);
@@ -356,16 +356,17 @@ public class PriorityQueue {
 
         PQObject lPQueueMin = null;
 
-//        try {
-//            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-//                System.out.println("Priority Queue dequeue - top from local queue");
-//            }
-////            lPQueueMin = lPQueue.top();
-//        } catch (TXLibExceptions.PQueueIsEmptyException e) {
-//            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
-//                System.out.println("Priority Queue dequeue - local queue is empty");
-//            }
-//        }
+        try {
+            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+                System.out.println("Priority Queue dequeue - top from local queue");
+            }
+            lPQueueMin = lPQueue.top();
+            assert !lPQueueMin.getIsIgnored();//cannot dequeue node from local state that is ignored
+        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+            if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
+                System.out.println("Priority Queue dequeue - local queue is empty");
+            }
+        }
 
         if (pQueueMin != null && (lPQueueMin == null || pQueueMin.compareTo(lPQueueMin) < 0)) {// the minimum node is in the priority queue
             lPQueue.nextSmallest(this.internalPriorityQueue);
@@ -434,6 +435,7 @@ public class PriorityQueue {
 
         try {
             lPQueueMin = lPQueue.top();
+            assert !lPQueueMin.getIsIgnored();//cannot dequeue node from local state that is ignored
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
                 System.out.println("Priority Queue dequeue - local queue is empty");
