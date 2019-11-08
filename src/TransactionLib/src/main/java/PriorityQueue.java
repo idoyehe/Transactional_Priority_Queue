@@ -3,6 +3,10 @@ package TransactionLib.src.main.java;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * this class is the implementation of the transactional priority queue
+ * FOR COMPLEXITY CALCULATION THIS SIZE IS N
+ */
 public class PriorityQueue {
     private static final long singletonMask = 0x4000000000000000L;
     private static final long versionNegMask = singletonMask;
@@ -70,7 +74,12 @@ public class PriorityQueue {
         pqLock.unlock();
     }
 
-
+    /**
+     * commit the local state of a transaction to the global state
+     *
+     * @param lPQueue the local state
+     * @Complexity O(D * log N + N * logQ + N * logK)
+     */
     void commitLocalChanges(LocalPriorityQueue lPQueue) {
         assert (lPQueue != null);
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
@@ -79,18 +88,25 @@ public class PriorityQueue {
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
             System.out.println("Priority Queue commitLocalChanges - dequeue nodes");
         }
-        this.dequeueNodes(lPQueue.dequeueCounter());
+        this.dequeueNodes(lPQueue.dequeueCounter());//O(D*log N)
 
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
             System.out.println("Priority Queue commitLocalChanges - merge old nodes to new nodes");
         }
-        lPQueue.mergingPrimitivePriorityQueue(this.internalPriorityQueue);//the global queue is merged into the local queue
+        lPQueue.mergingPrimitivePriorityQueue(this.internalPriorityQueue);
+        //the global queue is merged into the local queue @Complexity O(N* logQ +  N* logK)
 
         assert this.internalPriorityQueue.root == null;
         assert this.internalPriorityQueue.size() == 0;
         this.internalPriorityQueue = lPQueue;//global queue is now the local queue
     }
 
+    /**
+     * part of commit local changes, dequeue the local state simulation
+     *
+     * @param dequeueCounter number of dequeues to be done
+     * @Complexity O(D * log N)
+     */
     private void dequeueNodes(int dequeueCounter) {
         if (dequeueCounter == 0) {
             if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
@@ -117,6 +133,16 @@ public class PriorityQueue {
         }
     }
 
+    /**
+     * enqueue new element with given priority and value
+     *
+     * @param priority new element priority
+     * @param value    new element value
+     * @return a refernce of the enqueue node
+     * @throws TXLibExceptions.AbortException
+     * @Complexity singleton use O(log N)
+     * transaction use O(log k)
+     */
     public final PQNode enqueue(Comparable priority, Object value) throws TXLibExceptions.AbortException {
         LocalStorage localStorage = TX.lStorage.get();
 
@@ -158,6 +184,16 @@ public class PriorityQueue {
         return newNode;
     }
 
+    /**
+     * decreasing priority of a specific node
+     *
+     * @param nodeToModify reference of the specific node
+     * @param newPriority  the new priority
+     * @return a reference of the modified node
+     * @throws TXLibExceptions.AbortException
+     * @Complexity singleton use O(log N)
+     * transaction use O(log k + log N + Q)
+     */
     public PQNode decreasePriority(final PQNode nodeToModify, Comparable newPriority) throws TXLibExceptions.AbortException {
         LocalStorage localStorage = TX.lStorage.get();
 
@@ -216,14 +252,21 @@ public class PriorityQueue {
         // now we have the lock
 
         if (nodeToModify.compareTo(newPriority) > 0 && this.internalPriorityQueue.containsNode(nodeToModify)) {
-            lPQueue.addModifiedNode(nodeToModify);//mark that this node has been modified
-            PQNode newNode = lPQueue.enqueue(newPriority, nodeToModify.getValue());
+            lPQueue.addModifiedNode(nodeToModify);//mark that this node has been modified O(Q)
+            PQNode newNode = lPQueue.enqueue(newPriority, nodeToModify.getValue());//O(log k)
             pqMap.put(this, lPQueue);
             return newNode;
         }
         return nodeToModify;
     }
 
+    /**
+     * getter of the size
+     *
+     * @return the actual size of priority queue
+     * @throws TXLibExceptions.AbortException
+     * @Complexity O(1)
+     */
     public int size() throws TXLibExceptions.AbortException {
 
         LocalStorage localStorage = TX.lStorage.get();
@@ -280,10 +323,24 @@ public class PriorityQueue {
         return this.internalPriorityQueue.size() - lPQueue.dequeueCounter() - lPQueue.getDecreasingPriorityNodesCounter() + lPQueue.size();
     }
 
+    /**
+     * predicate the check whether the priority queue is empty
+     *
+     * @return true iff the priority queue is empty
+     * @Complexity O(1)
+     */
     public boolean isEmpty() {
         return this.size() <= 0;
     }
 
+    /**
+     * dequeue the minimum priority node
+     *
+     * @return the value of the minimum priority queue
+     * @throws TXLibExceptions.AbortException
+     * @Complexity singleton use O(log N)
+     * transaction use O(Q * log D + log K)
+     */
     public Object dequeue() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
 
         LocalStorage localStorage = TX.lStorage.get();
@@ -369,6 +426,14 @@ public class PriorityQueue {
         return lPQueueMin.getValue();
     }
 
+    /**
+     * getter of the value of the minimum priority node
+     *
+     * @return the value of the minimum priority queue
+     * @throws TXLibExceptions.AbortException
+     * @Complexity singleton use O(1)
+     * transaction use O(Q * log D)
+     */
     public Object top() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
 
         LocalStorage localStorage = TX.lStorage.get();
