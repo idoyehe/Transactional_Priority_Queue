@@ -184,7 +184,7 @@ public class PrimitivePriorityQueue {
      *
      * @param node node to be search for
      * @return true iff the given node is in the priority queue
-     * @Complexity O(log N)
+     * @Complexity O(1)
      */
     public boolean containsNode(PQObject node) {
         int nodeIndex = node.getIndex();
