@@ -3,6 +3,10 @@ package TransactionLib.src.main.java;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+/**
+ * this class is the implementation of the transactional priority queue
+ * FOR COMPLEXITY CALCULATION THE PRIORITY QUEUE SIZE IS N AND IGNORED NUMBER IF IGNORED NODES IS L
+ */
 public class PriorityQueue {
     private static final long singletonMask = 0x4000000000000000L;
     private static final long versionNegMask = singletonMask;
@@ -71,6 +75,12 @@ public class PriorityQueue {
         pqLock.unlock();
     }
 
+    /**
+     * commit the local state of a transaction to the global state
+     *
+     * @param lPQueue the local state
+     * @Complexity amortized O(D * log N K*logN + Q)
+     */
     void commitLocalChanges(LocalPriorityQueue lPQueue) {
         assert (lPQueue != null);
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
@@ -92,6 +102,12 @@ public class PriorityQueue {
         assert this.internalPriorityQueue.size() == newNodesCounter - newIgnoredNodesCounter + oldSize;
     }
 
+    /**
+     * part of commit local changes, dequeue the local state simulation
+     *
+     * @param dequeueCounter number of dequeues to be done
+     * @Complexity O(D * log N)
+     */
     private void dequeueNodes(int dequeueCounter) {
 
         if (dequeueCounter == 0) {
@@ -120,6 +136,16 @@ public class PriorityQueue {
         }
     }
 
+    /**
+     * enqueue new element with given priority and value
+     *
+     * @param priority new element priority
+     * @param value    new element value
+     * @return a refernce of the enqueue node
+     * @throws TXLibExceptions.AbortException
+     * @Complexity singleton use amortized O(log N)
+     * transaction use amortized O(log k)
+     */
     public final PQObject enqueue(Comparable priority, Object value) throws TXLibExceptions.AbortException {
 
         LocalStorage localStorage = TX.lStorage.get();
@@ -163,6 +189,16 @@ public class PriorityQueue {
         return newNode;
     }
 
+    /**
+     * decreasing priority of a specific node
+     *
+     * @param nodeToModify reference of the specific node
+     * @param newPriority  the new priority
+     * @return a reference of the modified node
+     * @throws TXLibExceptions.AbortException
+     * @Complexity singleton use O(log N)
+     * transaction use amortized O(log k + log N + Q)
+     */
     public PQObject decreasePriority(final PQObject nodeToModify, Comparable newPriority) throws TXLibExceptions.AbortException {
         LocalStorage localStorage = TX.lStorage.get();
 
@@ -229,7 +265,13 @@ public class PriorityQueue {
         return nodeToModify;
     }
 
-
+    /**
+     * getter of the size
+     *
+     * @return the actual size of priority queue
+     * @throws TXLibExceptions.AbortException
+     * @Complexity O(1)
+     */
     public int size() throws TXLibExceptions.AbortException {
 
         LocalStorage localStorage = TX.lStorage.get();
@@ -287,10 +329,24 @@ public class PriorityQueue {
         return pQueueSize - lPQueue.dequeueCounter() - lPQueue.getIgnoredElemntsState().size() + lPQueue.size();
     }
 
+    /**
+     * predicate the check whether the priority queue is empty
+     *
+     * @return true iff the priority queue is empty
+     * @Complexity O(1)
+     */
     public boolean isEmpty() {
         return this.size() <= 0;
     }
 
+    /**
+     * dequeue the minimum priority node
+     *
+     * @return the value of the minimum priority queue
+     * @throws TXLibExceptions.AbortException
+     * @Complexity singleton use O(L*log N)
+     * transaction use O(max ( Q, L) * log D + log K)
+     */
     public Object dequeue() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
 
         LocalStorage localStorage = TX.lStorage.get();
@@ -379,6 +435,14 @@ public class PriorityQueue {
         return lPQueueMin.getValue();
     }
 
+    /**
+     * getter of the value of the minimum priority node
+     *
+     * @return the value of the minimum priority queue
+     * @throws TXLibExceptions.AbortException
+     * @Complexity singleton use O(L*log N)
+     * transaction use O(max ( Q, L) * log D)
+     */
     public Object top() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
 
         LocalStorage localStorage = TX.lStorage.get();
