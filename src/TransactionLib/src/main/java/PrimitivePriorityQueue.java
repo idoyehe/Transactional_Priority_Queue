@@ -85,7 +85,9 @@ public class PrimitivePriorityQueue {
         }
 
         // Store the minimum value, and remove it from heap
-        this._heapContainer.set(0, this._heapContainer.remove(heapSize - 1));//O(1) because this is last element in the array
+        PQObject newRoot = this._heapContainer.remove(heapSize - 1);//O(1) because this is last element in the array
+        newRoot.setIndex(0);
+        this._heapContainer.set(0, newRoot);//O(1)
         this.minHeapify(0);
         return root;
     }
