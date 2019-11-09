@@ -95,7 +95,7 @@ public class PriorityQueue {
             System.out.println("Priority Queue commitLocalChanges - merge old nodes to new nodes");
         }
         int newNodesCounter = lPQueue.size();
-        int newIgnoredNodesCounter = lPQueue.getIgnoredElemntsState().size();
+        int newIgnoredNodesCounter = lPQueue.getIgnoredElementsState().size();
         int oldSize = this.internalPriorityQueue.size();
         lPQueue.mergingPriorityQueues(this.internalPriorityQueue);
         assert lPQueue.size() == 0;
@@ -329,9 +329,9 @@ public class PriorityQueue {
         }
         qMap.put(this, lPQueue);
         int pQueueSize = this.internalPriorityQueue.size();
-        assert pQueueSize - lPQueue.dequeueCounter() + lPQueue.getIgnoredElemntsState().size() >= 0;
+        assert pQueueSize - lPQueue.dequeueCounter() + lPQueue.getIgnoredElementsState().size() >= 0;
         assert lPQueue.size() >= 0;
-        return pQueueSize - lPQueue.dequeueCounter() - lPQueue.getIgnoredElemntsState().size() + lPQueue.size();
+        return pQueueSize - lPQueue.dequeueCounter() - lPQueue.getIgnoredElementsState().size() + lPQueue.size();
     }
 
     /**

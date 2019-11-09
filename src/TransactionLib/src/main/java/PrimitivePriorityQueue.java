@@ -49,20 +49,20 @@ public class PrimitivePriorityQueue {
      * @param index index to start with fixing
      * @Complexity O(log N)
      */
-    private void minHeapify(int i) {
+    private void minHeapify(int index) {
         int heapSize = this._heapContainer.size();
-        int l = PQObject.left(i);
-        int r = PQObject.right(i);
-        int smallest = i;
+        int l = PQObject.left(index);
+        int r = PQObject.right(index);
+        int smallest = index;
 
-        if (l < heapSize && this._heapContainer.get(l).compareTo(this._heapContainer.get(i)) < 0)
+        if (l < heapSize && this._heapContainer.get(l).compareTo(this._heapContainer.get(index)) < 0)
             smallest = l;
 
         if (r < heapSize && this._heapContainer.get(r).compareTo(this._heapContainer.get(smallest)) < 0)
             smallest = r;
 
-        if (smallest != i) {
-            swap(i, smallest);
+        if (smallest != index) {
+            swap(index, smallest);
             this.minHeapify(smallest);
         }
     }
@@ -93,7 +93,7 @@ public class PrimitivePriorityQueue {
     }
 
     /**
-     * dequeue from the priority queue  the minimum priority node that not ignored
+     * dequeue from the priority queue the minimum priority node that not ignored
      *
      * @return a reference of the dequeued node
      * @throws TXLibExceptions.PQueueIsEmptyException

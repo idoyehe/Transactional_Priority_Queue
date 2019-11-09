@@ -126,7 +126,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * @Complexity O(Q)
      */
     boolean removeModifiedElementFromState(PQObject modifiedObject) {
-        if (this.getIgnoredElemntsState().isEmpty()) {
+        if (this.getIgnoredElementsState().isEmpty()) {
             return false;
         }
         int index = Collections.binarySearch(this._ignoredElementsState, modifiedObject);
@@ -142,7 +142,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      *
      * @return the state of the modified node during transaction
      */
-    public final ArrayList<PQObject> getIgnoredElemntsState() {
+    public final ArrayList<PQObject> getIgnoredElementsState() {
         return this._ignoredElementsState;
     }
 
@@ -153,14 +153,16 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * @Complexity amortized O(K*logN + Q)
      */
     public void mergingPriorityQueues(PrimitivePriorityQueue pQueue) {
+        int oldSize = pQueue.size();
         for (PQObject element : this._heapContainer) {
             pQueue.enqueue(element);
         }
 
-        for (PQObject element : this.getIgnoredElemntsState()) {
+        for (PQObject element : this.getIgnoredElementsState()) {
             element.setIgnored();
         }
-        pQueue._ignoredCounter += this.getIgnoredElemntsState().size();
+        pQueue._ignoredCounter += this.getIgnoredElementsState().size();
+        assert pQueue.size() == (oldSize + this._heapContainer.size() - this._ignoredElementsState.size());
         this._heapContainer.clear();
         this._ignoredElementsState.clear();
     }

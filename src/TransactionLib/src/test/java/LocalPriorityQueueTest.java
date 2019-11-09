@@ -2,7 +2,6 @@ package TransactionLib.src.test.java;
 
 import TransactionLib.src.main.java.*;
 
-import junit.framework.Assert;
 import org.junit.Test;
 
 import static junit.framework.TestCase.*;
@@ -236,7 +235,7 @@ public class LocalPriorityQueueTest {
             }
         });
 
-        assertEquals(0, lpq.getIgnoredElemntsState().size());
+        assertEquals(0, lpq.getIgnoredElementsState().size());
 
         try {
             lpq.currentSmallest(anotherPrimitive);
@@ -358,7 +357,7 @@ public class LocalPriorityQueueTest {
             lpq.addModifiedElementFromState(nodesArray[n]);
             assertEquals(-n, nodesArray[n].getPriority());
         });
-        assertEquals(this.range, lpq.getIgnoredElemntsState().size());
+        assertEquals(this.range, lpq.getIgnoredElementsState().size());
         assertEquals(0, lpq.dequeueCounter());
 
         try {
@@ -366,7 +365,7 @@ public class LocalPriorityQueueTest {
             fail("should throw empty Queue Exception");
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
         }
-        assertEquals(0, lpq.getIgnoredElemntsState().size());
+        assertEquals(0, lpq.getIgnoredElementsState().size());
         assertEquals(2 * this.range, lpq.dequeueCounter());
 
         final LocalPriorityQueue lpq2 = new LocalPriorityQueue();
@@ -378,7 +377,7 @@ public class LocalPriorityQueueTest {
                 fail("should not throw empty Queue Exception");
             }
         });
-        assertEquals(0, lpq2.getIgnoredElemntsState().size());
+        assertEquals(0, lpq2.getIgnoredElementsState().size());
         assertEquals(this.range * 2, lpq2.dequeueCounter());
 
         IntStream.range(0, this.range).map(i -> this.range - 1 - i).forEach(n -> {
