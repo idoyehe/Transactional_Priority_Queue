@@ -197,7 +197,7 @@ public class PriorityQueue {
      * @return a reference of the modified node
      * @throws TXLibExceptions.AbortException
      * @Complexity singleton use O(log N)
-     * transaction use amortized O(log k + log N + Q)
+     * transaction use amortized O(log k + log N + Q*log D)
      */
     public PQObject decreasePriority(final PQObject nodeToModify, Comparable newPriority) throws TXLibExceptions.AbortException {
         LocalStorage localStorage = TX.lStorage.get();
@@ -259,6 +259,11 @@ public class PriorityQueue {
         if (nodeToModify.compareTo(newPriority) > 0 && this.internalPriorityQueue.containsNode(nodeToModify)) {
             lPQueue.addModifiedElementFromState(nodeToModify);
             PQObject newNode = lPQueue.enqueue(newPriority, nodeToModify.getValue());
+            try {
+                lPQueue.currentSmallest(this.internalPriorityQueue);//updating the current smallest because maybe the old current was modified
+            } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                e.printStackTrace();
+            }
             pqMap.put(this, lPQueue);
             return newNode;
         }
