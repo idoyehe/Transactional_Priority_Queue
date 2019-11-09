@@ -229,6 +229,7 @@ public class PrimitivePriorityQueue {
      * @Complexity O(1)
      */
     public boolean containsNode(PQObject node) {
+        assert node != null;
         int nodeIndex = node.getIndex();
         if (nodeIndex < 0 || nodeIndex >= this._heapContainer.size()) {
             return false;

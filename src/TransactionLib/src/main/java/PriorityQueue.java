@@ -201,7 +201,7 @@ public class PriorityQueue {
      */
     public PQObject decreasePriority(final PQObject nodeToModify, Comparable newPriority) throws TXLibExceptions.AbortException {
         LocalStorage localStorage = TX.lStorage.get();
-
+        assert nodeToModify != null;
         // SINGLETON
         if (!localStorage.TX) {
 
