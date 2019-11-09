@@ -79,7 +79,7 @@ public class PriorityQueue {
      * commit the local state of a transaction to the global state
      *
      * @param lPQueue the local state
-     * @Complexity amortized O(D * log N K*logN + Q)
+     * @Complexity amortized O(D * log N + K*logN + Q)
      */
     void commitLocalChanges(LocalPriorityQueue lPQueue) {
         assert (lPQueue != null);
@@ -197,7 +197,7 @@ public class PriorityQueue {
      * @return a reference of the modified node
      * @throws TXLibExceptions.AbortException
      * @Complexity singleton use O(log N)
-     * transaction use amortized O(log k + log N + Q)
+     * transaction use amortized O(log k + max(Q,L) * log D)
      */
     public PQObject decreasePriority(final PQObject nodeToModify, Comparable newPriority) throws TXLibExceptions.AbortException {
         LocalStorage localStorage = TX.lStorage.get();
