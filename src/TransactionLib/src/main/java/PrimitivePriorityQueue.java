@@ -75,19 +75,22 @@ public class PrimitivePriorityQueue {
      * @Complexity O(log N)
      */
     PQObject singleDequeue() throws TXLibExceptions.PQueueIsEmptyException {
-        int heapSize = this._heapContainer.size();
+        int heapSize = this.containerSize();
         if (heapSize <= 0) {
             TXLibExceptions excep = new TXLibExceptions();
             throw excep.new PQueueIsEmptyException();
         }
         PQObject root = this._heapContainer.get(0);
+        assert root.getIndex() == 0;
         this._ignoredCounter -= root.getIsIgnored() ? 1 : 0;
         if (heapSize == 1) {
             return this._heapContainer.remove(0);//O(1) because this is last element in the array
         }
 
         // Store the minimum value, and remove it from heap
-        this._heapContainer.set(0, this._heapContainer.remove(heapSize - 1));//O(1) because this is last element in the array
+        PQObject newRoot = this._heapContainer.remove(heapSize - 1);//O(1) because this is last element in the array
+        newRoot.setIndex(0);
+        this._heapContainer.set(0, newRoot);//O(1)
         this.minHeapify(0);
         return root;
     }
@@ -219,6 +222,16 @@ public class PrimitivePriorityQueue {
         int size = this._heapContainer.size() - this._ignoredCounter;
         assert size >= 0;
         return size;
+    }
+
+    /**
+     * getter of the priority queue container size including ignoring nodes
+     *
+     * @return the actual size of the priority queue
+     * @Complexity O(1)
+     */
+    public int containerSize() {
+        return this._heapContainer.size();
     }
 
     /**

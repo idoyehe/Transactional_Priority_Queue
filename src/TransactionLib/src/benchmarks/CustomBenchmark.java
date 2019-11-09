@@ -128,9 +128,12 @@ public class CustomBenchmark {
                         TX.TXbegin();
                         try {
                             double rand = Math.random();
+                            pQueue.decreasePriority(globalNodesArr[j], (double) globalNodesArr[j].getPriority() - rand);
                             pQueue.dequeue();
                             pQueue.enqueue(rand, rand);
-                            pQueue.decreasePriority(globalNodesArr[j], (double) globalNodesArr[j].getPriority() - rand);
+                            pQueue.dequeue();
+                            rand = Math.random();
+                            pQueue.enqueue(rand, rand);
 
                         } catch (TXLibExceptions.PQueueIsEmptyException e) {
                             assert false;

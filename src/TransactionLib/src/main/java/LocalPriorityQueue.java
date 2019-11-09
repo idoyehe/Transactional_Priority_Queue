@@ -48,7 +48,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * @Complexity O(D + Q)
      */
     public void clearInternalState() {
-        assert _ignoredElementsState.size() == 0;
+        this._ignoredElementsState.clear();
         this.pqTXState.clear();
         this._ignoredElementsState = null;
         this.pqTXState = null;
@@ -98,18 +98,19 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
             assert false; //shouldn't be here
         }
 
+
         int leftIndex = PQObject.left(top.getIndex());
         int rightIndex = PQObject.right(top.getIndex());
 
-        if (leftIndex < internalPQueue._heapContainer.size()) {
+        if (leftIndex < internalPQueue.containerSize()) {
             pqTXState.add(internalPQueue._heapContainer.get(leftIndex));
         }
-        if (rightIndex < internalPQueue._heapContainer.size()) {
+        if (rightIndex < internalPQueue.containerSize()) {
             pqTXState.add(internalPQueue._heapContainer.get(rightIndex));
         }
 
         this._dequeueCounter++;
-        assert (this.dequeueCounter() < internalPQueue._heapContainer.size() && !this.pqTXState.isEmpty()) || (this.dequeueCounter() == internalPQueue._heapContainer.size() && this.pqTXState.isEmpty());
+        assert (this.dequeueCounter() < internalPQueue.containerSize() && !this.pqTXState.isEmpty()) || (this.dequeueCounter() == internalPQueue.containerSize() && this.pqTXState.isEmpty());
     }
 
     /**
