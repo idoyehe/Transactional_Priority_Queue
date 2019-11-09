@@ -94,12 +94,8 @@ public class PriorityQueue {
         if (TX.DEBUG_MODE_PRIORITY_QUEUE) {
             System.out.println("Priority Queue commitLocalChanges - merge old nodes to new nodes");
         }
-        int newNodesCounter = lPQueue.size();
-        int newIgnoredNodesCounter = lPQueue.getIgnoredElementsState().size();
-        int oldSize = this.internalPriorityQueue.size();
         lPQueue.mergingPriorityQueues(this.internalPriorityQueue);
         assert lPQueue.size() == 0;
-        assert this.internalPriorityQueue.size() == newNodesCounter - newIgnoredNodesCounter + oldSize;
     }
 
     /**
@@ -429,7 +425,7 @@ public class PriorityQueue {
             }
         }
 
-        if (pQueueMin != null && (lPQueueMin == null || pQueueMin.compareTo(lPQueueMin) < 0)) {// the minimum node is in the priority queue
+        if (pQueueMin != null && (lPQueueMin == null || pQueueMin.compareTo(lPQueueMin.getPriority()) < 0)) {// the minimum node is in the priority queue
             lPQueue.nextSmallest(this.internalPriorityQueue);
             pqMap.put(this, lPQueue);
             return pQueueMin.getValue();
@@ -511,7 +507,7 @@ public class PriorityQueue {
             }
         }
 
-        if (pQueueMin != null && (lPQueueMin == null || pQueueMin.compareTo(lPQueueMin) < 0)) {// the minimum node is in the priority queue
+        if (pQueueMin != null && (lPQueueMin == null || pQueueMin.compareTo(lPQueueMin.getPriority()) < 0)) {// the minimum node is in the priority queue
             return pQueueMin.getValue();
         }
         // the minimum node is in the local priority queue

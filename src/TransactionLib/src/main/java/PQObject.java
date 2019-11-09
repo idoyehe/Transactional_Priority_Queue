@@ -79,7 +79,7 @@ public class PQObject implements Comparable<PQObject> {
     /**
      * setter of PQNode index
      *
-     * @param newIndex the new index to be
+     * @param value the new index to be
      */
     void setIndex(int value) {
         this.index = value;
@@ -95,7 +95,11 @@ public class PQObject implements Comparable<PQObject> {
      */
     @Override
     public int compareTo(PQObject pqObject) {
-        return this.getPriority().compareTo(pqObject.getPriority());
+        int priorityCompering = this.getPriority().compareTo(pqObject.getPriority());
+        if (priorityCompering != 0) {
+            return priorityCompering;
+        }
+        return (int) Math.signum(this.getIndex() - pqObject.getIndex());
     }
 
     /**
@@ -118,7 +122,7 @@ public class PQObject implements Comparable<PQObject> {
      * otherwise false
      */
     public boolean isContentEqual(PQObject pqObject) {
-        return this.getPriority().compareTo(pqObject.getPriority()) == 0 && this.value.equals(pqObject.value);
+        return this.compareTo(pqObject.getPriority()) == 0 && this.value.equals(pqObject.value);
     }
 
     /**

@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 
 
 public class LocalPriorityQueueTest {
-    final int range = 4;
+    final int range = 5000;
 
     @Test
     public void testLocalPriorityQueueConstructor() {
@@ -365,7 +365,7 @@ public class LocalPriorityQueueTest {
             fail("should throw empty Queue Exception");
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
         }
-        assertEquals(0, lpq.getIgnoredElementsState().size());
+        assertEquals(this.range, lpq.getIgnoredElementsState().size());
         assertEquals(2 * this.range, lpq.dequeueCounter());
 
         final LocalPriorityQueue lpq2 = new LocalPriorityQueue();
