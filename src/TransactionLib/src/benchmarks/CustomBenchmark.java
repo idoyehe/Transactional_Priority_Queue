@@ -130,7 +130,7 @@ public class CustomBenchmark {
                             double rand = Math.random();
                             pQueue.dequeue();
                             pQueue.enqueue(rand, rand);
-                            pQueue.decreasePriority(globalNodesArr[j], (double) globalNodesArr[0].getPriority() - rand);
+                            pQueue.decreasePriority(globalNodesArr[j], (double) globalNodesArr[j].getPriority() - rand);
 
                         } catch (TXLibExceptions.PQueueIsEmptyException e) {
                             assert false;
@@ -151,6 +151,39 @@ public class CustomBenchmark {
             assertEquals(CustomBenchmark.TOTAL_ELEMENTS, this.pQueue.size());
             this.printBorder();
             this.await();
+
+            //third transaction
+            pQueue.setSingleton(false);
+
+            start = System.currentTimeMillis();
+            for (int j = 0; j < this.range / 2; j++) {
+                while (true) {
+                    try {
+                        TX.TXbegin();
+                        try {
+                            pQueue.dequeue();
+                            pQueue.dequeue();
+                        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                            assert false;
+                        } finally {
+                            TX.TXend();
+                        }
+                    } catch (TXLibExceptions.AbortException exp) {
+                        abortCount++;
+                        continue;
+                    }
+                    break;
+                }
+            }
+            finish = System.currentTimeMillis();
+            System.out.printf("Third episode, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
+            System.out.printf("Third episode, Thread name %s, abort counts: %d%n", this.threadName, abortCount);
+            this.await();
+            assertEquals(0, this.pQueue.size());
+            this.printBorder();
+            this.await();
+
+
         }
     }
 }
