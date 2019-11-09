@@ -437,7 +437,7 @@ public class PriorityQueue {
      * @return the value of the minimum priority queue
      * @throws TXLibExceptions.AbortException
      * @Complexity singleton use O(1)
-     * transaction use O(Q*log D)
+     * transaction use O(log Q * log D)
      */
     public Object top() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
 

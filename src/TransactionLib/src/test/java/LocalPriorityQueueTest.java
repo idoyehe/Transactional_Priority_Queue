@@ -297,7 +297,7 @@ public class LocalPriorityQueueTest {
             fail("should throw empty Queue Exception");
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
         }
-        assertEquals(0, lpq.getDecreasingPriorityNodesState().size());
+        assertEquals(this.range, lpq.getDecreasingPriorityNodesState().size());
         assertEquals(this.range, lpq.dequeueCounter());
 
         final LocalPriorityQueue lpq2 = new LocalPriorityQueue();

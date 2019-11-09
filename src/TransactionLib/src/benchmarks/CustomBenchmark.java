@@ -11,7 +11,7 @@ import java.util.concurrent.CyclicBarrier;
 public class CustomBenchmark {
     final static int TOTAL_ELEMENTS = 16384;
     final int numberOfThreads = 16;
-//
+
 //    final static int TOTAL_ELEMENTS = 4;
 //    final int numberOfThreads = 1;
 
@@ -129,7 +129,7 @@ public class CustomBenchmark {
                             double rand = Math.random();
                             pQueue.dequeue();
                             pQueue.enqueue(rand, rand);
-                            pQueue.decreasePriority(globalNodesArr[j], (double) globalNodesArr[0].getPriority() - rand);
+                            pQueue.decreasePriority(globalNodesArr[j], (double) globalNodesArr[j].getPriority() - rand);
                         } catch (TXLibExceptions.PQueueIsEmptyException e) {
                             assert false;
                         } finally {
@@ -148,6 +148,7 @@ public class CustomBenchmark {
             this.await();
             this.printBorder();
             assertEquals(CustomBenchmark.TOTAL_ELEMENTS, this.pQueue.size());
+            this.await();
         }
     }
 }

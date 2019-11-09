@@ -126,7 +126,11 @@ public class PQNode implements Comparable<PQNode> {
      */
     @Override
     public int compareTo(PQNode pqNode) {
-        return this.getPriority().compareTo(pqNode.getPriority());
+        int priorityCompering = this.getPriority().compareTo(pqNode.getPriority());
+        if (priorityCompering != 0) {
+            return priorityCompering;
+        }
+        return (int) Math.signum(this.getIndex() - pqNode.getIndex());
     }
 
     /**
@@ -219,7 +223,7 @@ public class PQNode implements Comparable<PQNode> {
         }
         if (this.getRight() != null && binaryDigits[currentTurnIndex] == PQNodeTurn.RIGHT.getValue()) {
             this.right = this.right.nodeSiftUp(node, binaryDigits, currentTurnIndex + 1);
-            if (this.compareTo(this.right) > 0) {// the right son is with lower priority
+            if (this.compareTo(this.right.getPriority()) > 0) {// the right son is with lower priority
                 PQNode leftSonHolder = this.getLeft();
                 PQNode rightMinSon = this.getRight();
                 int indexHolder = this.getIndex();
@@ -238,7 +242,7 @@ public class PQNode implements Comparable<PQNode> {
             assert this.getLeft() != null;//if node is a leaf stop condition should be true
             assert binaryDigits[currentTurnIndex] == PQNodeTurn.LEFT.getValue();
             this.left = this.left.nodeSiftUp(node, binaryDigits, currentTurnIndex + 1);
-            if (this.compareTo(this.left) > 0) {// the left son is with lower priority
+            if (this.compareTo(this.left.getPriority()) > 0) {// the left son is with lower priority
                 PQNode rightSonHolder = this.getRight();
                 PQNode leftMinSon = this.getLeft();
                 int indexHolder = this.getIndex();
@@ -266,14 +270,14 @@ public class PQNode implements Comparable<PQNode> {
             return this;
         }
         assert this.getLeft() != null; // this has at least one son, therefore it must have left son
-        boolean isLeftSonSmaller = this.compareTo(this.getLeft()) > 0;
-        boolean isRightSonSmaller = this.getRight() != null && this.compareTo(this.getRight()) > 0;
+        boolean isLeftSonSmaller = this.compareTo(this.getLeft().getPriority()) > 0;
+        boolean isRightSonSmaller = this.getRight() != null && this.compareTo(this.getRight().getPriority()) > 0;
 
         if (!isLeftSonSmaller && !isRightSonSmaller) {//none of the son is smaller so done
             return this;
         }
 
-        if (this.getRight() == null || this.getLeft().compareTo(this.getRight()) < 0) {
+        if (this.getRight() == null || this.getLeft().compareTo(this.getRight().getPriority()) < 0) {
             PQNode rightSonHolder = this.getRight();
             PQNode leftMinSon = this.getLeft();
             int indexHolder = this.getIndex();
@@ -316,6 +320,6 @@ public class PQNode implements Comparable<PQNode> {
      * otherwise false
      */
     public boolean isContentEqual(PQNode pqNode) {
-        return this.getPriority().compareTo(pqNode.getPriority()) == 0 && this.getValue().equals(pqNode.getValue());
+        return this.compareTo(pqNode.getPriority()) == 0 && this.getValue().equals(pqNode.getValue());
     }
 }

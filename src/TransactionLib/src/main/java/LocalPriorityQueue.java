@@ -31,6 +31,15 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     boolean isLockedByMe = false; // is queue (not local queue) locked by me
 
     /**
+     * predicate return true iff node is in modified local state
+     */
+    Predicate<PQNode> _isModifiedNode = pqNode -> Collections.binarySearch(this._decreasingPriorityNodesState, pqNode) >= 0;
+    /**
+     * predicate return true iff node is NOT in modified local state
+     */
+    Predicate<PQNode> _isNotModifiedNode = pqNode -> Collections.binarySearch(this._decreasingPriorityNodesState, pqNode) < 0;
+
+    /**
      * constructor
      */
     public LocalPriorityQueue() {
@@ -66,10 +75,10 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * @param internalPQueue the queue to be simulated
      * @return a copy of the current smallest node in the simulation
      * @throws TXLibExceptions.PQueueIsEmptyException
-     * @Complexity O(Q * log D)
+     * @Complexity O(log Q * log D)
      */
     public PQNode currentSmallest(PrimitivePriorityQueue internalPQueue) throws TXLibExceptions.PQueueIsEmptyException {
-        while (this.pqTXState.isEmpty() || this.removeModifiedNode(this.pqTXState.peek())) {
+        while (this.pqTXState.isEmpty() || this._isModifiedNode.test(this.pqTXState.peek())) {
             this.nextSmallest(internalPQueue);
         }
 
@@ -130,24 +139,6 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     }
 
     /**
-     * removing a modified node the local state
-     *
-     * @param modifiedNode node to be removed
-     * @Complexity O(Q)
-     */
-    private boolean removeModifiedNode(PQNode modifiedNode) {
-        if (this._decreasingPriorityNodesState.isEmpty()) {
-            return false;
-        }
-        int index = Collections.binarySearch(this._decreasingPriorityNodesState, modifiedNode);
-        if (-1 < index) {
-            this._decreasingPriorityNodesState.remove(index);
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * getter of the modified node state
      *
      * @return the state of the modified node during transaction
@@ -172,7 +163,6 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * @Complexity O(N * logQ + N * logK)
      */
     public void mergingPrimitivePriorityQueue(PrimitivePriorityQueue pQueue) {
-        Predicate<PQNode> _isNotModifiedNode = pqNode -> Collections.binarySearch(this._decreasingPriorityNodesState, pqNode) < 0;
         this.mergingPrimitivePriorityQueue(pQueue, _isNotModifiedNode);
     }
 }
