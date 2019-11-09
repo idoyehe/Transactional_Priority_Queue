@@ -1,7 +1,7 @@
 package TransactionLib.src.main.java;
 
 public class PQObject implements Comparable<PQObject> {
-    private int index = -1;// index of the node in heap
+    private int index = Integer.MAX_VALUE;// index of the node in heap
     private Comparable priority;
     private Object value;
 
@@ -79,7 +79,11 @@ public class PQObject implements Comparable<PQObject> {
      */
     @Override
     public int compareTo(PQObject pqObject) {
-        return this.getPriority().compareTo(pqObject.getPriority());
+        int priorityCompering = this.getPriority().compareTo(pqObject.getPriority());
+        if (priorityCompering != 0) {
+            return priorityCompering;
+        }
+        return (int) Math.signum(this.getIndex() - pqObject.getIndex());
     }
 
     /**

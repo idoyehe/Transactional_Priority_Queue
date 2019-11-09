@@ -27,6 +27,11 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * transactional priority queue (not local queue) locked by me
      */
     boolean isLockedByMe = false; //
+    /**
+     * predicate return true iff node is in modified local state
+     */
+    Predicate<PQObject> _isModifiedNode = pqNode -> Collections.binarySearch(this._ignoredElementsState, pqNode) >= 0;
+
 
     /**
      * getter of simulated dequeue
@@ -56,10 +61,10 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * @param internalPQueue the queue to be simulated
      * @return a copy of the current smallest node in the simulation
      * @throws TXLibExceptions.PQueueIsEmptyException
-     * @Complexity O(Q * log D)
+     * @Complexity O(log Q * log D)
      */
     public PQObject currentSmallest(PrimitivePriorityQueue internalPQueue) throws TXLibExceptions.PQueueIsEmptyException {
-        while (this.pqTXState.peek() == null || this.removeModifiedElementFromState(this.pqTXState.peek())) {
+        while (this.pqTXState.peek() == null || this._isModifiedNode.test(this.pqTXState.peek())) {
             this.nextSmallest(internalPQueue);
         }
 
@@ -121,24 +126,6 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     }
 
     /**
-     * removing a modified node the local state
-     *
-     * @param modifiedObject node to be removed
-     * @Complexity O(Q)
-     */
-    boolean removeModifiedElementFromState(PQObject modifiedObject) {
-        if (this.getIgnoredElemntsState().isEmpty()) {
-            return false;
-        }
-        int index = Collections.binarySearch(this._ignoredElementsState, modifiedObject);
-        if (-1 < index) {
-            this._ignoredElementsState.remove(index);
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * getter of the modified node state
      *
      * @return the state of the modified node during transaction
@@ -154,9 +141,8 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * @Complexity amortized O(Q + N * logK)
      */
     public void mergingPriorityQueues(PrimitivePriorityQueue pQueue) {
-        Predicate<PQObject> _isNotModifiedNode = pqNode -> Collections.binarySearch(this._ignoredElementsState, pqNode) >= 0;
 
-        pQueue._heapContainer.removeIf(_isNotModifiedNode);
+        pQueue._heapContainer.removeIf(_isModifiedNode);
 
         for (PQObject element : pQueue._heapContainer) {
             this.enqueue(element);

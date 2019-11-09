@@ -11,7 +11,7 @@ import java.util.concurrent.CyclicBarrier;
 public class CustomBenchmark {
     final static int TOTAL_ELEMENTS = 16384;
     final int numberOfThreads = 16;
-//
+
 //    final static int TOTAL_ELEMENTS = 4;
 //    final int numberOfThreads = 1;
 
@@ -89,7 +89,7 @@ public class CustomBenchmark {
                             TX.TXbegin();
                             for (int k = 0; k < this.chunk; k++) {
                                 double rand = Math.random();
-                                globalNodesArr[(j * chunk) + k] = pQueue.enqueue(rand, rand);
+                                globalNodesArr[(j * this.chunk) + k] = pQueue.enqueue(rand, rand);
                             }
                         } finally {
                             TX.TXend();
@@ -107,7 +107,8 @@ public class CustomBenchmark {
             this.await();
             this.printBorder();
             assertEquals(CustomBenchmark.TOTAL_ELEMENTS, this.pQueue.size());
-//            pQueue.setSingleton(true);
+            pQueue.setSingleton(true);
+
 //            while (!pQueue.isEmpty()) {
 //                try {
 //                    System.out.println(pQueue.top());
@@ -130,6 +131,7 @@ public class CustomBenchmark {
                             pQueue.dequeue();
                             pQueue.enqueue(rand, rand);
                             pQueue.decreasePriority(globalNodesArr[j], (double) globalNodesArr[0].getPriority() - rand);
+
                         } catch (TXLibExceptions.PQueueIsEmptyException e) {
                             assert false;
                         } finally {
@@ -146,8 +148,9 @@ public class CustomBenchmark {
             System.out.printf("Second episode, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
             System.out.printf("Second episode, Thread name %s, abort counts: %d%n", this.threadName, abortCount);
             this.await();
-            this.printBorder();
             assertEquals(CustomBenchmark.TOTAL_ELEMENTS, this.pQueue.size());
+            this.printBorder();
+            this.await();
         }
     }
 }

@@ -207,6 +207,7 @@ public class LocalPriorityQueueTest {
             e.printStackTrace();
             fail("Local priority queue should not be empty");
         }
+        lpq2.mergingPriorityQueues(new PrimitivePriorityQueue());
         lpq2.clearInternalState();
 
         final LocalPriorityQueue lpq3 = new LocalPriorityQueue();
@@ -276,7 +277,7 @@ public class LocalPriorityQueueTest {
             fail("should throw empty Queue Exception");
         } catch (TXLibExceptions.PQueueIsEmptyException e) {
         }
-        assertEquals(0, lpq.getIgnoredElemntsState().size());
+        assertEquals(this.range, lpq.getIgnoredElemntsState().size());
         assertEquals(this.range, lpq.dequeueCounter());
 
         final LocalPriorityQueue lpq2 = new LocalPriorityQueue();

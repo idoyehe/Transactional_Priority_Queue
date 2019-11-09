@@ -54,10 +54,10 @@ public class PrimitivePriorityQueue {
         int r = PQObject.right(index);
         int smallest = index;
 
-        if (l < heapSize && this._heapContainer.get(l).compareTo(this._heapContainer.get(index)) < 0)
+        if (l < heapSize && this._heapContainer.get(l).compareTo(this._heapContainer.get(index).getPriority()) < 0)
             smallest = l;
 
-        if (r < heapSize && this._heapContainer.get(r).compareTo(this._heapContainer.get(smallest)) < 0)
+        if (r < heapSize && this._heapContainer.get(r).compareTo(this._heapContainer.get(smallest).getPriority()) < 0)
             smallest = r;
 
         if (smallest != index) {
@@ -119,7 +119,7 @@ public class PrimitivePriorityQueue {
         node2enqueue.setIndex(i);
         this._heapContainer.add(node2enqueue);
         // Fix the min heap property if it is violated
-        while (i != 0 && this._heapContainer.get(PQObject.parent(i)).compareTo(this._heapContainer.get(i)) > 0) {
+        while (i != 0 && this._heapContainer.get(PQObject.parent(i)).compareTo(this._heapContainer.get(i).getPriority()) > 0) {
             swap(i, PQObject.parent(i));
             i = PQObject.parent(i);
         }
@@ -153,7 +153,7 @@ public class PrimitivePriorityQueue {
         }
         nodeToModify.setPriority(newPriority);
         int i = nodeToModify.getIndex();
-        while (i != 0 && this._heapContainer.get(PQObject.parent(i)).compareTo(this._heapContainer.get(i)) > 0) {
+        while (i != 0 && this._heapContainer.get(PQObject.parent(i)).compareTo(this._heapContainer.get(i).getPriority()) > 0) {
             swap(i, PQObject.parent(i));
             i = PQObject.parent(i);
         }
