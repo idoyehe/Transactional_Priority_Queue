@@ -128,9 +128,12 @@ public class CustomBenchmark {
                         TX.TXbegin();
                         try {
                             double rand = Math.random();
+                            pQueue.decreasePriority(globalNodesArr[j], (double) globalNodesArr[j].getPriority() - rand);
                             pQueue.dequeue();
                             pQueue.enqueue(rand, rand);
-                            pQueue.decreasePriority(globalNodesArr[j], (double) globalNodesArr[j].getPriority() - rand);
+                            pQueue.dequeue();
+                            rand = Math.random();
+                            pQueue.enqueue(rand, rand);
 
                         } catch (TXLibExceptions.PQueueIsEmptyException e) {
                             assert false;
@@ -179,7 +182,7 @@ public class CustomBenchmark {
             System.out.printf("Third episode, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
             System.out.printf("Third episode, Thread name %s, abort counts: %d%n", this.threadName, abortCount);
             this.await();
-            assertEquals(0, this.pQueue.size());
+//            assertEquals(0, this.pQueue.size());
             this.printBorder();
             this.await();
 
