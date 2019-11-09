@@ -89,7 +89,7 @@ public class CustomBenchmark {
                             TX.TXbegin();
                             for (int k = 0; k < this.chunk; k++) {
                                 double rand = Math.random();
-                                globalNodesArr[(j * chunk) + k] = pQueue.enqueue(rand, rand);
+                                globalNodesArr[(j * this.chunk) + k] = pQueue.enqueue(rand, rand);
                             }
                         } finally {
                             TX.TXend();
@@ -107,7 +107,8 @@ public class CustomBenchmark {
             this.await();
             this.printBorder();
             assertEquals(CustomBenchmark.TOTAL_ELEMENTS, this.pQueue.size());
-//            pQueue.setSingleton(true);
+            pQueue.setSingleton(true);
+
 //            while (!pQueue.isEmpty()) {
 //                try {
 //                    System.out.println(pQueue.top());
@@ -130,6 +131,7 @@ public class CustomBenchmark {
                             pQueue.dequeue();
                             pQueue.enqueue(rand, rand);
                             pQueue.decreasePriority(globalNodesArr[j], (double) globalNodesArr[j].getPriority() - rand);
+
                         } catch (TXLibExceptions.PQueueIsEmptyException e) {
                             assert false;
                         } finally {
@@ -146,8 +148,39 @@ public class CustomBenchmark {
             System.out.printf("Second episode, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
             System.out.printf("Second episode, Thread name %s, abort counts: %d%n", this.threadName, abortCount);
             this.await();
-            this.printBorder();
             assertEquals(CustomBenchmark.TOTAL_ELEMENTS, this.pQueue.size());
+            this.printBorder();
+            this.await();
+
+            //third transaction
+            pQueue.setSingleton(false);
+
+            start = System.currentTimeMillis();
+            for (int j = 0; j < this.range / 2; j++) {
+                while (true) {
+                    try {
+                        TX.TXbegin();
+                        try {
+                            pQueue.dequeue();
+                            pQueue.dequeue();
+                        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                            assert false;
+                        } finally {
+                            TX.TXend();
+                        }
+                    } catch (TXLibExceptions.AbortException exp) {
+                        abortCount++;
+                        continue;
+                    }
+                    break;
+                }
+            }
+            finish = System.currentTimeMillis();
+            System.out.printf("Third episode, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
+            System.out.printf("Third episode, Thread name %s, abort counts: %d%n", this.threadName, abortCount);
+            this.await();
+            assertEquals(0, this.pQueue.size());
+            this.printBorder();
             this.await();
         }
     }
