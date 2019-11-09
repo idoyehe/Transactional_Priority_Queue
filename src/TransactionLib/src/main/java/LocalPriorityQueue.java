@@ -101,16 +101,16 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
         PQNode top = pqTXState.peek();//O(1)
 
         try {
-            pqTXState.remove();//O(log(dequeueCounter))
+            pqTXState.remove();//O(log(D))
         } catch (NoSuchElementException e) {
             assert false; //shouldn't be here
         }
 
         if (top.getLeft() != null) {
-            pqTXState.add(top.getLeft());
+            pqTXState.add(top.getLeft());//O(log(D))
         }
         if (top.getRight() != null) {
-            pqTXState.add(top.getRight());
+            pqTXState.add(top.getRight());//O(log(D))
         }
 
         this._dequeueCounter++;

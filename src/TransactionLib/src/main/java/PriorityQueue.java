@@ -192,7 +192,7 @@ public class PriorityQueue {
      * @return a reference of the modified node
      * @throws TXLibExceptions.AbortException
      * @Complexity singleton use O(log N)
-     * transaction use O(log k + log N + Q)
+     * transaction use O(log k + log N + Q * log D)
      */
     public PQNode decreasePriority(final PQNode nodeToModify, Comparable newPriority) throws TXLibExceptions.AbortException {
         LocalStorage localStorage = TX.lStorage.get();
@@ -254,6 +254,11 @@ public class PriorityQueue {
         if (nodeToModify.compareTo(newPriority) > 0 && this.internalPriorityQueue.containsNode(nodeToModify)) {
             lPQueue.addModifiedNode(nodeToModify);//mark that this node has been modified O(Q)
             PQNode newNode = lPQueue.enqueue(newPriority, nodeToModify.getValue());//O(log k)
+            try {
+                lPQueue.currentSmallest(this.internalPriorityQueue);//updating the current smallest because maybe the old current was modified
+            } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                e.printStackTrace();
+            }
             pqMap.put(this, lPQueue);
             return newNode;
         }
@@ -339,7 +344,7 @@ public class PriorityQueue {
      * @return the value of the minimum priority queue
      * @throws TXLibExceptions.AbortException
      * @Complexity singleton use O(log N)
-     * transaction use O(Q * log D + log K)
+     * transaction use O(log D + log K)
      */
     public Object dequeue() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
 
@@ -432,7 +437,7 @@ public class PriorityQueue {
      * @return the value of the minimum priority queue
      * @throws TXLibExceptions.AbortException
      * @Complexity singleton use O(1)
-     * transaction use O(Q * log D)
+     * transaction use O(Q*log D)
      */
     public Object top() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
 
