@@ -80,9 +80,11 @@ public class PrimitivePriorityQueue {
 
         PQNode newNodeFather = this.getRef2NodeByIndex(this.size / 2);//O(log N)
         if (newNode.getIndex() % 2 == PQNodeTurn.LEFT.getValue()) {
+            assert newNodeFather != null;
             newNodeFather.setLeft(newNode);
         } else {
             assert newNode.getIndex() % 2 == PQNodeTurn.RIGHT.getValue();
+            assert newNodeFather != null;
             newNodeFather.setRight(newNode);
         }
 
@@ -147,7 +149,7 @@ public class PrimitivePriorityQueue {
         this.root.setLeft(null);
         this.root.setRight(null);
 
-        this.size -= 1;
+        this.size--;
         this.root = lastHeapElement;
         this.root = this.root.nodeSiftDown();
         return nodeToDequeue;
