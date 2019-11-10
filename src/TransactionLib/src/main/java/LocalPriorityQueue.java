@@ -2,7 +2,6 @@ package TransactionLib.src.main.java;
 
 import java.util.*;
 import java.util.PriorityQueue;
-import java.util.function.Predicate;
 
 /**
  * This class maneges the local state of a Priority Queue during transaction
@@ -114,7 +113,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * adding a new modified node the local state
      *
      * @param modifiedObject node to be added
-     * @Complexity O(Q)
+     * @Complexity O(1)
      */
     public void addModifiedElementFromState(PQObject modifiedObject) {
         assert !this._ignoredElementsState.contains(modifiedObject);
@@ -122,7 +121,11 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     }
 
     /**
-     * predicate return true iff node is in modified local state
+     * removing a modified node the local state
+     *
+     * @param pqObject node to be added
+     * @return true iff node has been removed
+     * @Complexity O(1)
      */
     private boolean removeModifiedNode(PQObject pqObject) {
         return this._ignoredElementsState.remove(pqObject);
