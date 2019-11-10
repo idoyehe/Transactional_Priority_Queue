@@ -2,7 +2,6 @@ package TransactionLib.src.main.java;
 
 import java.util.*;
 import java.util.PriorityQueue;
-import java.util.function.Predicate;
 
 /**
  * This class maneges the local state of a Priority Queue during transaction
