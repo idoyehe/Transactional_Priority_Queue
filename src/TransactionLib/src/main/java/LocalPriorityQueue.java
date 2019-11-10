@@ -18,7 +18,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * local state of all decreasing nodes
      * FOR COMPLEXITY CALCULATION THIS SIZE IS Q
      */
-    private ArrayList<PQObject> _ignoredElementsState = new ArrayList<PQObject>();
+    private HashSet<PQObject> _ignoredElementsState = new HashSet<PQObject>();
     /**
      * local state of dequeue simulation
      */
@@ -27,10 +27,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * transactional priority queue (not local queue) locked by me
      */
     boolean isLockedByMe = false;
-    /**
-     * counter of new modified node to be removed in commit
-     */
-    private int _newRemovedModifiedNodesCounter = 0;
+
 
     /**
      * getter of simulated dequeue
@@ -60,10 +57,10 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * @param internalPQueue the queue to be simulated
      * @return a copy of the current smallest node in the simulation
      * @throws TXLibExceptions.PQueueIsEmptyException
-     * @Complexity O(log Q * log D)
+     * @Complexity O(log D)
      */
     public PQObject currentSmallest(PrimitivePriorityQueue internalPQueue) throws TXLibExceptions.PQueueIsEmptyException {
-        while (this.pqTXState.peek() == null || this.pqTXState.peek().getIsIgnored() || isModifiedNode(this.pqTXState.peek())) {
+        while (this.pqTXState.peek() == null || this.pqTXState.peek().getIsIgnored() || this.removeModifiedNode(this.pqTXState.peek())) {
             this.nextSmallest(internalPQueue);
         }
 
@@ -121,17 +118,14 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      */
     public void addModifiedElementFromState(PQObject modifiedObject) {
         assert !this._ignoredElementsState.contains(modifiedObject);
-        int index = -1 - Collections.binarySearch(this._ignoredElementsState, modifiedObject);
-        this._ignoredElementsState.add(index, modifiedObject);
+        this._ignoredElementsState.add(modifiedObject);
     }
 
     /**
      * predicate return true iff node is in modified local state
      */
-    private boolean isModifiedNode(PQObject pqObject) {
-        boolean isAlreadyModified = Collections.binarySearch(this._ignoredElementsState, pqObject) >= 0;
-        this._newRemovedModifiedNodesCounter += (isAlreadyModified) ? 1 : 0;
-        return isAlreadyModified;
+    private boolean removeModifiedNode(PQObject pqObject) {
+        return this._ignoredElementsState.remove(pqObject);
     }
 
     /**
@@ -139,7 +133,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      *
      * @return the state of the modified node during transaction
      */
-    public final ArrayList<PQObject> getIgnoredElementsState() {
+    public final HashSet<PQObject> getIgnoredElementsState() {
         return this._ignoredElementsState;
     }
 
@@ -158,9 +152,8 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
         for (PQObject element : this.getIgnoredElementsState()) {
             element.setIgnored();
         }
-        int newIgnoredAdd = this.getIgnoredElementsState().size() - this._newRemovedModifiedNodesCounter;
-        pQueue._ignoredCounter += newIgnoredAdd;
-        assert pQueue.size() == (oldSize + this._heapContainer.size() - newIgnoredAdd);
+        pQueue._ignoredCounter += this.getIgnoredElementsState().size();
+        assert pQueue.size() == (oldSize + this._heapContainer.size() - this.getIgnoredElementsState().size());
         this._heapContainer.clear();
         this._ignoredElementsState.clear();
     }

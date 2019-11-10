@@ -95,11 +95,7 @@ public class PQObject implements Comparable<PQObject> {
      */
     @Override
     public int compareTo(PQObject pqObject) {
-        int priorityCompering = this.getPriority().compareTo(pqObject.getPriority());
-        if (priorityCompering != 0) {
-            return priorityCompering;
-        }
-        return (int) Math.signum(this.getIndex() - pqObject.getIndex());
+        return this.getPriority().compareTo(pqObject.getPriority());
     }
 
     /**
