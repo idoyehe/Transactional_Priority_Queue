@@ -2,7 +2,6 @@ package TransactionLib.src.main.java;
 
 import java.util.*;
 import java.util.PriorityQueue;
-import java.util.function.Predicate;
 
 /**
  * This class maneges the local state of a Priority Queue during transaction
@@ -123,6 +122,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * removing a modified node the local state
      *
      * @param modifiedObject node to be removed
+     * @return true iff node has been removed
      * @Complexity O(1)
      */
     boolean removeModifiedElementFromState(PQObject modifiedObject) {
