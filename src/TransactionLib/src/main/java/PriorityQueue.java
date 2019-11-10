@@ -428,7 +428,7 @@ public class PriorityQueue {
             }
         }
 
-        if (pQueueMin != null && (lPQueueMin == null || pQueueMin.compareTo(lPQueueMin.getPriority()) < 0)) {// the minimum node is in the priority queue
+        if (pQueueMin != null && (lPQueueMin == null || pQueueMin.compareTo(lPQueueMin) < 0)) {// the minimum node is in the priority queue
             lPQueue.nextSmallest(this.internalPriorityQueue);
             pqMap.put(this, lPQueue);
             return pQueueMin.getValue();
