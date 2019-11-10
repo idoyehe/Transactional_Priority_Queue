@@ -241,13 +241,13 @@ public class PrimitivePriorityQueue {
         if (root == null) {
             return;
         }
-        if (root.getRight() != null && root.compareTo(root.getRight().getPriority()) > 0) {
+        if (root.getRight() != null && root.compareTo(root.getRight()) > 0) {
             throw new Exception("Heap invariant is violated");
         }
         if (root.getRight() != null && root.getIndex() != root.getRight().getIndex() / 2) {
             throw new Exception("Heap invariant is violated");
         }
-        if (root.getLeft() != null && root.compareTo(root.getLeft().getPriority()) > 0) {
+        if (root.getLeft() != null && root.compareTo(root.getLeft()) > 0) {
             throw new Exception("Heap invariant is violated");
         }
         if (root.getLeft() != null && root.getIndex() != root.getLeft().getIndex() / 2) {

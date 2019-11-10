@@ -1,8 +1,6 @@
 package TransactionLib.src.main.java;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.PriorityQueue;
 import java.util.function.Predicate;
 
@@ -24,27 +22,18 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * local state of all decreasing nodes
      * FOR COMPLEXITY CALCULATION THIS SIZE IS Q
      */
-    private ArrayList<PQNode> _decreasingPriorityNodesState;
+    private HashSet<PQNode> _decreasingPriorityNodesState;
     /**
      * transactional priority queue (not local queue) locked by me
      */
     boolean isLockedByMe = false; // is queue (not local queue) locked by me
 
     /**
-     * predicate return true iff node is in modified local state
-     */
-    Predicate<PQNode> _isModifiedNode = pqNode -> Collections.binarySearch(this._decreasingPriorityNodesState, pqNode) >= 0;
-    /**
-     * predicate return true iff node is NOT in modified local state
-     */
-    Predicate<PQNode> _isNotModifiedNode = pqNode -> Collections.binarySearch(this._decreasingPriorityNodesState, pqNode) < 0;
-
-    /**
      * constructor
      */
     public LocalPriorityQueue() {
         this.pqTXState = new PriorityQueue<PQNode>();
-        this._decreasingPriorityNodesState = new ArrayList<PQNode>();
+        this._decreasingPriorityNodesState = new HashSet<>();
     }
 
     /**
@@ -78,7 +67,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * @Complexity O(log Q * log D)
      */
     public PQNode currentSmallest(PrimitivePriorityQueue internalPQueue) throws TXLibExceptions.PQueueIsEmptyException {
-        while (this.pqTXState.isEmpty() || this._isModifiedNode.test(this.pqTXState.peek())) {
+        while (this.pqTXState.isEmpty() || this.removeModifiedNode(this.pqTXState.peek())) {
             this.nextSmallest(internalPQueue);
         }
 
@@ -130,12 +119,25 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * adding a new modified node the local state
      *
      * @param modifiedNode node to be added
-     * @Complexity O(Q)
+     * @Complexity O(1)
      */
     public void addModifiedNode(PQNode modifiedNode) {//public for test use only
-        int index = -1 - Collections.binarySearch(this._decreasingPriorityNodesState, modifiedNode);
-        assert index > -1;
-        this._decreasingPriorityNodesState.add(index, modifiedNode);
+        assert !this._decreasingPriorityNodesState.contains(modifiedNode);
+        this._decreasingPriorityNodesState.add(modifiedNode);
+    }
+
+    /**
+     * removing a modified node the local state
+     *
+     * @param modifiedNode node to be removed
+     * @return true iff node has been removed
+     * @Complexity O(Q)
+     */
+    private boolean removeModifiedNode(PQNode modifiedNode) {
+        if (this._decreasingPriorityNodesState.isEmpty()) {
+            return false;
+        }
+        return this._decreasingPriorityNodesState.remove(modifiedNode);
     }
 
     /**
@@ -143,7 +145,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      *
      * @return the state of the modified node during transaction
      */
-    public ArrayList<PQNode> getDecreasingPriorityNodesState() {
+    public HashSet<PQNode> getDecreasingPriorityNodesState() {
         return this._decreasingPriorityNodesState;
     }
 
@@ -157,12 +159,23 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     }
 
     /**
+     * removing a modified node the local state
+     *
+     * @param modifiedNode node to be removed
+     * @return false iff node has been removed
+     * @Complexity O(Q)
+     */
+    private boolean removeModifiedNodeForMerging(PQNode modifiedNode) {
+        return !this.removeModifiedNode(modifiedNode);
+    }
+
+    /**
      * merging the transactional priority queue into the local state
      *
      * @param pQueue the transactional priority queue to be merged
      * @Complexity O(N * logQ + N * logK)
      */
     public void mergingPrimitivePriorityQueue(PrimitivePriorityQueue pQueue) {
-        this.mergingPrimitivePriorityQueue(pQueue, _isNotModifiedNode);
+        this.mergingPrimitivePriorityQueue(pQueue, this::removeModifiedNodeForMerging);
     }
 }
