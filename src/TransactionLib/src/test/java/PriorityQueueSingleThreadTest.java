@@ -9,7 +9,7 @@ import java.util.stream.IntStream;
 import static junit.framework.TestCase.*;
 
 public class PriorityQueueSingleThreadTest {
-    final int range = 5000;
+    final int range = 4096;
 
     @Test
     public void testPriorityQueueConstructor() {

@@ -11,7 +11,7 @@ import java.util.stream.IntStream;
 
 
 public class LocalPriorityQueueTest {
-    final int range = 5000;
+    final int range = 4096;
 
     @Test
     public void testLocalPriorityQueueConstructor() {
