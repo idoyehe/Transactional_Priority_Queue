@@ -2,7 +2,7 @@ package TransactionLib.src.benchmarks;
 
 import java.util.PriorityQueue;
 
-import TransactionLib.src.main.java.PQNode;
+import TransactionLib.src.main.java.PQObject;
 import org.junit.Test;
 
 import java.util.concurrent.BrokenBarrierException;
@@ -20,7 +20,7 @@ public class CustomBenchmarkPQJava {
 
     @Test
     public void testLocalPriorityQueueConstructor() throws InterruptedException {
-        PriorityQueue<PQNode> pQueue = new PriorityQueue<PQNode>();
+        PriorityQueue<PQObject> pQueue = new PriorityQueue<PQObject>();
         CyclicBarrier barrier = new CyclicBarrier(this.numberOfThreads);
         ReentrantLock pqLock = new ReentrantLock();
 
@@ -86,7 +86,7 @@ public class CustomBenchmarkPQJava {
                 this.pqLock.lock();
                 for (int k = 0; k < this.chunk; k++) {
                     double rand = Math.random();
-                    pQueue.add(new PQNode(rand, rand));
+                    pQueue.add(new PQObject(rand, rand));
                 }
                 this.pqLock.unlock();
             }
@@ -106,11 +106,11 @@ public class CustomBenchmarkPQJava {
                 pQueue.peek();
                 pQueue.poll();
                 double rand = Math.random();
-                pQueue.add(new PQNode(rand, rand));
+                pQueue.add(new PQObject(rand, rand));
                 pQueue.peek();
                 pQueue.poll();
                 rand = Math.random();
-                pQueue.add(new PQNode(rand, rand));
+                pQueue.add(new PQObject(rand, rand));
                 this.pqLock.unlock();
 
             }
