@@ -43,7 +43,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * @Complexity O(D)
      */
     public void clearInternalState() {
-        assert _ignoredElementsState.size() == 0;
+        this._ignoredElementsState.clear();
         this.pqTXState.clear();
         this._ignoredElementsState = null;
         this.pqTXState = null;
