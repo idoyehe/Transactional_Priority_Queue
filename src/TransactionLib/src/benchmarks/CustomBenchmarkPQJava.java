@@ -19,10 +19,15 @@ public class CustomBenchmarkPQJava {
     final int range = CustomBenchmarkPQJava.TOTAL_ELEMENTS / this.numberOfThreads;
 
     @Test
-    public void testLocalPriorityQueueConstructor() throws InterruptedException {
-        PriorityQueue<PQNode> pQueue = new PriorityQueue<PQNode>();
+    public void testCustomBenchmark() throws InterruptedException {
+        PriorityQueue pQueue = new PriorityQueue();
         CyclicBarrier barrier = new CyclicBarrier(this.numberOfThreads);
         ReentrantLock pqLock = new ReentrantLock();
+
+        for (int i = 0; i < CustomBenchmark.TOTAL_ELEMENTS * 5; i++) {
+            double rand = Math.random();
+            pQueue.add(new PQNode(rand, rand));
+        }
 
         Thread[] threadsARR = new Thread[this.numberOfThreads];
         for (int i = 0; i < this.numberOfThreads; i++) {
