@@ -12,9 +12,6 @@ public class CustomBenchmark {
     final static int TOTAL_ELEMENTS = 16384;
     final int numberOfThreads = 16;
 
-//    final static int TOTAL_ELEMENTS = 4;
-//    final int numberOfThreads = 1;
-
     final int range = CustomBenchmark.TOTAL_ELEMENTS / this.numberOfThreads;
 
     @Test
@@ -77,11 +74,11 @@ public class CustomBenchmark {
             }
             PQObject globalNodesArr[] = new PQObject[this.range];
 
-            //first transaction
+            //enqueue episode
             pQueue.setSingleton(false);
             int offset = this.range / this.chunk;
             long start = System.currentTimeMillis();
-            int abortCount = 0;
+            int enqueueAbortCount = 0;
             for (int j = 0; j < offset; j++) {
                 while (true) {
                     try {
@@ -95,69 +92,94 @@ public class CustomBenchmark {
                             TX.TXend();
                         }
                     } catch (TXLibExceptions.AbortException exp) {
-                        abortCount++;
+                        enqueueAbortCount++;
                         continue;
                     }
                     break;
                 }
             }
             long finish = System.currentTimeMillis();
-            System.out.printf("First episode, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
-            System.out.printf("First episode, Thread name %s, abort counts: %d%n", this.threadName, abortCount);
+            System.out.printf("Enqueue episode, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
+            System.out.printf("Enqueue episode, Thread name %s, abort counts: %d%n", this.threadName, enqueueAbortCount);
             this.await();
             this.printBorder();
             assertEquals(CustomBenchmark.TOTAL_ELEMENTS, this.pQueue.size());
             pQueue.setSingleton(true);
 
-//            while (!pQueue.isEmpty()) {
-//                try {
-//                    System.out.println(pQueue.top());
-//                    pQueue.dequeue();
-//                } catch (TXLibExceptions.PQueueIsEmptyException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-
-            //second transaction
+            //decreasePriority episode
             pQueue.setSingleton(false);
 
+            int decreasePriorityAbortCounter = 0;
             start = System.currentTimeMillis();
-            for (int j = 0; j < this.range / 2; j++) {
+            for (int j = 0; j < this.range / 2; j += 2) {
                 while (true) {
                     try {
                         TX.TXbegin();
                         try {
                             double rand = Math.random();
-                            pQueue.decreasePriority(globalNodesArr[j], (double) globalNodesArr[j].getPriority() - rand);
-                            pQueue.dequeue();
-                            pQueue.enqueue(rand, rand);
-                            pQueue.dequeue();
-                            rand = Math.random();
-                            pQueue.enqueue(rand, rand);
-
-                        } catch (TXLibExceptions.PQueueIsEmptyException e) {
-                            assert false;
+                            globalNodesArr[j] = pQueue.decreasePriority(globalNodesArr[j], (double) globalNodesArr[j].getPriority() - rand);
+                            globalNodesArr[j + 1] = pQueue.decreasePriority(globalNodesArr[j + 1], (double) globalNodesArr[j + 1].getPriority() - rand);
                         } finally {
                             TX.TXend();
                         }
                     } catch (TXLibExceptions.AbortException exp) {
-                        abortCount++;
+                        decreasePriorityAbortCounter++;
                         continue;
                     }
                     break;
                 }
             }
             finish = System.currentTimeMillis();
-            System.out.printf("Second episode, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
-            System.out.printf("Second episode, Thread name %s, abort counts: %d%n", this.threadName, abortCount);
+            System.out.printf("Decrease Priority episode, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
+            System.out.printf("Decrease Priority episode, Thread name %s, abort counts: %d%n", this.threadName, decreasePriorityAbortCounter);
             this.await();
             assertEquals(CustomBenchmark.TOTAL_ELEMENTS, this.pQueue.size());
             this.printBorder();
             this.await();
 
-            //third transaction
+
+            //top episode
+            pQueue.setSingleton(false);
+            int topAbortCounter = 0;
+            start = System.currentTimeMillis();
+            for (int j = 0; j < this.range / 2; j++) {
+                while (true) {
+                    try {
+                        TX.TXbegin();
+                        try {
+                            pQueue.top();
+                            pQueue.dequeue();
+                            double rand = Math.random();
+                            pQueue.enqueue(rand, rand);
+                            pQueue.top();
+                            pQueue.dequeue();
+                            rand = Math.random();
+                            pQueue.enqueue(rand, rand);
+                        } catch (TXLibExceptions.PQueueIsEmptyException e) {
+                            assert false;
+                        } finally {
+                            TX.TXend();
+                        }
+                    } catch (TXLibExceptions.AbortException exp) {
+                        topAbortCounter++;
+                        continue;
+                    }
+                    break;
+                }
+            }
+            finish = System.currentTimeMillis();
+            System.out.printf("Top episode, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
+            System.out.printf("Top episode, Thread name %s, abort counts: %d%n", this.threadName, topAbortCounter);
+            this.await();
+            assertEquals(CustomBenchmark.TOTAL_ELEMENTS, this.pQueue.size());
+            this.printBorder();
+            this.await();            //top episode
             pQueue.setSingleton(false);
 
+
+            //dequeue episode
+            pQueue.setSingleton(false);
+            int dequeueAbortCounter = 0;
             start = System.currentTimeMillis();
             for (int j = 0; j < this.range / 2; j++) {
                 while (true) {
@@ -172,15 +194,15 @@ public class CustomBenchmark {
                             TX.TXend();
                         }
                     } catch (TXLibExceptions.AbortException exp) {
-                        abortCount++;
+                        dequeueAbortCounter++;
                         continue;
                     }
                     break;
                 }
             }
             finish = System.currentTimeMillis();
-            System.out.printf("Third episode, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
-            System.out.printf("Third episode, Thread name %s, abort counts: %d%n", this.threadName, abortCount);
+            System.out.printf("Dequeue episode, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
+            System.out.printf("Dequeue episode, Thread name %s, abort counts: %d%n", this.threadName, dequeueAbortCounter);
             this.await();
             assertEquals(0, this.pQueue.size());
             this.printBorder();
