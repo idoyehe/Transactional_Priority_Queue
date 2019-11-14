@@ -1,29 +1,28 @@
 package TransactionLib.src.benchmarks;
 
 import TransactionLib.src.main.java.*;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Random;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static junit.framework.TestCase.fail;
-
 
 public class ConvertedBenchmark {
-    final int numberOfThreads = 1;
+    public static void main(String[] args) throws InterruptedException {
+        ConvertedBenchmark convertedBenchmark = new ConvertedBenchmark();
+        convertedBenchmark.runConvertedBenchmark();
+    }
 
-    final boolean IS_EXP = true;
-    final int EXPS = 10000;
-    final int INIT_SIZE = 10;
+    private final int numberOfThreads = 8;
+    private final boolean IS_EXP = false;
+    private final int EXPS = 1000000;
+    private final int INIT_SIZE = 100;
     private long[] exps;
-    PriorityQueue pQueue;
+    private PriorityQueue pQueue;
     private AtomicInteger exps_pos = new AtomicInteger(); //This is the VC of the queue
 
-    @Before
-    public void setUp() throws Exception {
+    ConvertedBenchmark() {
         this.exps = new long[this.EXPS];
         this.pQueue = new PriorityQueue();
         this.initPrioritiesQueues();
@@ -58,8 +57,7 @@ public class ConvertedBenchmark {
         return (long) (Math.ceil(Math.log(new Random().nextDouble()) / Math.log(1.0 - p)));
     }
 
-    @Test
-    public void testConvertedBenchmark() throws InterruptedException {
+    public void runConvertedBenchmark() throws InterruptedException {
         this.pQueue.setSingleton(false);
         CyclicBarrier barrier = new CyclicBarrier(this.numberOfThreads);
 
@@ -111,7 +109,6 @@ public class ConvertedBenchmark {
                 e.printStackTrace();
             } catch (BrokenBarrierException e) {
                 e.printStackTrace();
-                fail(e.getMessage());
             }
         }
 
@@ -170,7 +167,6 @@ public class ConvertedBenchmark {
                 e.printStackTrace();
             } catch (BrokenBarrierException e) {
                 e.printStackTrace();
-                fail(e.getMessage());
             }
         }
 
