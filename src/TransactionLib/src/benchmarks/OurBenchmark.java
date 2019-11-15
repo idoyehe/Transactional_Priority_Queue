@@ -1,21 +1,26 @@
 package TransactionLib.src.benchmarks;
 
 import TransactionLib.src.main.java.*;
-import org.junit.Test;
-
-import static junit.framework.TestCase.*;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
-public class CustomBenchmark {
-    final static int TOTAL_ELEMENTS = 16384;
-    final int numberOfThreads = 16;
+public class OurBenchmark {
+    public static void main(String[] args) throws InterruptedException {
+        OurBenchmark ourBenchmark = new OurBenchmark();
+        ourBenchmark.runOurBenchmark();
+    }
 
-    final int range = CustomBenchmark.TOTAL_ELEMENTS / this.numberOfThreads;
+    private final static int POW = 8;
+    private final static int TOTAL_ELEMENTS = (int) Math.pow(2, POW);
+    private final int numberOfThreads = 4;
 
-    @Test
-    public void testLocalPriorityQueueConstructor() throws InterruptedException {
+    private final int range = OurBenchmark.TOTAL_ELEMENTS / this.numberOfThreads;
+
+
+    public void runOurBenchmark() throws InterruptedException {
+        System.out.printf("Each thread insert %d%n", this.range);
+
         PriorityQueue pQueue = new PriorityQueue();
         pQueue.setSingleton(false);
         CyclicBarrier barrier = new CyclicBarrier(this.numberOfThreads);
@@ -37,7 +42,7 @@ public class CustomBenchmark {
         private String threadName;
         private CyclicBarrier barrier;
         private final String masterThread = "T0";
-        private int chunk = 4;
+        private final int chunk = 4;
 
         RunTransactions(String name, CyclicBarrier barrier, PriorityQueue pq, int numberOfThreads, int range) {
             this.threadName = name;
@@ -45,7 +50,6 @@ public class CustomBenchmark {
             this.pQueue = pq;
             this.numberOfThreads = numberOfThreads;
             this.range = range;
-            this.chunk = 4;
         }
 
         private void printBorder() {
@@ -61,7 +65,6 @@ public class CustomBenchmark {
                 e.printStackTrace();
             } catch (BrokenBarrierException e) {
                 e.printStackTrace();
-                fail(e.getMessage());
             }
         }
 
@@ -76,10 +79,10 @@ public class CustomBenchmark {
 
             //enqueue episode
             pQueue.setSingleton(false);
-            int offset = this.range / this.chunk;
+            int enqueueTransactions = this.range / this.chunk;
             long start = System.currentTimeMillis();
             int enqueueAbortCount = 0;
-            for (int j = 0; j < offset; j++) {
+            for (int j = 0; j < enqueueTransactions; j++) {
                 while (true) {
                     try {
                         try {
@@ -103,8 +106,7 @@ public class CustomBenchmark {
             System.out.printf("Enqueue episode, Thread name %s, abort counts: %d%n", this.threadName, enqueueAbortCount);
             this.await();
             this.printBorder();
-            assertEquals(CustomBenchmark.TOTAL_ELEMENTS, this.pQueue.size());
-            pQueue.setSingleton(true);
+            assert OurBenchmark.TOTAL_ELEMENTS == this.pQueue.size();
 
             //decreasePriority episode
             pQueue.setSingleton(false);
@@ -133,7 +135,7 @@ public class CustomBenchmark {
             System.out.printf("Decrease Priority episode, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
             System.out.printf("Decrease Priority episode, Thread name %s, abort counts: %d%n", this.threadName, decreasePriorityAbortCounter);
             this.await();
-            assertEquals(CustomBenchmark.TOTAL_ELEMENTS, this.pQueue.size());
+            assert OurBenchmark.TOTAL_ELEMENTS == this.pQueue.size();
             this.printBorder();
             this.await();
 
@@ -171,7 +173,7 @@ public class CustomBenchmark {
             System.out.printf("Top episode, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
             System.out.printf("Top episode, Thread name %s, abort counts: %d%n", this.threadName, topAbortCounter);
             this.await();
-            assertEquals(CustomBenchmark.TOTAL_ELEMENTS, this.pQueue.size());
+            assert OurBenchmark.TOTAL_ELEMENTS == this.pQueue.size();
             this.printBorder();
             this.await();            //top episode
             pQueue.setSingleton(false);
@@ -204,7 +206,7 @@ public class CustomBenchmark {
             System.out.printf("Dequeue episode, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
             System.out.printf("Dequeue episode, Thread name %s, abort counts: %d%n", this.threadName, dequeueAbortCounter);
             this.await();
-            assertEquals(0, this.pQueue.size());
+            assert 0 == this.pQueue.size();
             this.printBorder();
             this.await();
         }

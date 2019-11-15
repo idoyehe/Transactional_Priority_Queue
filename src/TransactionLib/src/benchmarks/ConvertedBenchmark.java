@@ -1,29 +1,35 @@
 package TransactionLib.src.benchmarks;
 
 import TransactionLib.src.main.java.*;
-import org.junit.Before;
-import org.junit.Test;
 
 import java.util.Random;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static junit.framework.TestCase.fail;
-
 
 public class ConvertedBenchmark {
-    final int numberOfThreads = 1;
+    public static void main(String[] args) throws InterruptedException {
+        ConvertedBenchmark convertedBenchmark = new ConvertedBenchmark();
+        convertedBenchmark.runConvertedBenchmark();
+    }
 
-    final boolean IS_EXP = true;
-    final int EXPS = 10000;
-    final int INIT_SIZE = 10;
+    private final int numberOfThreads = 8;
+    private final boolean IS_EXP = false;
+
+    private final static int EXPS_POW = 16;
+    private final static int EXPS = (int) Math.pow(2, EXPS_POW);
+
+    private final static int INIT_SIZE_POW = 14;
+    private final int INIT_SIZE = (int) Math.pow(2, INIT_SIZE_POW);
+
+    private final boolean UNIFORM_SINGLETON = true;
+
     private long[] exps;
-    PriorityQueue pQueue;
+    private PriorityQueue pQueue;
     private AtomicInteger exps_pos = new AtomicInteger(); //This is the VC of the queue
 
-    @Before
-    public void setUp() throws Exception {
+    ConvertedBenchmark() {
         this.exps = new long[this.EXPS];
         this.pQueue = new PriorityQueue();
         this.initPrioritiesQueues();
@@ -58,8 +64,7 @@ public class ConvertedBenchmark {
         return (long) (Math.ceil(Math.log(new Random().nextDouble()) / Math.log(1.0 - p)));
     }
 
-    @Test
-    public void testConvertedBenchmark() throws InterruptedException {
+    public void runConvertedBenchmark() throws InterruptedException {
         this.pQueue.setSingleton(false);
         CyclicBarrier barrier = new CyclicBarrier(this.numberOfThreads);
 
@@ -67,7 +72,7 @@ public class ConvertedBenchmark {
         long start = System.currentTimeMillis();
         if (this.IS_EXP) {
             for (int i = 0; i < this.numberOfThreads; i++) {
-                threadsARR[i] = new Thread(new ConvertedBenchmark.RunDESBenchmark("T" + i, barrier, this.pQueue, this.exps_pos, this.exps));
+                threadsARR[i] = new Thread(new RunDESBenchmark("T" + i, barrier, this.pQueue, this.exps_pos, this.exps));
                 threadsARR[i].start();
             }
             for (int i = 0; i < this.numberOfThreads; i++) {
@@ -78,27 +83,42 @@ public class ConvertedBenchmark {
             System.out.printf("DES benchmark, elapsed time: %d [ms]%n", finish - start);
             System.out.printf("DES benchmark, Priority Queue size %d%n", pQueue.size());
         } else {
-            for (int i = 0; i < this.numberOfThreads; i++) {
-                threadsARR[i] = new Thread(new ConvertedBenchmark.RunUniformBenchmark("T" + i, barrier, this.pQueue));
-                threadsARR[i].start();
+            if (!this.UNIFORM_SINGLETON) {
+                for (int i = 0; i < this.numberOfThreads; i++) {
+                    threadsARR[i] = new Thread(new RunUniformBenchmarkTransactions("T" + i, barrier, this.pQueue));
+                    threadsARR[i].start();
+                }
+                for (int i = 0; i < this.numberOfThreads; i++) {
+                    threadsARR[i].join();
+                }
+                long finish = System.currentTimeMillis();
+                pQueue.setSingleton(true);
+                System.out.printf("Uniform benchmark, elapsed time: %d [ms]%n", finish - start);
+                System.out.printf("Uniform benchmark, Priority Queue size %d%n", pQueue.size());
+            } else {
+                this.pQueue.setSingleton(true);
+                for (int i = 0; i < this.numberOfThreads; i++) {
+                    threadsARR[i] = new Thread(new RunUniformBenchmarkSingleton("T" + i, barrier, this.pQueue));
+                    threadsARR[i].start();
+                }
+                for (int i = 0; i < this.numberOfThreads; i++) {
+                    threadsARR[i].join();
+                }
+                long finish = System.currentTimeMillis();
+                pQueue.setSingleton(true);
+                System.out.printf("Uniform benchmark, elapsed time: %d [ms]%n", finish - start);
+                System.out.printf("Uniform benchmark, Priority Queue size %d%n", pQueue.size());
             }
-            for (int i = 0; i < this.numberOfThreads; i++) {
-                threadsARR[i].join();
-            }
-            long finish = System.currentTimeMillis();
-            pQueue.setSingleton(true);
-            System.out.printf("Uniform benchmark, elapsed time: %d [ms]%n", finish - start);
-            System.out.printf("Uniform benchmark, Priority Queue size %d%n", pQueue.size());
         }
     }
 
-    class RunUniformBenchmark implements Runnable {
+    class RunUniformBenchmarkTransactions implements Runnable {
         private PriorityQueue pQueue;
         private String threadName;
         private CyclicBarrier barrier;
         private final String masterThread = "T0";
 
-        RunUniformBenchmark(String name, CyclicBarrier barrier, PriorityQueue pq) {
+        RunUniformBenchmarkTransactions(String name, CyclicBarrier barrier, PriorityQueue pq) {
             this.threadName = name;
             this.barrier = barrier;
             this.pQueue = pq;
@@ -111,7 +131,6 @@ public class ConvertedBenchmark {
                 e.printStackTrace();
             } catch (BrokenBarrierException e) {
                 e.printStackTrace();
-                fail(e.getMessage());
             }
         }
 
@@ -120,6 +139,7 @@ public class ConvertedBenchmark {
             this.await();
             long start = System.currentTimeMillis();
             int uniformCounter = 0;
+            int uniformOperationsCounter = 0;
             while (true) {
                 try {
                     TX.TXbegin();
@@ -133,6 +153,7 @@ public class ConvertedBenchmark {
                     } catch (TXLibExceptions.PQueueIsEmptyException e) {
                     } finally {
                         TX.TXend();
+                        uniformOperationsCounter++;
                     }
                 } catch (TXLibExceptions.AbortException e) {
                     uniformCounter++;
@@ -142,7 +163,53 @@ public class ConvertedBenchmark {
             }
             long finish = System.currentTimeMillis();
             System.out.printf("Uniform benchmark, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
+            System.out.printf("Uniform benchmark, Thread name %s, operations counts: %d%n", this.threadName, uniformOperationsCounter);
             System.out.printf("Uniform benchmark, Thread name %s, abort counts: %d%n", this.threadName, uniformCounter);
+        }
+    }
+
+    class RunUniformBenchmarkSingleton implements Runnable {
+        private PriorityQueue pQueue;
+        private String threadName;
+        private CyclicBarrier barrier;
+        private final String masterThread = "T0";
+
+        RunUniformBenchmarkSingleton(String name, CyclicBarrier barrier, PriorityQueue pq) {
+            this.threadName = name;
+            this.barrier = barrier;
+            this.pQueue = pq;
+        }
+
+        protected void await() {
+            try {
+                this.barrier.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (BrokenBarrierException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void run() {
+            this.await();
+            long start = System.currentTimeMillis();
+            int uniformOperationsCounter = 0;
+            try {
+                if (Math.random() < 0.5) {
+                    long generatedLong = new Random().nextLong();
+                    this.pQueue.enqueue(generatedLong, generatedLong);
+                } else {
+                    this.pQueue.dequeue();
+                }
+            } catch (TXLibExceptions.PQueueIsEmptyException e) {
+            } finally {
+                uniformOperationsCounter++;
+            }
+
+            long finish = System.currentTimeMillis();
+            System.out.printf("Uniform singleton benchmark, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
+            System.out.printf("Uniform singleton benchmark, Thread name %s, operations counts: %d%n", this.threadName, uniformOperationsCounter);
         }
     }
 
@@ -170,7 +237,6 @@ public class ConvertedBenchmark {
                 e.printStackTrace();
             } catch (BrokenBarrierException e) {
                 e.printStackTrace();
-                fail(e.getMessage());
             }
         }
 
@@ -180,6 +246,7 @@ public class ConvertedBenchmark {
             long start = System.currentTimeMillis();
             int uniformCounter = 0;
             int pos = this.exps_pos.getAndIncrement();
+            int desOperationsCounter = 0;
             while (pos < exps.length) {
                 try {
                     TX.TXbegin();
@@ -191,6 +258,7 @@ public class ConvertedBenchmark {
                     } finally {
                         TX.TXend();
                         pos = this.exps_pos.getAndIncrement();
+                        desOperationsCounter += 2;
                     }
                 } catch (TXLibExceptions.AbortException e) {
                     uniformCounter++;
@@ -199,6 +267,7 @@ public class ConvertedBenchmark {
             }
             long finish = System.currentTimeMillis();
             System.out.printf("DES benchmark, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
+            System.out.printf("DES benchmark, Thread name %s, operations counts: %d%n", this.threadName, desOperationsCounter);
             System.out.printf("DES benchmark, Thread name %s, abort counts: %d%n", this.threadName, uniformCounter);
         }
     }
