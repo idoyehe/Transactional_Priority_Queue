@@ -16,8 +16,13 @@ public class ConvertedBenchmark {
 
     private final int numberOfThreads = 8;
     private final boolean IS_EXP = false;
-    private final int EXPS = 1000000;
-    private final int INIT_SIZE = 100;
+
+    private final static int EXPS_POW = 32;
+    private final static int EXPS = (int) Math.pow(2, EXPS_POW);
+
+    private final static int INIT_SIZE_POW = 14;
+    private final int INIT_SIZE = (int) Math.pow(2, INIT_SIZE_POW);
+
     private long[] exps;
     private PriorityQueue pQueue;
     private AtomicInteger exps_pos = new AtomicInteger(); //This is the VC of the queue
@@ -117,6 +122,7 @@ public class ConvertedBenchmark {
             this.await();
             long start = System.currentTimeMillis();
             int uniformCounter = 0;
+            int uniformOperationsCounter = 0;
             while (true) {
                 try {
                     TX.TXbegin();
@@ -130,6 +136,7 @@ public class ConvertedBenchmark {
                     } catch (TXLibExceptions.PQueueIsEmptyException e) {
                     } finally {
                         TX.TXend();
+                        uniformOperationsCounter++;
                     }
                 } catch (TXLibExceptions.AbortException e) {
                     uniformCounter++;
@@ -139,6 +146,7 @@ public class ConvertedBenchmark {
             }
             long finish = System.currentTimeMillis();
             System.out.printf("Uniform benchmark, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
+            System.out.printf("Uniform benchmark, Thread name %s, operations counts: %d%n", this.threadName, uniformOperationsCounter);
             System.out.printf("Uniform benchmark, Thread name %s, abort counts: %d%n", this.threadName, uniformCounter);
         }
     }
@@ -176,6 +184,7 @@ public class ConvertedBenchmark {
             long start = System.currentTimeMillis();
             int uniformCounter = 0;
             int pos = this.exps_pos.getAndIncrement();
+            int desOperationsCounter = 0;
             while (pos < exps.length) {
                 try {
                     TX.TXbegin();
@@ -187,6 +196,7 @@ public class ConvertedBenchmark {
                     } finally {
                         TX.TXend();
                         pos = this.exps_pos.getAndIncrement();
+                        desOperationsCounter +=2;
                     }
                 } catch (TXLibExceptions.AbortException e) {
                     uniformCounter++;
@@ -195,6 +205,7 @@ public class ConvertedBenchmark {
             }
             long finish = System.currentTimeMillis();
             System.out.printf("DES benchmark, Thread name %s, elapsed time: %d [ms]%n", this.threadName, finish - start);
+            System.out.printf("DES benchmark, Thread name %s, operations counts: %d%n", this.threadName, desOperationsCounter);
             System.out.printf("DES benchmark, Thread name %s, abort counts: %d%n", this.threadName, uniformCounter);
         }
     }

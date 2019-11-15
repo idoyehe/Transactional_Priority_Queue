@@ -11,12 +11,16 @@ public class OurBenchmark {
         ourBenchmark.runOurBenchmark();
     }
 
-    private final static int TOTAL_ELEMENTS = 16384;
-    private final int numberOfThreads = 16;
+    private final static int POW = 8;
+    private final static int TOTAL_ELEMENTS = (int) Math.pow(2, POW);
+    private final int numberOfThreads = 4;
 
     private final int range = OurBenchmark.TOTAL_ELEMENTS / this.numberOfThreads;
 
+
     public void runOurBenchmark() throws InterruptedException {
+        System.out.printf("Each thread insert %d%n", this.range);
+
         PriorityQueue pQueue = new PriorityQueue();
         pQueue.setSingleton(false);
         CyclicBarrier barrier = new CyclicBarrier(this.numberOfThreads);
@@ -38,7 +42,7 @@ public class OurBenchmark {
         private String threadName;
         private CyclicBarrier barrier;
         private final String masterThread = "T0";
-        private int chunk = 4;
+        private final int chunk = 4;
 
         RunTransactions(String name, CyclicBarrier barrier, PriorityQueue pq, int numberOfThreads, int range) {
             this.threadName = name;
@@ -46,7 +50,6 @@ public class OurBenchmark {
             this.pQueue = pq;
             this.numberOfThreads = numberOfThreads;
             this.range = range;
-            this.chunk = 4;
         }
 
         private void printBorder() {
@@ -76,10 +79,10 @@ public class OurBenchmark {
 
             //enqueue episode
             pQueue.setSingleton(false);
-            int offset = this.range / this.chunk;
+            int enqueueTransactions = this.range / this.chunk;
             long start = System.currentTimeMillis();
             int enqueueAbortCount = 0;
-            for (int j = 0; j < offset; j++) {
+            for (int j = 0; j < enqueueTransactions; j++) {
                 while (true) {
                     try {
                         try {
@@ -104,7 +107,6 @@ public class OurBenchmark {
             this.await();
             this.printBorder();
             assert OurBenchmark.TOTAL_ELEMENTS == this.pQueue.size();
-            pQueue.setSingleton(true);
 
             //decreasePriority episode
             pQueue.setSingleton(false);
