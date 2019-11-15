@@ -40,7 +40,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
     /**
      * clearing all local state resources
      *
-     * @Complexity O(D)
+     * @Complexity O(D + Q)
      */
     public void clearInternalState() {
         this._ignoredElementsState.clear();
@@ -55,7 +55,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * @param internalPQueue the queue to be simulated
      * @return a copy of the current smallest node in the simulation
      * @throws TXLibExceptions.PQueueIsEmptyException
-     * @Complexity O(log Q * log D)
+     * @Complexity O(Q * log D)
      */
     public PQObject currentSmallest(PrimitivePriorityQueue internalPQueue) throws TXLibExceptions.PQueueIsEmptyException {
         while (this.pqTXState.peek() == null || this.removeModifiedElementFromState(this.pqTXState.peek())) {
@@ -145,7 +145,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * merging the transactional priority queue into the local state
      *
      * @param pQueue the transactional priority queue to be merged
-     * @Complexity amortized O(Q + N * logK)
+     * @Complexity amortized O(Q + N * log K)
      */
     public void mergingPriorityQueues(PrimitivePriorityQueue pQueue) {
 

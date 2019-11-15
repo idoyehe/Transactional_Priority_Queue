@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  * This is the basic implementation of the Priority Queue it supports the conventional priority queue API
- * FOR COMPLEXITY CALCULATION THE PRIORITY QUEUE SIZE IS N
+ * FOR COMPLEXITY CALCULATION THE PRIORITY QUEUE SIZE IS K
  */
 public class PrimitivePriorityQueue {
     protected ArrayList<PQObject> _heapContainer;
@@ -46,7 +46,7 @@ public class PrimitivePriorityQueue {
      * fixing the heap stating given index
      *
      * @param index index to start with fixing
-     * @Complexity O(log N)
+     * @Complexity O(log K)
      */
     private void minHeapify(int index) {
         int heapSize = this._heapContainer.size();
@@ -71,7 +71,7 @@ public class PrimitivePriorityQueue {
      *
      * @return a reference of the dequeued node
      * @throws TXLibExceptions.PQueueIsEmptyException
-     * @Complexity O(log N)
+     * @Complexity O(log K)
      */
     public PQObject dequeue() throws TXLibExceptions.PQueueIsEmptyException {
         int heapSize = this._heapContainer.size();
@@ -112,7 +112,7 @@ public class PrimitivePriorityQueue {
      *
      * @param node2enqueue the new node to be enqueued
      * @return a reference of the new node
-     * @Complexity amortized O(log N)
+     * @Complexity amortized O(log K)
      */
     protected final PQObject enqueue(PQObject node2enqueue) {
         // First insert the new key at the end
@@ -134,7 +134,7 @@ public class PrimitivePriorityQueue {
      * @param priority priority of the new node
      * @param value    value of the new node
      * @return a reference of the new node
-     * @Complexity amortized O(log N)
+     * @Complexity amortized O(log K)
      */
     public final PQObject enqueue(Comparable priority, Object value) {
         PQObject newNode = new PQObject(priority, value);
@@ -146,7 +146,7 @@ public class PrimitivePriorityQueue {
      *
      * @return a reference of the dequeued node
      * @throws TXLibExceptions.PQueueIsEmptyException
-     * @Complexity O(log N)
+     * @Complexity O(log K)
      */
     public void decreasePriority(final PQObject nodeToModify, Comparable newPriority) {
         assert nodeToModify != null;
