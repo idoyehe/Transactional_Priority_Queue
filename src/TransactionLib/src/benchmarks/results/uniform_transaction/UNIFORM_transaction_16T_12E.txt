@@ -1,0 +1,66 @@
+
+
+================================================================
+
+Uniform benchmark, Thread name T0, elapsed time: 11.4 [ms]
+Uniform benchmark, Thread name T1, elapsed time: 11.2 [ms]
+Uniform benchmark, Thread name T2, elapsed time: 10.8 [ms]
+Uniform benchmark, Thread name T3, elapsed time: 10.8 [ms]
+Uniform benchmark, Thread name T4, elapsed time: 11.0 [ms]
+Uniform benchmark, Thread name T5, elapsed time: 12.4 [ms]
+Uniform benchmark, Thread name T6, elapsed time: 10.2 [ms]
+Uniform benchmark, Thread name T7, elapsed time: 10.2 [ms]
+Uniform benchmark, Thread name T8, elapsed time: 10.2 [ms]
+Uniform benchmark, Thread name T9, elapsed time: 10.0 [ms]
+Uniform benchmark, Thread name T10, elapsed time: 10.8 [ms]
+Uniform benchmark, Thread name T11, elapsed time: 10.8 [ms]
+Uniform benchmark, Thread name T12, elapsed time: 10.0 [ms]
+Uniform benchmark, Thread name T13, elapsed time: 11.0 [ms]
+Uniform benchmark, Thread name T14, elapsed time: 10.8 [ms]
+Uniform benchmark, Thread name T15, elapsed time: 11.8 [ms]
+
+
+================================================================
+
+Uniform benchmark, Thread name T0, operations counts: 1.0
+Uniform benchmark, Thread name T1, operations counts: 1.0
+Uniform benchmark, Thread name T2, operations counts: 1.0
+Uniform benchmark, Thread name T3, operations counts: 1.0
+Uniform benchmark, Thread name T4, operations counts: 1.0
+Uniform benchmark, Thread name T5, operations counts: 1.0
+Uniform benchmark, Thread name T6, operations counts: 1.0
+Uniform benchmark, Thread name T7, operations counts: 1.0
+Uniform benchmark, Thread name T8, operations counts: 1.0
+Uniform benchmark, Thread name T9, operations counts: 1.0
+Uniform benchmark, Thread name T10, operations counts: 1.0
+Uniform benchmark, Thread name T11, operations counts: 1.0
+Uniform benchmark, Thread name T12, operations counts: 1.0
+Uniform benchmark, Thread name T13, operations counts: 1.0
+Uniform benchmark, Thread name T14, operations counts: 1.0
+Uniform benchmark, Thread name T15, operations counts: 1.0
+
+
+================================================================
+
+Uniform benchmark, Thread name T0, abort counts: 19.2 [ms]
+Uniform benchmark, Thread name T1, abort counts: 24.0 [ms]
+Uniform benchmark, Thread name T2, abort counts: 16.4 [ms]
+Uniform benchmark, Thread name T3, abort counts: 16.2 [ms]
+Uniform benchmark, Thread name T4, abort counts: 10.4 [ms]
+Uniform benchmark, Thread name T5, abort counts: 21.2 [ms]
+Uniform benchmark, Thread name T6, abort counts: 9.0 [ms]
+Uniform benchmark, Thread name T7, abort counts: 23.2 [ms]
+Uniform benchmark, Thread name T8, abort counts: 21.2 [ms]
+Uniform benchmark, Thread name T9, abort counts: 16.6 [ms]
+Uniform benchmark, Thread name T10, abort counts: 26.4 [ms]
+Uniform benchmark, Thread name T11, abort counts: 29.6 [ms]
+Uniform benchmark, Thread name T12, abort counts: 16.6 [ms]
+Uniform benchmark, Thread name T13, abort counts: 25.8 [ms]
+Uniform benchmark, Thread name T14, abort counts: 24.8 [ms]
+Uniform benchmark, Thread name T15, abort counts: 22.0 [ms]
+
+
+================================================================
+
+Uniform benchmark, elapsed time: 49.6 [ms]
+Uniform benchmark, Priority Queue size 4098
