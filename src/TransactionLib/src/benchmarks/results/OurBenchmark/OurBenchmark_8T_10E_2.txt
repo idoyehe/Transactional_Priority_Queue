@@ -1,0 +1,77 @@
+Each thread insert 128
+Enqueue episode, Thread name T3, elapsed time: 138 [ms]
+Enqueue episode, Thread name T3, abort counts: 421
+Enqueue episode, Thread name T1, elapsed time: 143 [ms]
+Enqueue episode, Thread name T1, abort counts: 562
+Enqueue episode, Thread name T5, elapsed time: 148 [ms]
+Enqueue episode, Thread name T5, abort counts: 765
+Enqueue episode, Thread name T6, elapsed time: 153 [ms]
+Enqueue episode, Thread name T6, abort counts: 1118
+Enqueue episode, Thread name T4, elapsed time: 154 [ms]
+Enqueue episode, Thread name T4, abort counts: 1141
+Enqueue episode, Thread name T0, elapsed time: 156 [ms]
+Enqueue episode, Thread name T0, abort counts: 1236
+Enqueue episode, Thread name T2, elapsed time: 157 [ms]
+Enqueue episode, Thread name T2, abort counts: 1259
+Enqueue episode, Thread name T7, elapsed time: 157 [ms]
+Enqueue episode, Thread name T7, abort counts: 1322
+
+=========================================================================================================================================================
+
+Decrease Priority episode, Thread name T1, elapsed time: 54 [ms]
+Decrease Priority episode, Thread name T1, abort counts: 3157
+Decrease Priority episode, Thread name T5, elapsed time: 65 [ms]
+Decrease Priority episode, Thread name T5, abort counts: 4133
+Decrease Priority episode, Thread name T3, elapsed time: 67 [ms]
+Decrease Priority episode, Thread name T3, abort counts: 3995
+Decrease Priority episode, Thread name T0, elapsed time: 68 [ms]
+Decrease Priority episode, Thread name T7, elapsed time: 70 [ms]
+Decrease Priority episode, Thread name T7, abort counts: 4729
+Decrease Priority episode, Thread name T0, abort counts: 4444
+Decrease Priority episode, Thread name T6, elapsed time: 70 [ms]
+Decrease Priority episode, Thread name T6, abort counts: 4969
+Decrease Priority episode, Thread name T2, elapsed time: 71 [ms]
+Decrease Priority episode, Thread name T2, abort counts: 4463
+Decrease Priority episode, Thread name T4, elapsed time: 71 [ms]
+Decrease Priority episode, Thread name T4, abort counts: 4541
+
+=========================================================================================================================================================
+
+Top episode, Thread name T3, elapsed time: 58 [ms]
+Top episode, Thread name T3, abort counts: 3347
+Top episode, Thread name T5, elapsed time: 66 [ms]
+Top episode, Thread name T5, abort counts: 3996
+Top episode, Thread name T7, elapsed time: 72 [ms]
+Top episode, Thread name T7, abort counts: 5024
+Top episode, Thread name T6, elapsed time: 74 [ms]
+Top episode, Thread name T6, abort counts: 5631
+Top episode, Thread name T1, elapsed time: 75 [ms]
+Top episode, Thread name T1, abort counts: 3937
+Top episode, Thread name T0, elapsed time: 76 [ms]
+Top episode, Thread name T0, abort counts: 6001
+Top episode, Thread name T2, elapsed time: 78 [ms]
+Top episode, Thread name T2, abort counts: 5008
+Top episode, Thread name T4, elapsed time: 78 [ms]
+Top episode, Thread name T4, abort counts: 5698
+
+=========================================================================================================================================================
+
+Dequeue episode, Thread name T1, elapsed time: 39 [ms]
+Dequeue episode, Thread name T1, abort counts: 2428
+Dequeue episode, Thread name T0, elapsed time: 39 [ms]
+Dequeue episode, Thread name T0, abort counts: 2453
+Dequeue episode, Thread name T3, elapsed time: 40 [ms]
+Dequeue episode, Thread name T3, abort counts: 2543
+Dequeue episode, Thread name T6, elapsed time: 40 [ms]
+Dequeue episode, Thread name T6, abort counts: 2493
+Dequeue episode, Thread name T5, elapsed time: 41 [ms]
+Dequeue episode, Thread name T5, abort counts: 2577
+Dequeue episode, Thread name T2, elapsed time: 41 [ms]
+Dequeue episode, Thread name T2, abort counts: 2636
+Dequeue episode, Thread name T4, elapsed time: 41 [ms]
+Dequeue episode, Thread name T4, abort counts: 2713
+Dequeue episode, Thread name T7, elapsed time: 41 [ms]
+Dequeue episode, Thread name T7, abort counts: 2612
+
+=========================================================================================================================================================
+
