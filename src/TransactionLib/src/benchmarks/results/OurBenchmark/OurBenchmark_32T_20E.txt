@@ -1,0 +1,273 @@
+Each thread insert 32768
+
+
+================================================================
+
+Enqueue episode, Thread name T0, elapsed time: 6219.4 [ms]
+Enqueue episode, Thread name T0, abort counts: 174200.4
+Enqueue episode, Thread name T1, elapsed time: 6124.6 [ms]
+Enqueue episode, Thread name T1, abort counts: 164292.4
+Enqueue episode, Thread name T2, elapsed time: 5956.0 [ms]
+Enqueue episode, Thread name T2, abort counts: 154615.2
+Enqueue episode, Thread name T3, elapsed time: 6204.4 [ms]
+Enqueue episode, Thread name T3, abort counts: 168777.0
+Enqueue episode, Thread name T4, elapsed time: 5942.2 [ms]
+Enqueue episode, Thread name T4, abort counts: 161826.2
+Enqueue episode, Thread name T5, elapsed time: 6340.4 [ms]
+Enqueue episode, Thread name T5, abort counts: 175658.0
+Enqueue episode, Thread name T6, elapsed time: 6380.6 [ms]
+Enqueue episode, Thread name T6, abort counts: 182999.0
+Enqueue episode, Thread name T7, elapsed time: 5820.8 [ms]
+Enqueue episode, Thread name T7, abort counts: 152759.8
+Enqueue episode, Thread name T8, elapsed time: 6105.0 [ms]
+Enqueue episode, Thread name T8, abort counts: 161953.8
+Enqueue episode, Thread name T9, elapsed time: 5520.0 [ms]
+Enqueue episode, Thread name T9, abort counts: 133873.0
+Enqueue episode, Thread name T10, elapsed time: 6333.6 [ms]
+Enqueue episode, Thread name T10, abort counts: 174410.6
+Enqueue episode, Thread name T11, elapsed time: 6386.0 [ms]
+Enqueue episode, Thread name T11, abort counts: 183984.2
+Enqueue episode, Thread name T12, elapsed time: 5805.4 [ms]
+Enqueue episode, Thread name T12, abort counts: 149200.0
+Enqueue episode, Thread name T13, elapsed time: 5523.2 [ms]
+Enqueue episode, Thread name T13, abort counts: 140397.0
+Enqueue episode, Thread name T14, elapsed time: 6133.2 [ms]
+Enqueue episode, Thread name T14, abort counts: 166897.2
+Enqueue episode, Thread name T15, elapsed time: 6232.4 [ms]
+Enqueue episode, Thread name T15, abort counts: 165735.2
+Enqueue episode, Thread name T16, elapsed time: 6250.8 [ms]
+Enqueue episode, Thread name T16, abort counts: 166153.4
+Enqueue episode, Thread name T17, elapsed time: 6003.0 [ms]
+Enqueue episode, Thread name T17, abort counts: 157864.4
+Enqueue episode, Thread name T18, elapsed time: 5616.0 [ms]
+Enqueue episode, Thread name T18, abort counts: 135651.6
+Enqueue episode, Thread name T19, elapsed time: 5846.0 [ms]
+Enqueue episode, Thread name T19, abort counts: 149523.2
+Enqueue episode, Thread name T20, elapsed time: 6186.4 [ms]
+Enqueue episode, Thread name T20, abort counts: 161546.0
+Enqueue episode, Thread name T21, elapsed time: 5916.6 [ms]
+Enqueue episode, Thread name T21, abort counts: 162648.0
+Enqueue episode, Thread name T22, elapsed time: 6111.2 [ms]
+Enqueue episode, Thread name T22, abort counts: 167054.2
+Enqueue episode, Thread name T23, elapsed time: 6246.2 [ms]
+Enqueue episode, Thread name T23, abort counts: 174837.0
+Enqueue episode, Thread name T24, elapsed time: 6189.4 [ms]
+Enqueue episode, Thread name T24, abort counts: 172803.2
+Enqueue episode, Thread name T25, elapsed time: 5995.8 [ms]
+Enqueue episode, Thread name T25, abort counts: 153246.8
+Enqueue episode, Thread name T26, elapsed time: 5728.6 [ms]
+Enqueue episode, Thread name T26, abort counts: 143606.2
+Enqueue episode, Thread name T27, elapsed time: 5989.4 [ms]
+Enqueue episode, Thread name T27, abort counts: 153472.0
+Enqueue episode, Thread name T28, elapsed time: 6336.8 [ms]
+Enqueue episode, Thread name T28, abort counts: 177193.8
+Enqueue episode, Thread name T29, elapsed time: 6238.4 [ms]
+Enqueue episode, Thread name T29, abort counts: 172143.0
+Enqueue episode, Thread name T30, elapsed time: 5992.2 [ms]
+Enqueue episode, Thread name T30, abort counts: 154332.4
+Enqueue episode, Thread name T31, elapsed time: 5856.0 [ms]
+Enqueue episode, Thread name T31, abort counts: 150421.6
+
+
+================================================================
+
+Decrease Priority episode, Thread name T0, elapsed time: 5130.0 [ms]
+Decrease Priority episode, Thread name T0, abort counts: 206132.8
+Decrease Priority episode, Thread name T1, elapsed time: 5063.6 [ms]
+Decrease Priority episode, Thread name T1, abort counts: 215913.4
+Decrease Priority episode, Thread name T2, elapsed time: 5129.8 [ms]
+Decrease Priority episode, Thread name T2, abort counts: 209705.4
+Decrease Priority episode, Thread name T3, elapsed time: 5064.0 [ms]
+Decrease Priority episode, Thread name T3, abort counts: 213462.0
+Decrease Priority episode, Thread name T4, elapsed time: 5074.2 [ms]
+Decrease Priority episode, Thread name T4, abort counts: 212601.4
+Decrease Priority episode, Thread name T5, elapsed time: 5159.2 [ms]
+Decrease Priority episode, Thread name T5, abort counts: 214869.6
+Decrease Priority episode, Thread name T6, elapsed time: 5270.2 [ms]
+Decrease Priority episode, Thread name T6, abort counts: 214057.0
+Decrease Priority episode, Thread name T7, elapsed time: 5189.2 [ms]
+Decrease Priority episode, Thread name T7, abort counts: 218051.0
+Decrease Priority episode, Thread name T8, elapsed time: 5183.4 [ms]
+Decrease Priority episode, Thread name T8, abort counts: 218273.4
+Decrease Priority episode, Thread name T9, elapsed time: 5143.2 [ms]
+Decrease Priority episode, Thread name T9, abort counts: 213900.0
+Decrease Priority episode, Thread name T10, elapsed time: 5217.0 [ms]
+Decrease Priority episode, Thread name T10, abort counts: 204984.2
+Decrease Priority episode, Thread name T11, elapsed time: 5129.2 [ms]
+Decrease Priority episode, Thread name T11, abort counts: 207250.8
+Decrease Priority episode, Thread name T12, elapsed time: 5166.0 [ms]
+Decrease Priority episode, Thread name T12, abort counts: 204157.2
+Decrease Priority episode, Thread name T13, elapsed time: 5171.4 [ms]
+Decrease Priority episode, Thread name T13, abort counts: 209079.4
+Decrease Priority episode, Thread name T14, elapsed time: 5093.6 [ms]
+Decrease Priority episode, Thread name T14, abort counts: 200470.8
+Decrease Priority episode, Thread name T15, elapsed time: 5291.4 [ms]
+Decrease Priority episode, Thread name T15, abort counts: 208741.4
+Decrease Priority episode, Thread name T16, elapsed time: 5169.8 [ms]
+Decrease Priority episode, Thread name T16, abort counts: 211828.0
+Decrease Priority episode, Thread name T17, elapsed time: 5217.0 [ms]
+Decrease Priority episode, Thread name T17, abort counts: 223840.8
+Decrease Priority episode, Thread name T18, elapsed time: 5073.8 [ms]
+Decrease Priority episode, Thread name T18, abort counts: 211980.8
+Decrease Priority episode, Thread name T19, elapsed time: 5156.0 [ms]
+Decrease Priority episode, Thread name T19, abort counts: 217600.4
+Decrease Priority episode, Thread name T20, elapsed time: 5249.6 [ms]
+Decrease Priority episode, Thread name T20, abort counts: 215537.4
+Decrease Priority episode, Thread name T21, elapsed time: 5250.6 [ms]
+Decrease Priority episode, Thread name T21, abort counts: 209326.0
+Decrease Priority episode, Thread name T22, elapsed time: 5197.6 [ms]
+Decrease Priority episode, Thread name T22, abort counts: 218309.4
+Decrease Priority episode, Thread name T23, elapsed time: 5143.8 [ms]
+Decrease Priority episode, Thread name T23, abort counts: 194411.6
+Decrease Priority episode, Thread name T24, elapsed time: 5190.6 [ms]
+Decrease Priority episode, Thread name T24, abort counts: 210870.8
+Decrease Priority episode, Thread name T25, elapsed time: 5043.8 [ms]
+Decrease Priority episode, Thread name T25, abort counts: 220676.6
+Decrease Priority episode, Thread name T26, elapsed time: 5146.6 [ms]
+Decrease Priority episode, Thread name T26, abort counts: 215060.6
+Decrease Priority episode, Thread name T27, elapsed time: 5139.0 [ms]
+Decrease Priority episode, Thread name T27, abort counts: 211851.8
+Decrease Priority episode, Thread name T28, elapsed time: 5208.2 [ms]
+Decrease Priority episode, Thread name T28, abort counts: 210603.0
+Decrease Priority episode, Thread name T29, elapsed time: 5120.2 [ms]
+Decrease Priority episode, Thread name T29, abort counts: 211182.0
+Decrease Priority episode, Thread name T30, elapsed time: 5160.8 [ms]
+Decrease Priority episode, Thread name T30, abort counts: 201405.2
+Decrease Priority episode, Thread name T31, elapsed time: 5249.0 [ms]
+Decrease Priority episode, Thread name T31, abort counts: 206634.0
+
+
+================================================================
+
+Top episode, Thread name T0, elapsed time: 18285.6 [ms]
+Top episode, Thread name T0, abort counts: 4757223.2
+Top episode, Thread name T1, elapsed time: 17993.8 [ms]
+Top episode, Thread name T1, abort counts: 4590928.6
+Top episode, Thread name T2, elapsed time: 18978.6 [ms]
+Top episode, Thread name T2, abort counts: 4925664.8
+Top episode, Thread name T3, elapsed time: 17625.6 [ms]
+Top episode, Thread name T3, abort counts: 4739186.4
+Top episode, Thread name T4, elapsed time: 19599.8 [ms]
+Top episode, Thread name T4, abort counts: 4184870.4
+Top episode, Thread name T5, elapsed time: 18316.0 [ms]
+Top episode, Thread name T5, abort counts: 4643081.6
+Top episode, Thread name T6, elapsed time: 19088.4 [ms]
+Top episode, Thread name T6, abort counts: 5045275.4
+Top episode, Thread name T7, elapsed time: 18373.2 [ms]
+Top episode, Thread name T7, abort counts: 5382096.8
+Top episode, Thread name T8, elapsed time: 19360.4 [ms]
+Top episode, Thread name T8, abort counts: 5405497.6
+Top episode, Thread name T9, elapsed time: 18853.2 [ms]
+Top episode, Thread name T9, abort counts: 4735282.8
+Top episode, Thread name T10, elapsed time: 18880.4 [ms]
+Top episode, Thread name T10, abort counts: 4599136.6
+Top episode, Thread name T11, elapsed time: 19918.4 [ms]
+Top episode, Thread name T11, abort counts: 4566404.8
+Top episode, Thread name T12, elapsed time: 19329.6 [ms]
+Top episode, Thread name T12, abort counts: 4627166.2
+Top episode, Thread name T13, elapsed time: 19462.2 [ms]
+Top episode, Thread name T13, abort counts: 4774970.6
+Top episode, Thread name T14, elapsed time: 19040.4 [ms]
+Top episode, Thread name T14, abort counts: 4545053.6
+Top episode, Thread name T15, elapsed time: 19244.6 [ms]
+Top episode, Thread name T15, abort counts: 5010182.6
+Top episode, Thread name T16, elapsed time: 18774.0 [ms]
+Top episode, Thread name T16, abort counts: 4529945.0
+Top episode, Thread name T17, elapsed time: 18175.0 [ms]
+Top episode, Thread name T17, abort counts: 4726915.4
+Top episode, Thread name T18, elapsed time: 19846.2 [ms]
+Top episode, Thread name T18, abort counts: 4236651.2
+Top episode, Thread name T19, elapsed time: 20223.2 [ms]
+Top episode, Thread name T19, abort counts: 5019477.6
+Top episode, Thread name T20, elapsed time: 19296.8 [ms]
+Top episode, Thread name T20, abort counts: 4245803.2
+Top episode, Thread name T21, elapsed time: 18597.2 [ms]
+Top episode, Thread name T21, abort counts: 4496188.8
+Top episode, Thread name T22, elapsed time: 19502.4 [ms]
+Top episode, Thread name T22, abort counts: 4742635.0
+Top episode, Thread name T23, elapsed time: 19050.4 [ms]
+Top episode, Thread name T23, abort counts: 4866705.6
+Top episode, Thread name T24, elapsed time: 18708.4 [ms]
+Top episode, Thread name T24, abort counts: 4613792.2
+Top episode, Thread name T25, elapsed time: 19898.6 [ms]
+Top episode, Thread name T25, abort counts: 4971691.8
+Top episode, Thread name T26, elapsed time: 18452.0 [ms]
+Top episode, Thread name T26, abort counts: 4935333.6
+Top episode, Thread name T27, elapsed time: 19617.0 [ms]
+Top episode, Thread name T27, abort counts: 4863834.4
+Top episode, Thread name T28, elapsed time: 19356.6 [ms]
+Top episode, Thread name T28, abort counts: 4452971.6
+Top episode, Thread name T29, elapsed time: 19493.4 [ms]
+Top episode, Thread name T29, abort counts: 4888469.6
+Top episode, Thread name T30, elapsed time: 19211.6 [ms]
+Top episode, Thread name T30, abort counts: 4090576.4
+Top episode, Thread name T31, elapsed time: 19039.6 [ms]
+Top episode, Thread name T31, abort counts: 4281585.4
+
+
+================================================================
+
+Dequeue episode, Thread name T0, elapsed time: 14822.8 [ms]
+Dequeue episode, Thread name T0, abort counts: 4510991.4
+Dequeue episode, Thread name T1, elapsed time: 14319.0 [ms]
+Dequeue episode, Thread name T1, abort counts: 4241216.6
+Dequeue episode, Thread name T2, elapsed time: 15115.2 [ms]
+Dequeue episode, Thread name T2, abort counts: 4552121.6
+Dequeue episode, Thread name T3, elapsed time: 14274.0 [ms]
+Dequeue episode, Thread name T3, abort counts: 4488726.0
+Dequeue episode, Thread name T4, elapsed time: 15333.6 [ms]
+Dequeue episode, Thread name T4, abort counts: 3691934.4
+Dequeue episode, Thread name T5, elapsed time: 14646.6 [ms]
+Dequeue episode, Thread name T5, abort counts: 4448535.6
+Dequeue episode, Thread name T6, elapsed time: 14918.0 [ms]
+Dequeue episode, Thread name T6, abort counts: 4521578.4
+Dequeue episode, Thread name T7, elapsed time: 13847.6 [ms]
+Dequeue episode, Thread name T7, abort counts: 4707446.4
+Dequeue episode, Thread name T8, elapsed time: 14785.2 [ms]
+Dequeue episode, Thread name T8, abort counts: 4733385.8
+Dequeue episode, Thread name T9, elapsed time: 15439.6 [ms]
+Dequeue episode, Thread name T9, abort counts: 4470487.8
+Dequeue episode, Thread name T10, elapsed time: 14528.2 [ms]
+Dequeue episode, Thread name T10, abort counts: 4227153.4
+Dequeue episode, Thread name T11, elapsed time: 15749.0 [ms]
+Dequeue episode, Thread name T11, abort counts: 4184012.8
+Dequeue episode, Thread name T12, elapsed time: 15347.8 [ms]
+Dequeue episode, Thread name T12, abort counts: 4091290.4
+Dequeue episode, Thread name T13, elapsed time: 15603.2 [ms]
+Dequeue episode, Thread name T13, abort counts: 4415289.8
+Dequeue episode, Thread name T14, elapsed time: 14936.4 [ms]
+Dequeue episode, Thread name T14, abort counts: 4175268.4
+Dequeue episode, Thread name T15, elapsed time: 15089.4 [ms]
+Dequeue episode, Thread name T15, abort counts: 4521250.2
+Dequeue episode, Thread name T16, elapsed time: 15121.4 [ms]
+Dequeue episode, Thread name T16, abort counts: 4389376.6
+Dequeue episode, Thread name T17, elapsed time: 14976.6 [ms]
+Dequeue episode, Thread name T17, abort counts: 4558701.4
+Dequeue episode, Thread name T18, elapsed time: 15758.4 [ms]
+Dequeue episode, Thread name T18, abort counts: 4042867.6
+Dequeue episode, Thread name T19, elapsed time: 16025.0 [ms]
+Dequeue episode, Thread name T19, abort counts: 4498658.4
+Dequeue episode, Thread name T20, elapsed time: 15192.0 [ms]
+Dequeue episode, Thread name T20, abort counts: 3922872.6
+Dequeue episode, Thread name T21, elapsed time: 15331.0 [ms]
+Dequeue episode, Thread name T21, abort counts: 4179787.8
+Dequeue episode, Thread name T22, elapsed time: 15647.4 [ms]
+Dequeue episode, Thread name T22, abort counts: 4418483.6
+Dequeue episode, Thread name T23, elapsed time: 14511.0 [ms]
+Dequeue episode, Thread name T23, abort counts: 4353280.0
+Dequeue episode, Thread name T24, elapsed time: 15211.6 [ms]
+Dequeue episode, Thread name T24, abort counts: 4376847.4
+Dequeue episode, Thread name T25, elapsed time: 15310.8 [ms]
+Dequeue episode, Thread name T25, abort counts: 4363228.2
+Dequeue episode, Thread name T26, elapsed time: 15419.2 [ms]
+Dequeue episode, Thread name T26, abort counts: 4860304.0
+Dequeue episode, Thread name T27, elapsed time: 15354.2 [ms]
+Dequeue episode, Thread name T27, abort counts: 4432827.2
+Dequeue episode, Thread name T28, elapsed time: 15697.8 [ms]
+Dequeue episode, Thread name T28, abort counts: 4129887.2
+Dequeue episode, Thread name T29, elapsed time: 15369.2 [ms]
+Dequeue episode, Thread name T29, abort counts: 4397986.4
+Dequeue episode, Thread name T30, elapsed time: 15415.2 [ms]
+Dequeue episode, Thread name T30, abort counts: 3781474.2
+Dequeue episode, Thread name T31, elapsed time: 15134.2 [ms]
+Dequeue episode, Thread name T31, abort counts: 4039151.4

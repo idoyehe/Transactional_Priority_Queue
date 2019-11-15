@@ -1,0 +1,81 @@
+Each thread insert 8192
+
+
+================================================================
+
+Enqueue episode, Thread name T0, elapsed time: 401.0 [ms]
+Enqueue episode, Thread name T0, abort counts: 9823.8
+Enqueue episode, Thread name T1, elapsed time: 363.4 [ms]
+Enqueue episode, Thread name T1, abort counts: 8487.2
+Enqueue episode, Thread name T2, elapsed time: 390.6 [ms]
+Enqueue episode, Thread name T2, abort counts: 8867.4
+Enqueue episode, Thread name T3, elapsed time: 369.0 [ms]
+Enqueue episode, Thread name T3, abort counts: 8723.2
+Enqueue episode, Thread name T4, elapsed time: 375.6 [ms]
+Enqueue episode, Thread name T4, abort counts: 9628.2
+Enqueue episode, Thread name T5, elapsed time: 410.2 [ms]
+Enqueue episode, Thread name T5, abort counts: 10300.8
+Enqueue episode, Thread name T6, elapsed time: 423.0 [ms]
+Enqueue episode, Thread name T6, abort counts: 11451.6
+Enqueue episode, Thread name T7, elapsed time: 421.0 [ms]
+Enqueue episode, Thread name T7, abort counts: 10877.8
+
+
+================================================================
+
+Decrease Priority episode, Thread name T0, elapsed time: 285.4 [ms]
+Decrease Priority episode, Thread name T0, abort counts: 16357.4
+Decrease Priority episode, Thread name T1, elapsed time: 286.8 [ms]
+Decrease Priority episode, Thread name T1, abort counts: 16480.4
+Decrease Priority episode, Thread name T2, elapsed time: 280.0 [ms]
+Decrease Priority episode, Thread name T2, abort counts: 16789.2
+Decrease Priority episode, Thread name T3, elapsed time: 295.6 [ms]
+Decrease Priority episode, Thread name T3, abort counts: 17216.6
+Decrease Priority episode, Thread name T4, elapsed time: 284.0 [ms]
+Decrease Priority episode, Thread name T4, abort counts: 17011.8
+Decrease Priority episode, Thread name T5, elapsed time: 288.6 [ms]
+Decrease Priority episode, Thread name T5, abort counts: 17630.0
+Decrease Priority episode, Thread name T6, elapsed time: 298.2 [ms]
+Decrease Priority episode, Thread name T6, abort counts: 17064.2
+Decrease Priority episode, Thread name T7, elapsed time: 275.4 [ms]
+Decrease Priority episode, Thread name T7, abort counts: 15987.8
+
+
+================================================================
+
+Top episode, Thread name T0, elapsed time: 1150.4 [ms]
+Top episode, Thread name T0, abort counts: 76704.2
+Top episode, Thread name T1, elapsed time: 1064.8 [ms]
+Top episode, Thread name T1, abort counts: 74815.8
+Top episode, Thread name T2, elapsed time: 1118.2 [ms]
+Top episode, Thread name T2, abort counts: 74863.4
+Top episode, Thread name T3, elapsed time: 1163.2 [ms]
+Top episode, Thread name T3, abort counts: 77428.2
+Top episode, Thread name T4, elapsed time: 1216.2 [ms]
+Top episode, Thread name T4, abort counts: 80496.8
+Top episode, Thread name T5, elapsed time: 1153.0 [ms]
+Top episode, Thread name T5, abort counts: 79214.8
+Top episode, Thread name T6, elapsed time: 1141.6 [ms]
+Top episode, Thread name T6, abort counts: 73904.4
+Top episode, Thread name T7, elapsed time: 1151.0 [ms]
+Top episode, Thread name T7, abort counts: 77748.8
+
+
+================================================================
+
+Dequeue episode, Thread name T0, elapsed time: 1095.8 [ms]
+Dequeue episode, Thread name T0, abort counts: 71339.0
+Dequeue episode, Thread name T1, elapsed time: 1073.6 [ms]
+Dequeue episode, Thread name T1, abort counts: 70587.0
+Dequeue episode, Thread name T2, elapsed time: 1094.2 [ms]
+Dequeue episode, Thread name T2, abort counts: 70734.2
+Dequeue episode, Thread name T3, elapsed time: 1106.4 [ms]
+Dequeue episode, Thread name T3, abort counts: 71533.4
+Dequeue episode, Thread name T4, elapsed time: 1122.2 [ms]
+Dequeue episode, Thread name T4, abort counts: 73420.6
+Dequeue episode, Thread name T5, elapsed time: 1129.2 [ms]
+Dequeue episode, Thread name T5, abort counts: 73943.6
+Dequeue episode, Thread name T6, elapsed time: 1098.6 [ms]
+Dequeue episode, Thread name T6, abort counts: 70474.0
+Dequeue episode, Thread name T7, elapsed time: 1104.4 [ms]
+Dequeue episode, Thread name T7, abort counts: 71196.0
