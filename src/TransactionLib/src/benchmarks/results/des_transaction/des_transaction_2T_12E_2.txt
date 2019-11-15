@@ -1,0 +1,8 @@
+DES benchmark, Thread name T0, elapsed time: 7051 [ms]
+DES benchmark, Thread name T1, elapsed time: 7051 [ms]
+DES benchmark, Thread name T1, operations counts: 1053200
+DES benchmark, Thread name T1, abort counts: 1008726
+DES benchmark, Thread name T0, operations counts: 1035760
+DES benchmark, Thread name T0, abort counts: 1142498
+DES benchmark, elapsed time: 7067 [ms]
+DES benchmark, Priority Queue size 4096

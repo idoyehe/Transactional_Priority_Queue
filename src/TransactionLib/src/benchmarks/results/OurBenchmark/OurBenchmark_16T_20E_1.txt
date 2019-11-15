@@ -1,0 +1,141 @@
+Each thread insert 65536
+Enqueue episode, Thread name T6, elapsed time: 3704 [ms]
+Enqueue episode, Thread name T6, abort counts: 121734
+Enqueue episode, Thread name T0, elapsed time: 3833 [ms]
+Enqueue episode, Thread name T0, abort counts: 126470
+Enqueue episode, Thread name T9, elapsed time: 4036 [ms]
+Enqueue episode, Thread name T9, abort counts: 140022
+Enqueue episode, Thread name T15, elapsed time: 4043 [ms]
+Enqueue episode, Thread name T15, abort counts: 130916
+Enqueue episode, Thread name T14, elapsed time: 4084 [ms]
+Enqueue episode, Thread name T14, abort counts: 149449
+Enqueue episode, Thread name T5, elapsed time: 4210 [ms]
+Enqueue episode, Thread name T5, abort counts: 153001
+Enqueue episode, Thread name T12, elapsed time: 4213 [ms]
+Enqueue episode, Thread name T12, abort counts: 160973
+Enqueue episode, Thread name T11, elapsed time: 4248 [ms]
+Enqueue episode, Thread name T11, abort counts: 166398
+Enqueue episode, Thread name T10, elapsed time: 4249 [ms]
+Enqueue episode, Thread name T10, abort counts: 165902
+Enqueue episode, Thread name T13, elapsed time: 4290 [ms]
+Enqueue episode, Thread name T13, abort counts: 166854
+Enqueue episode, Thread name T1, elapsed time: 4320 [ms]
+Enqueue episode, Thread name T1, abort counts: 171835
+Enqueue episode, Thread name T3, elapsed time: 4357 [ms]
+Enqueue episode, Thread name T3, abort counts: 179666
+Enqueue episode, Thread name T7, elapsed time: 4413 [ms]
+Enqueue episode, Thread name T7, abort counts: 176764
+Enqueue episode, Thread name T4, elapsed time: 4434 [ms]
+Enqueue episode, Thread name T4, abort counts: 195588
+Enqueue episode, Thread name T8, elapsed time: 4443 [ms]
+Enqueue episode, Thread name T8, abort counts: 195040
+Enqueue episode, Thread name T2, elapsed time: 4443 [ms]
+Enqueue episode, Thread name T2, abort counts: 192971
+
+=========================================================================================================================================================
+
+Decrease Priority episode, Thread name T6, elapsed time: 3146 [ms]
+Decrease Priority episode, Thread name T6, abort counts: 194090
+Decrease Priority episode, Thread name T9, elapsed time: 3149 [ms]
+Decrease Priority episode, Thread name T9, abort counts: 193052
+Decrease Priority episode, Thread name T15, elapsed time: 3153 [ms]
+Decrease Priority episode, Thread name T15, abort counts: 194982
+Decrease Priority episode, Thread name T0, elapsed time: 3165 [ms]
+Decrease Priority episode, Thread name T0, abort counts: 197339
+Decrease Priority episode, Thread name T7, elapsed time: 3182 [ms]
+Decrease Priority episode, Thread name T7, abort counts: 194718
+Decrease Priority episode, Thread name T2, elapsed time: 3185 [ms]
+Decrease Priority episode, Thread name T2, abort counts: 191865
+Decrease Priority episode, Thread name T4, elapsed time: 3198 [ms]
+Decrease Priority episode, Thread name T4, abort counts: 197662
+Decrease Priority episode, Thread name T8, elapsed time: 3238 [ms]
+Decrease Priority episode, Thread name T8, abort counts: 203929
+Decrease Priority episode, Thread name T10, elapsed time: 3261 [ms]
+Decrease Priority episode, Thread name T10, abort counts: 212834
+Decrease Priority episode, Thread name T14, elapsed time: 3264 [ms]
+Decrease Priority episode, Thread name T14, abort counts: 214155
+Decrease Priority episode, Thread name T11, elapsed time: 3265 [ms]
+Decrease Priority episode, Thread name T11, abort counts: 215275
+Decrease Priority episode, Thread name T12, elapsed time: 3272 [ms]
+Decrease Priority episode, Thread name T12, abort counts: 211033
+Decrease Priority episode, Thread name T5, elapsed time: 3344 [ms]
+Decrease Priority episode, Thread name T5, abort counts: 209076
+Decrease Priority episode, Thread name T1, elapsed time: 3359 [ms]
+Decrease Priority episode, Thread name T1, abort counts: 204353
+Decrease Priority episode, Thread name T13, elapsed time: 3360 [ms]
+Decrease Priority episode, Thread name T13, abort counts: 202246
+Decrease Priority episode, Thread name T3, elapsed time: 3361 [ms]
+Decrease Priority episode, Thread name T3, abort counts: 192668
+
+=========================================================================================================================================================
+
+Top episode, Thread name T4, elapsed time: 13762 [ms]
+Top episode, Thread name T4, abort counts: 3660605
+Top episode, Thread name T6, elapsed time: 13908 [ms]
+Top episode, Thread name T6, abort counts: 3735069
+Top episode, Thread name T15, elapsed time: 13930 [ms]
+Top episode, Thread name T15, abort counts: 3716276
+Top episode, Thread name T12, elapsed time: 14316 [ms]
+Top episode, Thread name T12, abort counts: 3848240
+Top episode, Thread name T11, elapsed time: 14742 [ms]
+Top episode, Thread name T11, abort counts: 4063372
+Top episode, Thread name T3, elapsed time: 14873 [ms]
+Top episode, Thread name T3, abort counts: 4076961
+Top episode, Thread name T2, elapsed time: 15128 [ms]
+Top episode, Thread name T2, abort counts: 4183659
+Top episode, Thread name T5, elapsed time: 15225 [ms]
+Top episode, Thread name T5, abort counts: 4163721
+Top episode, Thread name T10, elapsed time: 15227 [ms]
+Top episode, Thread name T10, abort counts: 4302363
+Top episode, Thread name T9, elapsed time: 15261 [ms]
+Top episode, Thread name T9, abort counts: 4152579
+Top episode, Thread name T7, elapsed time: 15313 [ms]
+Top episode, Thread name T7, abort counts: 4327175
+Top episode, Thread name T14, elapsed time: 15375 [ms]
+Top episode, Thread name T14, abort counts: 4323063
+Top episode, Thread name T1, elapsed time: 15384 [ms]
+Top episode, Thread name T1, abort counts: 4325425
+Top episode, Thread name T0, elapsed time: 15392 [ms]
+Top episode, Thread name T0, abort counts: 4329742
+Top episode, Thread name T8, elapsed time: 15393 [ms]
+Top episode, Thread name T8, abort counts: 3902946
+Top episode, Thread name T13, elapsed time: 15400 [ms]
+Top episode, Thread name T13, abort counts: 4251201
+
+=========================================================================================================================================================
+
+Dequeue episode, Thread name T7, elapsed time: 10684 [ms]
+Dequeue episode, Thread name T7, abort counts: 4183280
+Dequeue episode, Thread name T14, elapsed time: 10717 [ms]
+Dequeue episode, Thread name T14, abort counts: 4215992
+Dequeue episode, Thread name T13, elapsed time: 10746 [ms]
+Dequeue episode, Thread name T13, abort counts: 4203403
+Dequeue episode, Thread name T4, elapsed time: 10802 [ms]
+Dequeue episode, Thread name T4, abort counts: 4348243
+Dequeue episode, Thread name T3, elapsed time: 10990 [ms]
+Dequeue episode, Thread name T3, abort counts: 4406308
+Dequeue episode, Thread name T9, elapsed time: 11235 [ms]
+Dequeue episode, Thread name T9, abort counts: 4479195
+Dequeue episode, Thread name T11, elapsed time: 11312 [ms]
+Dequeue episode, Thread name T11, abort counts: 4542914
+Dequeue episode, Thread name T12, elapsed time: 11407 [ms]
+Dequeue episode, Thread name T12, abort counts: 4580192
+Dequeue episode, Thread name T2, elapsed time: 11448 [ms]
+Dequeue episode, Thread name T2, abort counts: 4667684
+Dequeue episode, Thread name T1, elapsed time: 11544 [ms]
+Dequeue episode, Thread name T1, abort counts: 4696764
+Dequeue episode, Thread name T10, elapsed time: 11558 [ms]
+Dequeue episode, Thread name T10, abort counts: 4682685
+Dequeue episode, Thread name T15, elapsed time: 11660 [ms]
+Dequeue episode, Thread name T15, abort counts: 4635393
+Dequeue episode, Thread name T0, elapsed time: 11662 [ms]
+Dequeue episode, Thread name T0, abort counts: 4696384
+Dequeue episode, Thread name T6, elapsed time: 11739 [ms]
+Dequeue episode, Thread name T6, abort counts: 4715171
+Dequeue episode, Thread name T5, elapsed time: 11765 [ms]
+Dequeue episode, Thread name T5, abort counts: 4679520
+Dequeue episode, Thread name T8, elapsed time: 11779 [ms]
+Dequeue episode, Thread name T8, abort counts: 4261009
+
+=========================================================================================================================================================
+

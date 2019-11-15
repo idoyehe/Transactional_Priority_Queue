@@ -1,0 +1,15 @@
+Each thread insert 8388608
+Enqueue episode, Thread name T1, elapsed time: 32703 [ms]
+Enqueue episode, Thread name T1, abort counts: 1698465
+Enqueue episode, Thread name T0, elapsed time: 33578 [ms]
+Enqueue episode, Thread name T0, abort counts: 2161627
+
+=========================================================================================================================================================
+
+Decrease Priority episode, Thread name T0, elapsed time: 38516 [ms]
+Decrease Priority episode, Thread name T0, abort counts: 1853098
+Decrease Priority episode, Thread name T1, elapsed time: 39365 [ms]
+Decrease Priority episode, Thread name T1, abort counts: 2098932
+
+=========================================================================================================================================================
+

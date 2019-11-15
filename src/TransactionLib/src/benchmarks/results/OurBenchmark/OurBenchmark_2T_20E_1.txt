@@ -1,0 +1,29 @@
+Each thread insert 524288
+Enqueue episode, Thread name T0, elapsed time: 2478 [ms]
+Enqueue episode, Thread name T0, abort counts: 147715
+Enqueue episode, Thread name T1, elapsed time: 2485 [ms]
+Enqueue episode, Thread name T1, abort counts: 142821
+
+=========================================================================================================================================================
+
+Decrease Priority episode, Thread name T0, elapsed time: 2276 [ms]
+Decrease Priority episode, Thread name T0, abort counts: 166895
+Decrease Priority episode, Thread name T1, elapsed time: 2308 [ms]
+Decrease Priority episode, Thread name T1, abort counts: 182170
+
+=========================================================================================================================================================
+
+Top episode, Thread name T0, elapsed time: 9322 [ms]
+Top episode, Thread name T0, abort counts: 1567759
+Top episode, Thread name T1, elapsed time: 9407 [ms]
+Top episode, Thread name T1, abort counts: 1594672
+
+=========================================================================================================================================================
+
+Dequeue episode, Thread name T0, elapsed time: 7318 [ms]
+Dequeue episode, Thread name T0, abort counts: 1501698
+Dequeue episode, Thread name T1, elapsed time: 7544 [ms]
+Dequeue episode, Thread name T1, abort counts: 1652313
+
+=========================================================================================================================================================
+

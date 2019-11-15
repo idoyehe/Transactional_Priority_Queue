@@ -1,0 +1,6 @@
+Uniform singleton benchmark, Thread name T1, elapsed time: 0 [ms]
+Uniform singleton benchmark, Thread name T0, elapsed time: 0 [ms]
+Uniform singleton benchmark, Thread name T0, operations counts: 1
+Uniform singleton benchmark, Thread name T1, operations counts: 1
+Uniform benchmark, elapsed time: 16 [ms]
+Uniform benchmark, Priority Queue size 4096

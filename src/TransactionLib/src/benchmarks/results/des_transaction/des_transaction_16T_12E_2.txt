@@ -1,0 +1,50 @@
+DES benchmark, Thread name T4, elapsed time: 13585 [ms]
+DES benchmark, Thread name T6, elapsed time: 13584 [ms]
+DES benchmark, Thread name T6, operations counts: 137566
+DES benchmark, Thread name T6, abort counts: 3323407
+DES benchmark, Thread name T3, elapsed time: 13585 [ms]
+DES benchmark, Thread name T3, operations counts: 123986
+DES benchmark, Thread name T3, abort counts: 3303470
+DES benchmark, Thread name T13, elapsed time: 13584 [ms]
+DES benchmark, Thread name T13, operations counts: 147386
+DES benchmark, Thread name T13, abort counts: 3384072
+DES benchmark, Thread name T8, elapsed time: 13584 [ms]
+DES benchmark, Thread name T8, operations counts: 130470
+DES benchmark, Thread name T8, abort counts: 3315834
+DES benchmark, Thread name T7, elapsed time: 13584 [ms]
+DES benchmark, Thread name T7, operations counts: 132174
+DES benchmark, Thread name T7, abort counts: 3293297
+DES benchmark, Thread name T12, elapsed time: 13584 [ms]
+DES benchmark, Thread name T12, operations counts: 134358
+DES benchmark, Thread name T12, abort counts: 3249029
+DES benchmark, Thread name T14, elapsed time: 13584 [ms]
+DES benchmark, Thread name T14, operations counts: 132134
+DES benchmark, Thread name T14, abort counts: 3304178
+DES benchmark, Thread name T0, elapsed time: 13585 [ms]
+DES benchmark, Thread name T0, operations counts: 106430
+DES benchmark, Thread name T0, abort counts: 2772678
+DES benchmark, Thread name T5, elapsed time: 13584 [ms]
+DES benchmark, Thread name T5, operations counts: 118860
+DES benchmark, Thread name T5, abort counts: 3330378
+DES benchmark, Thread name T15, elapsed time: 13585 [ms]
+DES benchmark, Thread name T15, operations counts: 130028
+DES benchmark, Thread name T15, abort counts: 3356600
+DES benchmark, Thread name T1, elapsed time: 13585 [ms]
+DES benchmark, Thread name T1, operations counts: 142048
+DES benchmark, Thread name T1, abort counts: 3354942
+DES benchmark, Thread name T9, elapsed time: 13584 [ms]
+DES benchmark, Thread name T9, operations counts: 129604
+DES benchmark, Thread name T9, abort counts: 3323248
+DES benchmark, Thread name T10, elapsed time: 13584 [ms]
+DES benchmark, Thread name T10, operations counts: 115068
+DES benchmark, Thread name T10, abort counts: 2641256
+DES benchmark, Thread name T11, elapsed time: 13584 [ms]
+DES benchmark, Thread name T11, operations counts: 118450
+DES benchmark, Thread name T11, abort counts: 3292646
+DES benchmark, Thread name T2, elapsed time: 13585 [ms]
+DES benchmark, Thread name T2, operations counts: 140044
+DES benchmark, Thread name T2, abort counts: 3270998
+DES benchmark, Thread name T4, operations counts: 150354
+DES benchmark, Thread name T4, abort counts: 3361668
+DES benchmark, elapsed time: 13622 [ms]
+DES benchmark, Priority Queue size 4096

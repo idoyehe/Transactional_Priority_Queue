@@ -1,0 +1,34 @@
+Uniform singleton benchmark, Thread name T15, elapsed time: 1 [ms]
+Uniform singleton benchmark, Thread name T14, elapsed time: 1 [ms]
+Uniform singleton benchmark, Thread name T14, operations counts: 1
+Uniform singleton benchmark, Thread name T10, elapsed time: 1 [ms]
+Uniform singleton benchmark, Thread name T10, operations counts: 1
+Uniform singleton benchmark, Thread name T9, elapsed time: 1 [ms]
+Uniform singleton benchmark, Thread name T9, operations counts: 1
+Uniform singleton benchmark, Thread name T8, elapsed time: 1 [ms]
+Uniform singleton benchmark, Thread name T8, operations counts: 1
+Uniform singleton benchmark, Thread name T2, elapsed time: 2 [ms]
+Uniform singleton benchmark, Thread name T2, operations counts: 1
+Uniform singleton benchmark, Thread name T7, elapsed time: 2 [ms]
+Uniform singleton benchmark, Thread name T7, operations counts: 1
+Uniform singleton benchmark, Thread name T3, elapsed time: 1 [ms]
+Uniform singleton benchmark, Thread name T3, operations counts: 1
+Uniform singleton benchmark, Thread name T0, elapsed time: 1 [ms]
+Uniform singleton benchmark, Thread name T0, operations counts: 1
+Uniform singleton benchmark, Thread name T5, elapsed time: 1 [ms]
+Uniform singleton benchmark, Thread name T5, operations counts: 1
+Uniform singleton benchmark, Thread name T4, elapsed time: 1 [ms]
+Uniform singleton benchmark, Thread name T4, operations counts: 1
+Uniform singleton benchmark, Thread name T6, elapsed time: 1 [ms]
+Uniform singleton benchmark, Thread name T6, operations counts: 1
+Uniform singleton benchmark, Thread name T13, elapsed time: 0 [ms]
+Uniform singleton benchmark, Thread name T13, operations counts: 1
+Uniform singleton benchmark, Thread name T11, elapsed time: 0 [ms]
+Uniform singleton benchmark, Thread name T11, operations counts: 1
+Uniform singleton benchmark, Thread name T1, elapsed time: 1 [ms]
+Uniform singleton benchmark, Thread name T1, operations counts: 1
+Uniform singleton benchmark, Thread name T12, elapsed time: 0 [ms]
+Uniform singleton benchmark, Thread name T12, operations counts: 1
+Uniform singleton benchmark, Thread name T15, operations counts: 1
+Uniform benchmark, elapsed time: 39 [ms]
+Uniform benchmark, Priority Queue size 4098
