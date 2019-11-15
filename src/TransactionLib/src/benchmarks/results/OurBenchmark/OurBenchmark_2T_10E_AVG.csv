@@ -1,8 +1,1 @@
-enqueue_time_per_thread[ms],218.4
-enqueue_abort_per_thread,218.4
-decrease priority_time_per_thread[ms],171.5
-decrease priority_abort_per_thread,171.5
-top_time_per_thread[ms],310.5
-top_abort_per_thread,310.5
-dequeue_time_per_thread[ms],151.1
-dequeue_abort_per_thread,151.1
+enqueue_time_per_thread[ms],enqueue_abort_per_thread,decrease priority_time_per_thread[ms],decrease priority_abort_per_thread,top_time_per_thread[ms],top_abort_per_thread,dequeue_time_per_thread[ms],dequeue_abort_per_thread218.4,5506.8,171.5,18347.8,310.5,52969.4,151.1,27351.3
