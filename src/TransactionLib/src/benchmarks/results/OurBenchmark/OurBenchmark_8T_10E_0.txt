@@ -1,0 +1,77 @@
+Each thread insert 128
+Enqueue episode, Thread name T3, elapsed time: 217 [ms]
+Enqueue episode, Thread name T3, abort counts: 2503
+Enqueue episode, Thread name T5, elapsed time: 228 [ms]
+Enqueue episode, Thread name T5, abort counts: 3014
+Enqueue episode, Thread name T0, elapsed time: 232 [ms]
+Enqueue episode, Thread name T0, abort counts: 3214
+Enqueue episode, Thread name T1, elapsed time: 232 [ms]
+Enqueue episode, Thread name T1, abort counts: 3314
+Enqueue episode, Thread name T2, elapsed time: 237 [ms]
+Enqueue episode, Thread name T2, abort counts: 3341
+Enqueue episode, Thread name T6, elapsed time: 251 [ms]
+Enqueue episode, Thread name T6, abort counts: 4308
+Enqueue episode, Thread name T7, elapsed time: 253 [ms]
+Enqueue episode, Thread name T7, abort counts: 5262
+Enqueue episode, Thread name T4, elapsed time: 255 [ms]
+Enqueue episode, Thread name T4, abort counts: 5506
+
+=========================================================================================================================================================
+
+Decrease Priority episode, Thread name T5, elapsed time: 169 [ms]
+Decrease Priority episode, Thread name T5, abort counts: 10736
+Decrease Priority episode, Thread name T3, elapsed time: 172 [ms]
+Decrease Priority episode, Thread name T3, abort counts: 10895
+Decrease Priority episode, Thread name T2, elapsed time: 180 [ms]
+Decrease Priority episode, Thread name T2, abort counts: 11539
+Decrease Priority episode, Thread name T4, elapsed time: 191 [ms]
+Decrease Priority episode, Thread name T4, abort counts: 13126
+Decrease Priority episode, Thread name T6, elapsed time: 191 [ms]
+Decrease Priority episode, Thread name T6, abort counts: 12442
+Decrease Priority episode, Thread name T1, elapsed time: 192 [ms]
+Decrease Priority episode, Thread name T1, abort counts: 13348
+Decrease Priority episode, Thread name T0, elapsed time: 194 [ms]
+Decrease Priority episode, Thread name T0, abort counts: 13095
+Decrease Priority episode, Thread name T7, elapsed time: 196 [ms]
+Decrease Priority episode, Thread name T7, abort counts: 13567
+
+=========================================================================================================================================================
+
+Top episode, Thread name T4, elapsed time: 199 [ms]
+Top episode, Thread name T4, abort counts: 21367
+Top episode, Thread name T2, elapsed time: 241 [ms]
+Top episode, Thread name T2, abort counts: 21245
+Top episode, Thread name T1, elapsed time: 250 [ms]
+Top episode, Thread name T1, abort counts: 23228
+Top episode, Thread name T7, elapsed time: 262 [ms]
+Top episode, Thread name T7, abort counts: 23348
+Top episode, Thread name T3, elapsed time: 280 [ms]
+Top episode, Thread name T3, abort counts: 22043
+Top episode, Thread name T0, elapsed time: 290 [ms]
+Top episode, Thread name T0, abort counts: 24567
+Top episode, Thread name T5, elapsed time: 294 [ms]
+Top episode, Thread name T5, abort counts: 27670
+Top episode, Thread name T6, elapsed time: 301 [ms]
+Top episode, Thread name T6, abort counts: 23641
+
+=========================================================================================================================================================
+
+Dequeue episode, Thread name T0, elapsed time: 132 [ms]
+Dequeue episode, Thread name T0, abort counts: 9094
+Dequeue episode, Thread name T3, elapsed time: 134 [ms]
+Dequeue episode, Thread name T3, abort counts: 9043
+Dequeue episode, Thread name T6, elapsed time: 145 [ms]
+Dequeue episode, Thread name T6, abort counts: 10312
+Dequeue episode, Thread name T5, elapsed time: 146 [ms]
+Dequeue episode, Thread name T5, abort counts: 10184
+Dequeue episode, Thread name T1, elapsed time: 147 [ms]
+Dequeue episode, Thread name T1, abort counts: 9696
+Dequeue episode, Thread name T7, elapsed time: 147 [ms]
+Dequeue episode, Thread name T7, abort counts: 9844
+Dequeue episode, Thread name T4, elapsed time: 154 [ms]
+Dequeue episode, Thread name T2, elapsed time: 153 [ms]
+Dequeue episode, Thread name T2, abort counts: 10566
+Dequeue episode, Thread name T4, abort counts: 9895
+
+=========================================================================================================================================================
+
