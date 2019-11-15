@@ -5,7 +5,7 @@ import java.util.PriorityQueue;
 
 /**
  * This class maneges the local state of a Priority Queue during transaction
- * FOR COMPLEXITY CALCULATION THIS SIZE IS K
+ * FOR COMPLEXITY CALCULATION LOCAL PRIORITY QUEUE THIS SIZE IS K
  */
 public class LocalPriorityQueue extends PrimitivePriorityQueue {
     /**
@@ -56,11 +56,11 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * @param internalPQueue the queue to be simulated
      * @return a copy of the current smallest node in the simulation
      * @throws TXLibExceptions.PQueueIsEmptyException
-     * @Complexity O(log D)
+     * @Complexity O(L * log D)
      */
     public PQObject currentSmallest(PrimitivePriorityQueue internalPQueue) throws TXLibExceptions.PQueueIsEmptyException {
         while (this.pqTXState.peek() == null || this.pqTXState.peek().getIsIgnored() || this.removeModifiedNode(this.pqTXState.peek())) {
-            this.nextSmallest(internalPQueue);
+            this.nextSmallest(internalPQueue);//O(log D)
         }
 
         return new PQObject(this.pqTXState.peek());
@@ -81,7 +81,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
         }
 
         if (this.pqTXState.isEmpty()) {
-            pqTXState.add(internalPQueue._heapContainer.get(0));//O(log(dequeueCounter))
+            pqTXState.add(internalPQueue._heapContainer.get(0));//O(1)
             return;
         }
 
@@ -89,7 +89,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
         PQObject top = pqTXState.peek();//O(1)
 
         try {
-            pqTXState.remove();//O(log(dequeueCounter))
+            pqTXState.remove();//O(log(D))
         } catch (NoSuchElementException e) {
             assert false; //shouldn't be here
         }
@@ -144,7 +144,7 @@ public class LocalPriorityQueue extends PrimitivePriorityQueue {
      * merging the transactional priority queue into the local state
      *
      * @param pQueue the transactional priority queue to be merged
-     * @Complexity amortized O(K*logN + Q)
+     * @Complexity amortized O( (K * log N ) + Q)
      */
     public void mergingPriorityQueues(PrimitivePriorityQueue pQueue) {
         int oldSize = pQueue.size();

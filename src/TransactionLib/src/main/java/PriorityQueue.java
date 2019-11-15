@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * this class is the implementation of the transactional priority queue
- * FOR COMPLEXITY CALCULATION THE PRIORITY QUEUE SIZE IS N AND IGNORED NUMBER IF IGNORED NODES IS L
+ * FOR COMPLEXITY CALCULATION NON IGNORED OBJECTS IS N AND NUMBER OF IGNORED OBJECTS IS L
  */
 public class PriorityQueue {
     private static final long singletonMask = 0x4000000000000000L;
@@ -140,7 +140,7 @@ public class PriorityQueue {
      * @return a refernce of the enqueue node
      * @throws TXLibExceptions.AbortException
      * @Complexity singleton use amortized O(log N)
-     * transaction use amortized O(log k)
+     * transaction use amortized O(log K)
      */
     public final PQObject enqueue(Comparable priority, Object value) throws TXLibExceptions.AbortException {
 
@@ -193,7 +193,7 @@ public class PriorityQueue {
      * @return a reference of the modified node
      * @throws TXLibExceptions.AbortException
      * @Complexity singleton use O(log N)
-     * transaction use amortized O(log k + max(Q,L) * log D)
+     * transaction use amortized O(log K + L * log D)
      */
     public PQObject decreasePriority(final PQObject nodeToModify, Comparable newPriority) throws TXLibExceptions.AbortException {
         LocalStorage localStorage = TX.lStorage.get();
@@ -345,8 +345,8 @@ public class PriorityQueue {
      *
      * @return the value of the minimum priority queue
      * @throws TXLibExceptions.AbortException
-     * @Complexity singleton use O(L*log N)
-     * transaction use O(max ( Q, L) * log D + log K)
+     * @Complexity singleton use O(L * Log N)
+     * transaction use O(L * Log D + Log K)
      */
     public Object dequeue() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
 
@@ -441,8 +441,8 @@ public class PriorityQueue {
      *
      * @return the value of the minimum priority queue
      * @throws TXLibExceptions.AbortException
-     * @Complexity singleton use O(L*log N)
-     * transaction use O(max ( Q, L) * log D)
+     * @Complexity singleton use O(L * log N)
+     * transaction use O(L * log D)
      */
     public Object top() throws TXLibExceptions.PQueueIsEmptyException, TXLibExceptions.AbortException {
 

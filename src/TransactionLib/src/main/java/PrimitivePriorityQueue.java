@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  * This is the basic implementation of the Priority Queue it supports the conventional priority queue API
- * FOR COMPLEXITY CALCULATION THE PRIORITY QUEUE SIZE IS N AND IGNORED NUMBER IF IGNORED NODES IS L
+ * FOR COMPLEXITY CALCULATION NON IGNORED OBJECTS IS K AND NUMBER OF IGNORED OBJECTS IS L
  */
 public class PrimitivePriorityQueue {
     protected ArrayList<PQObject> _heapContainer;
@@ -47,7 +47,7 @@ public class PrimitivePriorityQueue {
      * fixing the heap stating given index
      *
      * @param index index to start with fixing
-     * @Complexity O(log N)
+     * @Complexity O(log (K + L) )
      */
     private void minHeapify(int index) {
         int heapSize = this._heapContainer.size();
@@ -72,7 +72,7 @@ public class PrimitivePriorityQueue {
      *
      * @return a reference of the dequeued node
      * @throws TXLibExceptions.PQueueIsEmptyException
-     * @Complexity O(log N)
+     * @Complexity O(log (K + L))
      */
     PQObject singleDequeue() throws TXLibExceptions.PQueueIsEmptyException {
         int heapSize = this.containerSize();
@@ -83,6 +83,7 @@ public class PrimitivePriorityQueue {
         PQObject root = this._heapContainer.get(0);
         assert root.getIndex() == 0;
         this._ignoredCounter -= root.getIsIgnored() ? 1 : 0;
+
         if (heapSize == 1) {
             return this._heapContainer.remove(0);//O(1) because this is last element in the array
         }
@@ -100,7 +101,7 @@ public class PrimitivePriorityQueue {
      *
      * @return a reference of the dequeued node
      * @throws TXLibExceptions.PQueueIsEmptyException
-     * @Complexity O(L * log N)
+     * @Complexity O(L * log (K + L))
      */
     public PQObject dequeue() throws TXLibExceptions.PQueueIsEmptyException {
         PQObject root;
@@ -132,7 +133,7 @@ public class PrimitivePriorityQueue {
      *
      * @return new node contains the head
      * @throws TXLibExceptions.PQueueIsEmptyException
-     * @Complexity O(L * log N)
+     * @Complexity O(L * log (K + L))
      */
     public PQObject topWithClearIgnored() throws TXLibExceptions.PQueueIsEmptyException {
         try {
@@ -152,7 +153,7 @@ public class PrimitivePriorityQueue {
      *
      * @param node2enqueue the new node to be enqueued
      * @return a reference of the new node
-     * @Complexity amortized O(log N)
+     * @Complexity amortized O(log (K + L))
      */
     protected final PQObject enqueue(PQObject node2enqueue) {
         assert !node2enqueue.getIsIgnored();
@@ -175,7 +176,7 @@ public class PrimitivePriorityQueue {
      * @param priority priority of the new node
      * @param value    value of the new node
      * @return a reference of the new node
-     * @Complexity amortized O(log N)
+     * @Complexity amortized O(log (K + L))
      */
     public final PQObject enqueue(Comparable priority, Object value) {
         PQObject newNode = new PQObject(priority, value);
@@ -187,7 +188,7 @@ public class PrimitivePriorityQueue {
      *
      * @return a reference of the dequeued node
      * @throws TXLibExceptions.PQueueIsEmptyException
-     * @Complexity O(log N)
+     * @Complexity O(log (K + L))
      */
     public void decreasePriority(final PQObject nodeToModify, Comparable newPriority) {
         assert nodeToModify != null;
