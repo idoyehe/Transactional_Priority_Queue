@@ -1,0 +1,42 @@
+
+
+================================================================
+
+DES benchmark, Thread name T0, elapsed time: 2556.4 [ms]
+DES benchmark, Thread name T0, operations counts: 135295.2
+DES benchmark, Thread name T1, elapsed time: 2556.0 [ms]
+DES benchmark, Thread name T1, operations counts: 127230.4
+DES benchmark, Thread name T2, elapsed time: 2556.2 [ms]
+DES benchmark, Thread name T2, operations counts: 129623.6
+DES benchmark, Thread name T3, elapsed time: 2555.8 [ms]
+DES benchmark, Thread name T3, operations counts: 128664.8
+DES benchmark, Thread name T4, elapsed time: 2555.8 [ms]
+DES benchmark, Thread name T4, operations counts: 129427.2
+DES benchmark, Thread name T5, elapsed time: 2555.6 [ms]
+DES benchmark, Thread name T5, operations counts: 133936.8
+DES benchmark, Thread name T6, elapsed time: 2555.6 [ms]
+DES benchmark, Thread name T6, operations counts: 126741.6
+DES benchmark, Thread name T7, elapsed time: 2555.2 [ms]
+DES benchmark, Thread name T7, operations counts: 130212.8
+DES benchmark, Thread name T8, elapsed time: 2555.8 [ms]
+DES benchmark, Thread name T8, operations counts: 131712.4
+DES benchmark, Thread name T9, elapsed time: 2555.2 [ms]
+DES benchmark, Thread name T9, operations counts: 127463.6
+DES benchmark, Thread name T10, elapsed time: 2555.2 [ms]
+DES benchmark, Thread name T10, operations counts: 126847.2
+DES benchmark, Thread name T11, elapsed time: 2555.2 [ms]
+DES benchmark, Thread name T11, operations counts: 132502.0
+DES benchmark, Thread name T12, elapsed time: 2555.6 [ms]
+DES benchmark, Thread name T12, operations counts: 133954.8
+DES benchmark, Thread name T13, elapsed time: 2555.2 [ms]
+DES benchmark, Thread name T13, operations counts: 130634.8
+DES benchmark, Thread name T14, elapsed time: 2555.0 [ms]
+DES benchmark, Thread name T14, operations counts: 133390.0
+DES benchmark, Thread name T15, elapsed time: 2556.2 [ms]
+DES benchmark, Thread name T15, operations counts: 131322.8
+
+
+================================================================
+
+DES benchmark, elapsed time: 2593.2 [ms]
+DES benchmark, Priority Queue size 4096
