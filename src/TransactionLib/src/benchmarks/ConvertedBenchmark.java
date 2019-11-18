@@ -14,16 +14,19 @@ public class ConvertedBenchmark {
         convertedBenchmark.runConvertedBenchmark();
     }
 
-    private final int numberOfThreads = 8;
-    private final boolean IS_EXP = false;
+    private final int numberOfThreads = 32;
+    private final boolean IS_EXP = true;
 
-    private final static int EXPS_POW = 16;
+    private final static int EXPS_POW = 20;
     private final static int EXPS = (int) Math.pow(2, EXPS_POW);
 
-    private final static int INIT_SIZE_POW = 14;
+    private final static int INIT_SIZE_POW = 12;
     private final int INIT_SIZE = (int) Math.pow(2, INIT_SIZE_POW);
 
     private final boolean UNIFORM_SINGLETON = true;
+
+    private final int TOTAL_WORKLOAD_ELEMENTS = EXPS - INIT_SIZE;
+    private final int TOTAL_WORKLOAD_PER_THREAD = TOTAL_WORKLOAD_ELEMENTS / numberOfThreads;
 
     private long[] exps;
     private PriorityQueue pQueue;
@@ -72,7 +75,7 @@ public class ConvertedBenchmark {
         long start = System.currentTimeMillis();
         if (this.IS_EXP) {
             for (int i = 0; i < this.numberOfThreads; i++) {
-                threadsARR[i] = new Thread(new RunDESBenchmark("T" + i, barrier, this.pQueue, this.exps_pos, this.exps));
+                threadsARR[i] = new Thread(new RunDESBenchmark("T" + i, barrier, this.pQueue, this.exps, this.TOTAL_WORKLOAD_PER_THREAD, this.INIT_SIZE + this.TOTAL_WORKLOAD_PER_THREAD * i));
                 threadsARR[i].start();
             }
             for (int i = 0; i < this.numberOfThreads; i++) {
@@ -218,16 +221,18 @@ public class ConvertedBenchmark {
         private String threadName;
         private CyclicBarrier barrier;
         private final String masterThread = "T0";
-        private AtomicInteger exps_pos;
         private long[] exps;
+        private int total_work;
+        private int initPOS;
 
 
-        RunDESBenchmark(String name, CyclicBarrier barrier, PriorityQueue pq, AtomicInteger exps_pos, long[] exps) {
+        RunDESBenchmark(String name, CyclicBarrier barrier, PriorityQueue pq, long[] exps, int total_work, int initPOS) {
             this.threadName = name;
             this.barrier = barrier;
             this.pQueue = pq;
-            this.exps_pos = exps_pos;
             this.exps = exps;
+            this.initPOS = initPOS;
+            this.total_work = total_work;
         }
 
         protected void await() {
@@ -245,9 +250,10 @@ public class ConvertedBenchmark {
             this.await();
             long start = System.currentTimeMillis();
             int uniformCounter = 0;
-            int pos = this.exps_pos.getAndIncrement();
+            int pos = this.initPOS;
+            int currentWork = 0;
             int desOperationsCounter = 0;
-            while (pos < exps.length) {
+            while (currentWork < this.total_work) {
                 try {
                     TX.TXbegin();
                     try {
@@ -257,7 +263,8 @@ public class ConvertedBenchmark {
                     } catch (TXLibExceptions.PQueueIsEmptyException e) {
                     } finally {
                         TX.TXend();
-                        pos = this.exps_pos.getAndIncrement();
+                        pos++;
+                        currentWork++;
                         desOperationsCounter += 2;
                     }
                 } catch (TXLibExceptions.AbortException e) {
