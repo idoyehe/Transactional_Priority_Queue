@@ -8,6 +8,8 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.PriorityQueue;
+import java.util.concurrent.locks.ReentrantLock;
 
 
 public class ConvertedBenchmarkJAVAPQ {
@@ -19,11 +21,14 @@ public class ConvertedBenchmarkJAVAPQ {
     private final int numberOfThreads = 8;
     private final boolean IS_EXP = true;
 
-    private final static int EXPS_POW = 12;
+    private final static int EXPS_POW = 20;
     private final static int EXPS = (int) Math.pow(2, EXPS_POW);
 
-    private final static int INIT_SIZE_POW = 14;
+    private final static int INIT_SIZE_POW = 12;
     private final int INIT_SIZE = (int) Math.pow(2, INIT_SIZE_POW);
+
+    private final int TOTAL_WORKLOAD_ELEMENTS = EXPS - INIT_SIZE;
+    private final int TOTAL_WORKLOAD_PER_THREAD = TOTAL_WORKLOAD_ELEMENTS / numberOfThreads;
 
     private final boolean UNIFORM_SINGLETON = true;
 
@@ -68,12 +73,14 @@ public class ConvertedBenchmarkJAVAPQ {
 
     public void runConvertedBenchmark() throws InterruptedException {
         CyclicBarrier barrier = new CyclicBarrier(this.numberOfThreads);
+        ReentrantLock pqLock = new ReentrantLock();
 
         Thread[] threadsARR = new Thread[this.numberOfThreads];
         long start = System.currentTimeMillis();
         if (this.IS_EXP) {
+            PriorityQueue<PQObject> regularPQ = new PriorityQueue<>();
             for (int i = 0; i < this.numberOfThreads; i++) {
-                threadsARR[i] = new Thread(new RunDESBenchmark("T" + i, barrier, this.pQueue, this.exps_pos, this.exps));
+                threadsARR[i] = new Thread(new RunDESBenchmark("T" + i, barrier, pqLock, regularPQ, this.exps, this.TOTAL_WORKLOAD_PER_THREAD, this.INIT_SIZE + this.TOTAL_WORKLOAD_PER_THREAD * i));
                 threadsARR[i].start();
             }
             for (int i = 0; i < this.numberOfThreads; i++) {
@@ -138,20 +145,24 @@ class RunUniformBenchmarkSingleton implements Runnable {
 }
 
 class RunDESBenchmark implements Runnable {
-    private PriorityBlockingQueue pQueue;
+    private PriorityQueue<PQObject> pQueue;
     private String threadName;
     private CyclicBarrier barrier;
     private final String masterThread = "T0";
-    private AtomicInteger exps_pos;
     private long[] exps;
+    private int total_work;
+    private int initPOS;
+    private ReentrantLock pqLock;
 
 
-    RunDESBenchmark(String name, CyclicBarrier barrier, PriorityBlockingQueue pq, AtomicInteger exps_pos, long[] exps) {
+    RunDESBenchmark(String name, CyclicBarrier barrier, ReentrantLock pqLock, PriorityQueue pq, long[] exps, int total_work, int initPOS) {
         this.threadName = name;
         this.barrier = barrier;
         this.pQueue = pq;
-        this.exps_pos = exps_pos;
         this.exps = exps;
+        this.initPOS = initPOS;
+        this.total_work = total_work;
+        this.pqLock = pqLock;
     }
 
     protected void await() {
@@ -168,13 +179,15 @@ class RunDESBenchmark implements Runnable {
     public void run() {
         this.await();
         long start = System.currentTimeMillis();
-        int pos = this.exps_pos.getAndIncrement();
+        int pos = this.initPOS;
+
         int desOperationsCounter = 0;
-        while (pos < exps.length) {
+        for (int i = 0; i < this.total_work; i++) {
+            this.pqLock.lock();
             this.pQueue.poll();
-            long elem = exps[pos];
+            long elem = exps[pos++];
             this.pQueue.add(new PQObject(elem, elem));
-            pos = this.exps_pos.getAndIncrement();
+            this.pqLock.unlock();
             desOperationsCounter += 2;
         }
 
