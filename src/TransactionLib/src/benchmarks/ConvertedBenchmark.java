@@ -14,13 +14,13 @@ public class ConvertedBenchmark {
         convertedBenchmark.runConvertedBenchmark();
     }
 
-    private final int numberOfThreads = 32;
+    private final int numberOfThreads = 2;
     private final boolean IS_EXP = true;
 
-    private final static int EXPS_POW = 20;
+    private final static int EXPS_POW = 24;
     private final static int EXPS = (int) Math.pow(2, EXPS_POW);
 
-    private final static int INIT_SIZE_POW = 12;
+    private final static int INIT_SIZE_POW = 20;
     private final int INIT_SIZE = (int) Math.pow(2, INIT_SIZE_POW);
 
     private final boolean UNIFORM_SINGLETON = true;

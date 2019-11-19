@@ -1,0 +1,25 @@
+
+================================================================
+
+DES benchmark, Thread name T0, elapsed time: 78.2 [ms]
+DES benchmark, Thread name T0, operations counts: 15360.0
+DES benchmark, Thread name T1, elapsed time: 78.2 [ms]
+DES benchmark, Thread name T1, operations counts: 15360.0
+DES benchmark, Thread name T2, elapsed time: 76.0 [ms]
+DES benchmark, Thread name T2, operations counts: 15360.0
+DES benchmark, Thread name T3, elapsed time: 78.8 [ms]
+DES benchmark, Thread name T3, operations counts: 15360.0
+DES benchmark, Thread name T4, elapsed time: 76.2 [ms]
+DES benchmark, Thread name T4, operations counts: 15360.0
+DES benchmark, Thread name T5, elapsed time: 78.2 [ms]
+DES benchmark, Thread name T5, operations counts: 15360.0
+DES benchmark, Thread name T6, elapsed time: 77.2 [ms]
+DES benchmark, Thread name T6, operations counts: 15360.0
+DES benchmark, Thread name T7, elapsed time: 78.2 [ms]
+DES benchmark, Thread name T7, operations counts: 15360.0
+
+
+================================================================
+
+DES benchmark, elapsed time: 97.0 [ms]
+DES benchmark, Priority Queue size 4096

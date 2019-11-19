@@ -1,0 +1,41 @@
+
+================================================================
+
+DES benchmark, Thread name T0, elapsed time: 76.6 [ms]
+DES benchmark, Thread name T0, operations counts: 7680.0
+DES benchmark, Thread name T1, elapsed time: 74.0 [ms]
+DES benchmark, Thread name T1, operations counts: 7680.0
+DES benchmark, Thread name T2, elapsed time: 76.8 [ms]
+DES benchmark, Thread name T2, operations counts: 7680.0
+DES benchmark, Thread name T3, elapsed time: 76.6 [ms]
+DES benchmark, Thread name T3, operations counts: 7680.0
+DES benchmark, Thread name T4, elapsed time: 74.0 [ms]
+DES benchmark, Thread name T4, operations counts: 7680.0
+DES benchmark, Thread name T5, elapsed time: 75.0 [ms]
+DES benchmark, Thread name T5, operations counts: 7680.0
+DES benchmark, Thread name T6, elapsed time: 73.8 [ms]
+DES benchmark, Thread name T6, operations counts: 7680.0
+DES benchmark, Thread name T7, elapsed time: 76.0 [ms]
+DES benchmark, Thread name T7, operations counts: 7680.0
+DES benchmark, Thread name T8, elapsed time: 75.2 [ms]
+DES benchmark, Thread name T8, operations counts: 7680.0
+DES benchmark, Thread name T9, elapsed time: 75.8 [ms]
+DES benchmark, Thread name T9, operations counts: 7680.0
+DES benchmark, Thread name T10, elapsed time: 74.6 [ms]
+DES benchmark, Thread name T10, operations counts: 7680.0
+DES benchmark, Thread name T11, elapsed time: 71.4 [ms]
+DES benchmark, Thread name T11, operations counts: 7680.0
+DES benchmark, Thread name T12, elapsed time: 71.0 [ms]
+DES benchmark, Thread name T12, operations counts: 7680.0
+DES benchmark, Thread name T13, elapsed time: 76.4 [ms]
+DES benchmark, Thread name T13, operations counts: 7680.0
+DES benchmark, Thread name T14, elapsed time: 75.4 [ms]
+DES benchmark, Thread name T14, operations counts: 7680.0
+DES benchmark, Thread name T15, elapsed time: 73.0 [ms]
+DES benchmark, Thread name T15, operations counts: 7680.0
+
+
+================================================================
+
+DES benchmark, elapsed time: 102.2 [ms]
+DES benchmark, Priority Queue size 4096

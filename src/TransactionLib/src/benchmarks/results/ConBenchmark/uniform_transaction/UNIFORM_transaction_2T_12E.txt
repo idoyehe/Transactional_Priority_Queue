@@ -1,0 +1,24 @@
+
+
+================================================================
+
+Uniform benchmark, Thread name T0, elapsed time: 9.0 [ms]
+Uniform benchmark, Thread name T1, elapsed time: 8.2 [ms]
+
+
+================================================================
+
+Uniform benchmark, Thread name T0, operations counts: 1.0
+Uniform benchmark, Thread name T1, operations counts: 1.0
+
+
+================================================================
+
+Uniform benchmark, Thread name T0, abort counts: 1.4 [ms]
+Uniform benchmark, Thread name T1, abort counts: 0.0 [ms]
+
+
+================================================================
+
+Uniform benchmark, elapsed time: 20.0 [ms]
+Uniform benchmark, Priority Queue size 4094
